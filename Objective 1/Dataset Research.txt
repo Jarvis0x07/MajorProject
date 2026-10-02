@@ -1,0 +1,16 @@
+
+
+Base Paper
+Dataset Used-TCGA-OV 
+Features Used
+-Age
+-Gender
+-Tumor Status
+-Tumor Grade
+-Cancer Stage 
+-Cumulative Drug Count
+-Radiation history
+-ECOG Performance Status
+-Karnofsky Performance Score
+-Reserved/Additional Features
+-Genomic copy-number features
