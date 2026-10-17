@@ -1,0 +1,19 @@
+{
+  "input_file_name": "clinical.project-tcga-ov.2026-10-09.json",
+  "case_count": 608,
+  "event_counts": {
+    "patient_baseline": 608,
+    "diagnosis": 1109,
+    "treatment": 4125,
+    "pathology": 587,
+    "follow_up": 2036
+  },
+  "cases_without_demographic_object": 21,
+  "cases_without_diagnoses_array": 21,
+  "cases_without_follow_ups_array": 24,
+  "treatments_without_start_day": 1624,
+  "follow_ups_without_followup_day": 316,
+  "warning": "event_day_raw preserves the original field value; different days_to_* fields may have different reference points. Verify before sorting into a clinical timeline.",
+  "event_row_count": 8465,
+  "output_csv": "/mnt/data/MajorProject_starter/examples/preprocessing_output/patient_events.csv"
+}
