@@ -25,20 +25,20 @@ The project combines:
 
 ### Objective 1 — Develop the LLM-Based Patient Digital Twin
 
-- [ ] Collect suitable healthcare datasets
-- [ ] Study available healthcare datasets and select the primary dataset
-- [ ] Define the patient state representation
-- [ ] Preprocess patient records
-- [ ] Handle missing/noisy clinical data
-- [ ] Represent patient medical history
-- [ ] Represent treatment history
-- [ ] Represent disease progression
-- [ ] Research suitable LLMs for healthcare/patient-state modelling
-- [ ] Design the LLM-based patient representation
-- [ ] Implement the initial Digital Twin
-- [ ] Test patient-state generation
-- [ ] Test patient trajectory prediction
-- [ ] Document the Digital Twin architecture
+- [~] Collect suitable healthcare datasets — TCGA-OV was analyzed, but its source JSON is not in this workspace
+- [x] Study available healthcare datasets and select the primary dataset for the prototype (TCGA-OV)
+- [x] Define a candidate patient state representation
+- [x] Implement preprocessing and explicit missingness/unit handling
+- [x] Represent diagnosis, treatment, and pathology history in the initial state builder
+- [~] Represent disease progression — outcomes are extracted, but safe point-in-time ordering awaits time-origin verification
+- [x] Review suitable healthcare LLMs; model selection awaits comparative evaluation
+- [x] Design structured LLM input and validated forecast output
+- [x] Implement the initial patient-state builder and model-agnostic forecast interface
+- [x] Test state generation and forecast-interface behavior on a synthetic fixture
+- [~] Test predictive accuracy on real patient trajectories — requires source JSON and a selected LLM
+- [x] Document the prototype architecture and limitations
+
+Objective 1 progress details and the remaining empirical work are tracked in [docs/architecture/OBJECTIVE_1_STATUS.md](docs/architecture/OBJECTIVE_1_STATUS.md).
 
 ---
 
