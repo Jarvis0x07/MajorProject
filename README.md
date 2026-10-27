@@ -1,148 +1,51 @@
-# MajorProject
-# LLM-Based Digital Twin + Reinforcement Learning for Drug Treatment Optimization
-HELLO
-## 📌 Project Overview
+# Patient Digital Twin and Offline RL for Ovarian Cancer Treatment Response
 
-This project aims to develop an **LLM-based patient Digital Twin** that can represent a patient's evolving clinical state and simulate disease progression and treatment response.
+This project is being reorganized around the method in the base paper, *Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation*. The paper models patient history and treatment actions, learns a next-state/outcome model, then evaluates an offline RL policy inside the learned simulator.
 
-The Digital Twin will be used as a **simulation environment for Reinforcement Learning (RL)**, allowing an RL agent to learn personalized drug treatment policies without directly experimenting on real patients.
+The paper's central digital twin is a Transformer sequence model. Its LLM is used for explanations and report generation; an LLM is not the core disease-transition model.
 
-The overall goal is to optimize treatment while considering multiple objectives:
+## Current project status
 
-- 💊 Treatment effectiveness
-- ⚠️ Patient safety and side effects
-- 💰 Treatment cost
-- ❤️ Patient well-being / quality of life
-- 📈 Long-term treatment outcomes
+The supplied TCGA-OV export contains 608 case records; 587 have `index_date = Diagnosis`. The first paper-inspired preprocessing pipeline is implemented in `scripts/paper_method_pipeline.py`. It creates:
 
-The project combines:
+- A 469 / 59 / 59 patient split, matching the paper's reported split.
+- A treatment-event table with a transparent 11-class mapping.
+- Same-day treatment decision sets with paper-style state features and one-hot action classes.
+- Candidate next-response links with flags for missing dates and intervening treatments.
 
-**Patient Data → LLM → Digital Twin → Simulation Environment → RL Agent → Treatment Policy**
+This is preprocessing, not a trained digital twin or RL policy. The local export has 4,125 treatment records versus 2,552 reported in the paper, and the resulting pipeline finds 51 action combinations versus 47 reported. The paper does not describe enough preprocessing detail to reconcile these counts. The pipeline finds only 2 links in patients with complete treatment-start timing across their recorded history. RL training is therefore still gated.
 
----
+## Main documents
 
-# 🎯 Project Objectives
+1. [`docs/architecture/PAPER_METHOD_REPLICATION.md`](docs/architecture/PAPER_METHOD_REPLICATION.md) — paper method, exact local adaptation, discrepancies, and remaining work.
+2. [`docs/architecture/PROJECT_ARCHITECTURE.md`](docs/architecture/PROJECT_ARCHITECTURE.md) — project components and data flow.
+3. [`docs/architecture/OBJECTIVE_1_STATUS.md`](docs/architecture/OBJECTIVE_1_STATUS.md) — current implementation and evidence.
+4. [`docs/data/patient_state_schema.md`](docs/data/patient_state_schema.md) — paper-style pre-treatment state, action, next-state, and reward definition.
+5. [`docs/data/TREATMENT_TRANSITION_AUDIT.md`](docs/data/TREATMENT_TRANSITION_AUDIT.md) — timing/linkage feasibility analysis.
+6. [`docs/data/dataset_field_audit.json`](docs/data/dataset_field_audit.json) — structural inventory of all 108 JSON field paths.
 
-### Objective 1 — Develop the LLM-Based Patient Digital Twin
+## Run the paper-inspired preprocessing
 
-- [x] Collect a suitable prototype dataset — TCGA-OV JSON is present and processed (608 cases)
-- [x] Study available healthcare datasets and select the primary dataset for the prototype (TCGA-OV)
-- [x] Finalize the patient state schema specification (RL readiness remains gated)
-- [x] Preprocess the supplied TCGA-OV JSON (8,465 event rows) and preserve missingness/units
-- [x] Represent diagnosis, treatment, and pathology history in the initial state builder
-- [~] Represent disease progression — follow-up time origin is audited; point-in-time state and treatment-time linkage still need validation
-- [x] Review suitable healthcare LLMs; model selection awaits comparative evaluation
-- [x] Design structured LLM input and validated forecast output
-- [x] Implement the initial patient-state builder and model-agnostic forecast interface
-- [x] Generate 608 patient summaries from the supplied cohort; test state generation and forecast interface on a synthetic fixture
-- [~] Evaluate next-follow-up response on 100 real patient holdouts; LLM predictive accuracy remains pending local runtime/model availability
-- [x] Document the prototype architecture and limitations
+Use the Python runtime available on your system:
 
-Objective 1 progress details and the remaining empirical work are tracked in [docs/architecture/OBJECTIVE_1_STATUS.md](docs/architecture/OBJECTIVE_1_STATUS.md).
-The audited field inventory and final state specification are in [docs/data/dataset_field_audit.json](docs/data/dataset_field_audit.json) and [docs/data/patient_state_schema.md](docs/data/patient_state_schema.md). The schema is finalized as a specification; the dataset is not yet approved for RL training because treatment-time alignment, action support, and treatment-to-outcome linkage remain unvalidated.
+```powershell
+python scripts/paper_method_pipeline.py --input clinical.project-tcga-ov.2026-10-09.json
+```
 
----
+The output folder is `data/processed/paper_method/`:
 
-# 🧪 Objective 2 — Create the Digital Twin Simulation Environment
+- `pipeline_summary.json`
+- `patient_splits.csv`
+- `treatment_events.csv`
+- `treatment_class_mapping.csv`
+- `state_action_outcome_candidates.csv`
 
-- [ ] Define the Digital Twin state space
-- [ ] Define available treatment/drug actions
-- [ ] Define treatment dosage representation
-- [ ] Define disease progression mechanism
-- [ ] Define treatment-response mechanism
-- [ ] Define side-effect mechanism
-- [ ] Implement patient state transitions
-- [ ] Implement treatment → patient response simulation
-- [ ] Implement multi-step patient trajectory simulation
-- [ ] Allow different treatment strategies to be tested virtually
-- [ ] Generate synthetic/virtual patient trajectories
-- [ ] Validate simulated trajectories against real data
-- [ ] Document the simulation environment
+Case IDs in these files are join/split keys only and must be excluded from model features. The mapping file exposes every source agent string and its assigned class for review.
 
----
+## Earlier prototype scripts
 
-# 🤖 Objective 3 — Reinforcement Learning Framework
+`preprocess_tcga_ov.py`, `patient_twin.py`, `evaluate_trajectory_baseline.py`, `compare_llm_trajectory.py`, and `demo_patient_twin.py` remain as the original extraction, next-response forecasting, LLM-interface, and demo work. They are useful comparisons and examples, but they are not the paper-style dynamics model or offline RL system.
 
-## MDP Formulation
+## Research limits
 
-- [ ] Define the RL state
-- [ ] Define the RL action space
-- [ ] Define the reward function
-- [ ] Define episode termination conditions
-- [ ] Define treatment constraints
-- [ ] Define safety constraints
-- [ ] Define discount factor
-- [ ] Define treatment decision frequency
-- [ ] Formulate the complete problem as an MDP
-
-### Reward Design
-
-- [ ] Define treatment effectiveness reward
-- [ ] Define side-effect penalty
-- [ ] Define treatment cost penalty
-- [ ] Define patient well-being component
-- [ ] Combine objectives into a multi-objective reward
-- [ ] Experiment with different reward weights
-- [ ] Document reward formulation
-
-### Baselines
-
-- [ ] Implement standard/random treatment baseline
-- [ ] Implement simple rule-based baseline
-- [ ] Identify relevant clinical treatment baseline
-- [ ] Implement baseline evaluation
-- [ ] Document baseline performance
-
----
-
-# 🧠 Objective 4 — Safe RL-Based Treatment Optimization
-
-- [ ] Select suitable RL algorithms
-- [ ] Implement first RL baseline
-- [ ] Connect RL agent to Digital Twin environment
-- [ ] Train RL agent
-- [ ] Monitor training performance
-- [ ] Implement drug-selection optimization
-- [ ] Implement dosage optimization
-- [ ] Implement sequential treatment optimization
-- [ ] Add treatment safety constraints
-- [ ] Prevent clinically unsafe actions
-- [ ] Experiment with different RL algorithms
-- [ ] Compare RL algorithms
-- [ ] Select the best-performing approach
-
----
-
-# 📊 Objective 5 — Evaluation and Validation
-
-### Digital Twin Evaluation
-
-- [ ] Evaluate patient-state representation
-- [ ] Evaluate disease progression prediction
-- [ ] Evaluate treatment-response prediction
-- [ ] Compare simulated trajectories with real trajectories
-- [ ] Measure prediction/simulation error
-- [ ] Perform robustness testing
-
-### RL Evaluation
-
-- [ ] Evaluate treatment effectiveness
-- [ ] Evaluate patient safety
-- [ ] Evaluate side effects
-- [ ] Evaluate treatment cost
-- [ ] Evaluate patient well-being
-- [ ] Evaluate long-term outcomes
-- [ ] Compare RL policy against baseline policies
-- [ ] Perform ablation studies
-- [ ] Analyze failure cases
-
-### Final Analysis
-
-- [ ] Generate final performance tables
-- [ ] Generate graphs/plots
-- [ ] Analyze improvements over baselines
-- [ ] Document limitations
-- [ ] Document future work
-- [ ] Prepare final results
-
----
+All TCGA results are retrospective and observational. A predicted reward from a learned simulator is not a measured clinical treatment effect. Do not describe model rollouts as evidence that changing a patient's treatment would cause the predicted outcome. The project is a research prototype, not a clinical decision tool.

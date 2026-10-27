@@ -4,20 +4,22 @@
 **Scope:** TCGA-OV ovarian-cancer retrospective clinical JSON export  
 **Status:** Initial prototype implemented and run on the supplied TCGA-OV JSON; follow-up time-axis audit and repeated baseline evaluation are complete. Local LLM comparison is prepared but awaits runtime/model availability.
 
+**Current paper-aligned status:** The project now has a separate paper-inspired preprocessing pipeline at `../../scripts/paper_method_pipeline.py`. It builds 11-class treatment actions and candidate state/action/outcome rows, but does **not** implement the paper's Transformer ensemble, adversarial outcome model, or BCQ. The previous patient-summary and response-forecast code is an exploratory prototype, not the paper's digital twin. See `PAPER_METHOD_REPLICATION.md` for the current counts and limitations.
+
 ## Progress audit
 
 | Objective 1 item | Status | Evidence / remaining work |
 |---|---|---|
 | Collect suitable healthcare datasets | Complete for the prototype dataset | `clinical.project-tcga-ov.2026-10-09.json` is now present in the project root. It contains 608 cases. MIMIC-IV is a distinct, credentialed dataset and is not present. |
 | Study datasets and choose primary | Complete for prototype | TCGA-OV is selected for an ovarian-cancer long-term trajectory prototype because that is the dataset actually analyzed. It is not sufficient by itself for dense physiology or causal drug optimization. |
-| Define patient state | Final schema specification complete; RL approval withheld | See `../data/patient_state_schema.md`. A full structural audit enumerates 108 field paths in `../data/dataset_field_audit.json`; the schema is not yet an approved RL training state because treatment time origins/linkage and point-in-time availability remain unverified. |
+| Define patient state | Paper-aligned preprocessing schema specified; RL approval withheld | See `../data/patient_state_schema.md`. The paper-style pipeline constructs pre-action candidate features; the structural audit enumerates 108 field paths. It finds 364 mapped-action dated-event candidates, while the separate broad audit reports 366 under different filters; both have only 2 links in complete recorded-start histories. |
 | Preprocess records | Complete for supplied export | `../../scripts/preprocess_tcga_ov.py` emitted 8,465 traceable event rows at `../../data/processed/patient_events.csv`; counts match the earlier analysis report. |
 | Handle missing/noisy data | Initial policy implemented | State builder preserves absent vs explicit `Unknown`/`Not Reported`; doses retain units. There is no clinical denoising model because the export has sparse categorical events, not repeated sensor/lab signals. |
 | Represent medical and treatment history | Initial implementation complete | `../../scripts/patient_twin.py` extracts diagnosis/pathology/treatment history with provenance and raw day fields. |
 | Represent disease progression | Partial | Follow-up responses/progression are kept in a separate retrospective outcome section. A validated point-in-time progression state cannot yet be built because relative-day origins and availability are unverified. |
 | Research suitable LLMs | Review complete; model choice deferred | See the model-selection note below. No model is installed/configured and no patient-level inference has been run. |
 | Design LLM patient representation | Initial design complete | Structured state JSON plus a constrained forecast prompt and strict JSON output validation are implemented. |
-| Implement initial Digital Twin | Prototype complete | The implementation is a state builder plus an injected LLM forecast interface. It is not a validated simulator and does not generate treatment counterfactuals. |
+| Implement initial Digital Twin | Earlier forecast prototype complete; paper digital twin not implemented | The legacy implementation is a retrospective state builder plus injected LLM forecast interface. It is not the paper's action-conditioned Transformer simulator and does not generate validated treatment counterfactuals. |
 | Test patient-state generation | Run on real cohort; unit-tested on synthetic fixture | `../../data/processed/patient_states.jsonl` contains 608 generated summaries. Four unit checks pass. |
 | Test trajectory prediction | Exploratory non-LLM baseline evaluated on repeated real patient holdouts | `../../scripts/evaluate_trajectory_baseline.py` evaluates next observed follow-up response over 100 seeded patient-stratified splits. LLM predictive performance remains untested. |
 | Document architecture | Complete for current prototype | See `PROJECT_ARCHITECTURE.md`, this status report, schema, mapping, and decision log. |
@@ -38,13 +40,13 @@
 
 See `../data/FOLLOWUP_TIMELINE_AUDIT.md` and `../../data/processed/followup_timeline_audit.json`. The TCGA follow-up form specifies initial pathological diagnosis as the interval origin when intervals are submitted; GDC describes the standard field relative to the study index date. The JSON reports `index_date = Diagnosis` for 587 of 608 cases, so the trajectory analysis excludes the 21 cases without that explicit confirmation. All 1,720 populated follow-up-day values are integers between 0 and 5,481. The source arrays are not chronological in 80 of 511 cases with repeated timed non-Unknown responses; they are sorted by day before analysis. Same-day response conflicts were not observed; duplicate same-day categories are collapsed.
 
-The audit leaves diagnosis/treatment field alignment as a separate question. The treatment-history state builder preserves source day values without sorting them into the follow-up sequence.
+The TCGA Ovary Pharmaceutical Supplemental Form also defines therapy start/end intervals from initial pathological diagnosis, aligning its form-level time origin with the Ovary Followup Form. The treatment-transition audit uses cases marked `index_date = Diagnosis`, but the export contains missing and negative treatment dates and should not be treated as a complete treatment timeline. The state builder still preserves raw day values and does not yet construct decision-time states.
 
 ## Full JSON field audit and schema decision
 
 On 2026-10-27, `../../scripts/audit_tcga_ov_fields.py` was run over all 608 case objects and nested records. It enumerated 108 distinct field paths, recording immediate-parent coverage, JSON types, observed scalar values, and array item types in `../data/dataset_field_audit.json`. This is a structural audit; it does not establish clinical semantics or data availability times.
 
-The final state specification is `../data/patient_state_schema.md`. It distinguishes the pre-action state from the chosen treatment action, future outcomes, and reward. The schema definition is finalized for implementation and retrospective research. **RL use is not approved yet:** only 2,501/4,125 treatment records have a start day, treatment day origins have not been aligned to the diagnosis-anchored follow-up clock, and no validated treatment-to-next-state transitions/action support have been demonstrated. Follow the readiness gates in the schema before any RL training claim.
+The final state specification is `../data/patient_state_schema.md`. It distinguishes the pre-action state from the chosen treatment action, future outcomes, and reward. The treatment-transition audit is `../data/TREATMENT_TRANSITION_AUDIT.md`, with full counts in `../../data/processed/treatment_transition_audit.json`. **RL use is not approved:** 575/587 eligible patients have at least one treatment with no start day. There are 366 candidate post-completion links after excluding intervening dated treatments, but only 2 links among patients whose entire recorded treatment history has start dates. The official forms support a shared diagnosis-based time origin, while missing dates, irregular outcome lags, incomplete action details, and observational confounding prevent these counts from validating RL transitions.
 
 ## LLM selection note
 
@@ -86,7 +88,7 @@ The majority classifier has higher raw accuracy because the held-out labels are 
 
 ## Work required to close Objective 1 empirically
 
-1. Confirm time semantics and links for treatment, progression, and survival records before adding them to a unified timeline.
+1. Confirm the export-to-form time-field mapping for all treatment types and resolve missing/negative dates; inspect `../data/TREATMENT_TRANSITION_AUDIT.md` before using any action-linked target.
 2. Run `compare_llm_trajectory.py` using the local Ollama endpoint; compare it on the fixed holdout with persistence/majority baselines and report valid-output coverage.
 3. For stronger estimates, use grouped cross-validation or patient-level bootstrap confidence intervals, then add only features available at the chosen decision time.
 

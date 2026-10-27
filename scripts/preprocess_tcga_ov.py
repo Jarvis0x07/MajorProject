@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flatten a TCGA-OV JSON export into a traceable event table.
+"""Legacy extractor: flatten a TCGA-OV export into a traceable event table.
 
 This script is an extraction prototype, not a validated clinical timeline builder.
 It preserves the original relative-day values and does NOT assume that every
@@ -12,6 +12,10 @@ Usage:
 The source JSON is not modified. Output files:
   patient_events.csv
   data_quality_summary.json
+
+For the base-paper-inspired 11-class action grouping and candidate state/action/
+outcome table, use `scripts/paper_method_pipeline.py`. This extractor does not
+construct an RL dataset or guarantee comparable event-time origins.
 """
 import argparse
 import csv

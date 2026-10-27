@@ -1,0 +1,75 @@
+﻿source_agent,record_count,paper_action_classes,mapping_basis
+<MISSING>,1022,radiation,radiation_by_treatment_type
+Carboplatin,718,platinum,explicit_agent_mapping
+Paclitaxel,697,taxanes,explicit_agent_mapping
+<MISSING>,495,,missing_or_unknown_agent
+Cisplatin,180,platinum,explicit_agent_mapping
+Pegylated Liposomal Doxorubicin Hydrochloride,149,anthracyclines,explicit_agent_mapping
+Topotecan,135,topoisomerase_inhibitors,explicit_agent_mapping
+Docetaxel,130,taxanes,explicit_agent_mapping
+<MISSING>,112,,surgery_excluded_from_11_class_action_space
+Gemcitabine,99,antimetabolites,explicit_agent_mapping
+Gemcitabine Hydrochloride,67,antimetabolites,explicit_agent_mapping
+Bevacizumab,57,anti_angiogenics,explicit_agent_mapping
+Tamoxifen,35,hormonal_agents,explicit_agent_mapping
+Cyclophosphamide,34,alkylating_agents,explicit_agent_mapping
+Vinorelbine Tartrate,23,vinca_alkaloids,explicit_agent_mapping
+Clinical Trial,18,other,unlisted_known_agent_to_other
+Etoposide,17,topoisomerase_inhibitors,explicit_agent_mapping
+Doxorubicin,14,anthracyclines,explicit_agent_mapping
+Altretamine,11,alkylating_agents,explicit_agent_mapping
+Letrozole,8,hormonal_agents,explicit_agent_mapping
+Oxaliplatin,8,platinum,explicit_agent_mapping
+Cetuximab,6,other,unlisted_known_agent_to_other
+Doxorubicin Hydrochloride,6,anthracyclines,explicit_agent_mapping
+Amifostine,5,other,unlisted_known_agent_to_other
+Capecitabine,5,antimetabolites,explicit_agent_mapping
+Anastrozole,4,hormonal_agents,explicit_agent_mapping
+Ifosfamide,4,alkylating_agents,explicit_agent_mapping
+Megestrol Acetate,4,hormonal_agents,explicit_agent_mapping
+Oregovomab,3,other,unlisted_known_agent_to_other
+Paclitaxel Poliglumex,3,taxanes,explicit_agent_mapping
+Topotecan Hydrochloride,3,topoisomerase_inhibitors,explicit_agent_mapping
+Melphalan,2,alkylating_agents,explicit_agent_mapping
+Motesanib Diphosphate,2,anti_angiogenics,explicit_agent_mapping
+Nab-paclitaxel,2,taxanes,explicit_agent_mapping
+Patupilone,2,other,unlisted_known_agent_to_other
+Pemetrexed Disodium,2,antimetabolites,explicit_agent_mapping
+Recombinant Interleukin-12,2,other,unlisted_known_agent_to_other
+Trabectedin,2,alkylating_agents,explicit_agent_mapping
+Trastuzumab,2,other,unlisted_known_agent_to_other
+Vinorelbine,2,vinca_alkaloids,explicit_agent_mapping
+Vosaroxin,2,topoisomerase_inhibitors,explicit_agent_mapping
+Aminocamptothecin,1,topoisomerase_inhibitors,explicit_agent_mapping
+Aminopterin,1,antimetabolites,explicit_agent_mapping
+Bortezomib,1,other,unlisted_known_agent_to_other
+Catumaxomab,1,other,unlisted_known_agent_to_other
+Chlorambucil,1,alkylating_agents,explicit_agent_mapping
+Dexamethasone,1,other,unlisted_known_agent_to_other
+Exemestane,1,hormonal_agents,explicit_agent_mapping
+Fluorouracil,1,antimetabolites,explicit_agent_mapping
+Fulvestrant,1,hormonal_agents,explicit_agent_mapping
+Gefitinib,1,other,unlisted_known_agent_to_other
+Innate Immunostimulator rBBX-01,1,other,unlisted_known_agent_to_other
+Irinotecan Hydrochloride,1,topoisomerase_inhibitors,explicit_agent_mapping
+Irofulven,1,alkylating_agents,explicit_agent_mapping
+Leucovorin,1,antimetabolites,explicit_agent_mapping
+Leuprolide Acetate,1,hormonal_agents,explicit_agent_mapping
+Medroxyprogesterone Acetate,1,hormonal_agents,explicit_agent_mapping
+Mitomycin,1,other,unlisted_known_agent_to_other
+Mitoxantrone,1,other,unlisted_known_agent_to_other
+Monoclonal Antibody Hu3S193,1,other,unlisted_known_agent_to_other
+Not Reported,1,,missing_or_unknown_agent
+Olaparib,1,other,unlisted_known_agent_to_other
+Pan-VEGFR/TIE2 Tyrosine Kinase Inhibitor CEP-11981,1,anti_angiogenics,explicit_agent_mapping
+Plevitrexed,1,antimetabolites,explicit_agent_mapping
+Recombinant Adenovirus-p53 SCH-58500,1,other,unlisted_known_agent_to_other
+Recombinant Interferon Gamma,1,other,unlisted_known_agent_to_other
+Recombinant Interleukin-2,1,other,unlisted_known_agent_to_other
+Sargramostim,1,other,unlisted_known_agent_to_other
+Serine/Threonine Kinase Inhibitor CBP501,1,other,unlisted_known_agent_to_other
+Sorafenib,1,anti_angiogenics,explicit_agent_mapping
+Taxane Compound,1,taxanes,explicit_agent_mapping
+Unknown,1,,missing_or_unknown_agent
+Valspodar,1,other,unlisted_known_agent_to_other
+Vincristine,1,vinca_alkaloids,explicit_agent_mapping

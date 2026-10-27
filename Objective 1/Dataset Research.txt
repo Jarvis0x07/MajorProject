@@ -1,16 +1,31 @@
 
 
-Base Paper
-Dataset Used-TCGA-OV 
-Features Used
--Age
--Gender
--Tumor Status
--Tumor Grade
--Cancer Stage 
--Cumulative Drug Count
--Radiation history
--ECOG Performance Status
--Karnofsky Performance Score
--Reserved/Additional Features
--Genomic copy-number features
+Base paper: *Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation*
+Dataset reported: TCGA-OV
+
+Paper-reported patient-state feature groups
+- Age
+- Gender
+- Tumor status
+- Tumor grade
+- Cancer stage
+- Cumulative drug count
+- Radiation history
+- ECOG performance status
+- Karnofsky Performance Score
+- Reserved/additional features (the paper also mentions genomic copy-number features)
+
+How this project maps the paper to the local export
+- `scripts/paper_method_pipeline.py` creates pre-action candidate features from age, sex, primary diagnosis grade/stage, the latest earlier response/ECOG/Karnofsky, earlier dated drug count, and earlier radiation history.
+- The local export has no linked genomic copy-number matrix in this workspace, so genomic features are not fabricated or included.
+- Gender/sex is constant (female) in all 587 diagnosis-indexed cases and therefore provides no within-cohort predictive variation.
+- Missing treatment starts mean cumulative drug count and prior radiation may undercount history; the pipeline includes an undated-treatment flag.
+- This is a documented local adaptation, not an exact reconstruction of the paper's dataset. It produces 4,125 nested treatment records and 51 class combinations versus the paper's 2,552 events and 47 combinations. See `docs/architecture/PAPER_METHOD_REPLICATION.md`.
+
+Paper workflow to reproduce
+1. Normalize treatments to the paper's 11 broad classes and represent same-day regimens as multi-hot actions.
+2. Construct only pre-action states, then link an action to a later outcome while preserving timing/linkage uncertainty.
+3. Train and validate an action-conditioned Transformer ensemble and a treatment outcome/reward model.
+4. Train BCQ offline and evaluate its policy only inside a validated simulator, with supported actions and held-out patient evaluation.
+
+Repository status: only step 1 and a candidate version of step 2 are currently implemented. Steps 3–4 are not implemented; RL approval is withheld because dates/outcome links are incomplete and the local counts do not reconcile with the paper.

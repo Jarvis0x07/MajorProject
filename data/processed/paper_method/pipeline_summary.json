@@ -1,0 +1,193 @@
+{
+  "pipeline": "paper-inspired TCGA-OV state/action/outcome preprocessing",
+  "input_file": "clinical.project-tcga-ov.2026-10-09.json",
+  "paper_reference_numbers": {
+    "reported_patients": 587,
+    "reported_treatment_events": 2552,
+    "reported_treatment_combinations": 47,
+    "reported_positive_tumor_free_rate": 0.275,
+    "reported_train_validation_test_patients": [
+      469,
+      59,
+      59
+    ]
+  },
+  "cohort": {
+    "input_cases": 608,
+    "index_date_diagnosis_cases": 587,
+    "excluded_other_or_missing_index_date": 21
+  },
+  "local_export_counts": {
+    "all_treatment_records_in_eligible_cases": 4125,
+    "records_with_numeric_start_day": 2501,
+    "records_with_numeric_end_day": 2188,
+    "records_with_negative_start_day": 4,
+    "eligible_patients_with_any_undated_treatment": 575,
+    "surgery_records_left_out_of_11_class_action_space": 112,
+    "treatment_records_without_mappable_action_class": 497,
+    "treatment_mapping_basis_counts": {
+      "explicit_agent_mapping": 2441,
+      "radiation_by_treatment_type": 1022,
+      "missing_or_unknown_agent": 497,
+      "unlisted_known_agent_to_other": 53,
+      "surgery_excluded_from_11_class_action_space": 112
+    }
+  },
+  "paper_feature_availability": {
+    "age": "demographic.age_at_index",
+    "gender": "demographic.sex_at_birth; female for all recorded cohort members, so no within-cohort signal",
+    "tumor_status": "latest unambiguous follow-up response strictly before the treatment day",
+    "grade_stage": "primary diagnosis record; may be absent",
+    "cumulative_drug_count": "count of dated, classifiable non-radiation treatment records with start before decision day; undercounts when prior starts are missing",
+    "radiation_history": "any dated radiation treatment record strictly before decision day",
+    "ecog_karnofsky": "latest unambiguous follow-up values strictly before decision day; sparse",
+    "reserved_genomics": "not included because no linked genomic copy-number matrix is in this project workspace"
+  },
+  "derived_dataset": {
+    "action_classes": [
+      "platinum",
+      "taxanes",
+      "anthracyclines",
+      "antimetabolites",
+      "topoisomerase_inhibitors",
+      "alkylating_agents",
+      "anti_angiogenics",
+      "hormonal_agents",
+      "vinca_alkaloids",
+      "radiation",
+      "other"
+    ],
+    "action_class_member_counts": {
+      "hormonal_agents": 55,
+      "radiation": 1022,
+      "taxanes": 833,
+      "platinum": 906,
+      "topoisomerase_inhibitors": 159,
+      "antimetabolites": 177,
+      "anthracyclines": 169,
+      "other": 53,
+      "anti_angiogenics": 61,
+      "alkylating_agents": 55,
+      "vinca_alkaloids": 26
+    },
+    "paper_style_action_combinations_observed": 51,
+    "fully_classified_action_combinations_observed": 51,
+    "top_action_combinations": [
+      {
+        "combination": "platinum+taxanes",
+        "decision_sets": 549
+      },
+      {
+        "combination": "platinum",
+        "decision_sets": 132
+      },
+      {
+        "combination": "anthracyclines",
+        "decision_sets": 117
+      },
+      {
+        "combination": "taxanes",
+        "decision_sets": 113
+      },
+      {
+        "combination": "topoisomerase_inhibitors",
+        "decision_sets": 104
+      },
+      {
+        "combination": "antimetabolites+platinum",
+        "decision_sets": 59
+      },
+      {
+        "combination": "antimetabolites",
+        "decision_sets": 56
+      },
+      {
+        "combination": "hormonal_agents",
+        "decision_sets": 47
+      },
+      {
+        "combination": "other",
+        "decision_sets": 33
+      },
+      {
+        "combination": "radiation",
+        "decision_sets": 31
+      },
+      {
+        "combination": "anti_angiogenics",
+        "decision_sets": 22
+      },
+      {
+        "combination": "antimetabolites+platinum+taxanes",
+        "decision_sets": 19
+      },
+      {
+        "combination": "alkylating_agents",
+        "decision_sets": 19
+      },
+      {
+        "combination": "alkylating_agents+platinum",
+        "decision_sets": 16
+      },
+      {
+        "combination": "anthracyclines+antimetabolites",
+        "decision_sets": 12
+      },
+      {
+        "combination": "topoisomerase_inhibitors+vinca_alkaloids",
+        "decision_sets": 12
+      },
+      {
+        "combination": "other+platinum+taxanes",
+        "decision_sets": 12
+      },
+      {
+        "combination": "anthracyclines+platinum+taxanes",
+        "decision_sets": 11
+      },
+      {
+        "combination": "anti_angiogenics+platinum+taxanes",
+        "decision_sets": 9
+      },
+      {
+        "combination": "anthracyclines+platinum",
+        "decision_sets": 8
+      }
+    ],
+    "same_day_decision_sets_with_known_action_class": 1453,
+    "same_day_decision_sets_with_all_member_action_classes_mapped": 1449,
+    "candidate_linkage_grades": {
+      "post_start_only_completion_unknown": 162,
+      "dated_event_only_candidate": 364,
+      "post_completion_with_intervening_timed_action_or_parent_ambiguity": 845,
+      "no_later_known_response": 80,
+      "complete_patient_start_timeline": 2
+    },
+    "observed_post_completion_response_labels": {
+      "WT-With Tumor": 1036,
+      "TF-Tumor Free": 175
+    },
+    "high_confidence_complete_patient_timeline_links": 2,
+    "patient_split_counts": {
+      "train": 469,
+      "validation": 59,
+      "test": 59
+    },
+    "random_seed": 42
+  },
+  "paper_reproduction_status": [
+    "The 587-case cohort size matches the export subset with index_date=Diagnosis.",
+    "The local export has 4,125 nested treatment records, not the paper's reported 2,552; the paper does not document enough filtering detail to reconcile the count.",
+    "The 11 classes follow the paper's labels, with an explicit local drug-name mapping in treatment_class_mapping.csv; surgical records are retained in treatment_events.csv but excluded from this therapy-class action space. Decisions with any unmapped member are flagged.",
+    "The resulting action-combination count is computed from this export and may differ from the paper's 47.",
+    "The paper's 7,395 treatment-outcome observations and trained model results are not reproduced by this preprocessing script.",
+    "These are retrospective associations. This pipeline does not identify causal treatment effects or approve RL training."
+  ],
+  "response_conflicting_same_day_groups_excluded": 0,
+  "outputs": [
+    "patient_splits.csv",
+    "treatment_events.csv",
+    "treatment_class_mapping.csv",
+    "state_action_outcome_candidates.csv"
+  ]
+}

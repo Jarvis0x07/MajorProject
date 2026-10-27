@@ -1,0 +1,563 @@
+{
+  "study": "Exploratory same-day treatment-set to subsequent observed follow-up response linkage audit",
+  "input_file": "clinical.project-tcga-ov.2026-10-09.json",
+  "case_count": 608,
+  "time_origin_policy": {
+    "eligible_case_rule": "index_date == Diagnosis",
+    "treatment_day_basis": "The TCGA pharmaceutical supplemental form defines therapy start/end day intervals from initial pathologic diagnosis; exact export-to-form mapping still requires verification for each included treatment class.",
+    "follow_up_day_basis": "The TCGA Ovary Followup Form defines follow-up intervals from initial pathologic diagnosis.",
+    "event_linkage_rule": "Same-case treatment records with the same numeric start day are provisionally bundled; the first unambiguous known disease_response at a strictly later follow-up day is counted.",
+    "completion_linkage_rule": "Stricter sensitivity count requires every treatment record in the same-day bundle to have a numeric end day >= start; outcome must be at a strictly later day than the latest end day."
+  },
+  "coverage": {
+    "eligible_cases_index_date_diagnosis": 587,
+    "excluded_cases_missing_or_other_index_date": 21,
+    "all_treatment_records": 4125,
+    "treatment_records_with_numeric_start_day": 2501,
+    "treatment_records_without_numeric_start_day": 1624,
+    "cases_with_at_least_one_treatment_without_numeric_start_day": 575,
+    "eligible_cases_with_at_least_one_treatment_without_numeric_start_day": 575,
+    "treatment_records_with_numeric_end_day": 2188,
+    "treatment_records_negative_start_day": 4,
+    "negative_start_records_excluded_from_candidate_timeline": 4,
+    "treatment_records_without_known_agent": 1631,
+    "treatment_records_without_known_type": 0,
+    "treatment_records_without_dose_value": 2419,
+    "known_response_followup_days_with_conflicting_labels": 0,
+    "duplicate_known_response_records_on_same_day_beyond_first": 511
+  },
+  "candidate_transition_counts": {
+    "patients_with_at_least_one_timeable_treatment_set": 517,
+    "eligible_cases_with_treatment_records_and_start_day_on_every_recorded_treatment": 4,
+    "same_day_treatment_sets": 1563,
+    "treatment_sets_with_multiple_records": 783,
+    "treatment_set_size_distribution": {
+      "1": 780,
+      "2": 651,
+      "3": 117,
+      "4": 11,
+      "5": 4
+    },
+    "sets_with_known_response_strictly_after_start": 1479,
+    "patients_with_known_response_after_at_least_one_start": 480,
+    "sets_with_response_after_start_and_no_intervening_treatment_start": 490,
+    "sets_with_all_end_days_and_known_response_after_completion": 1212,
+    "patients_with_known_response_after_at_least_one_completion": 439,
+    "sets_with_all_member_end_days_observed": 1300,
+    "sets_with_response_after_completion_and_no_treatment_start_after_completion_before_response": 402,
+    "sets_with_response_after_completion_and_no_treatment_start_between_action_start_and_response": 366,
+    "sets_with_response_after_completion_no_intervening_treatment_and_single_parent_diagnosis": 366,
+    "patients_with_at_least_one_strict_isolated_completion_link": 359,
+    "sets_with_all_treatment_starts_observed_for_patient_and_strict_post_completion_response": 2,
+    "patients_with_all_treatment_starts_observed_and_at_least_one_strict_post_completion_response": 2,
+    "sets_without_any_later_unambiguous_known_response": 84,
+    "sets_with_same_day_known_response_ambiguous_for_order": 10
+  },
+  "action_support": {
+    "same_day_sets_by_treatment_type_combination_top_25": [
+      {
+        "type_combination": "Chemotherapy",
+        "sets": 1298
+      },
+      {
+        "type_combination": "Surgery, NOS",
+        "sets": 108
+      },
+      {
+        "type_combination": "Hormone Therapy",
+        "sets": 42
+      },
+      {
+        "type_combination": "Chemotherapy + Targeted Molecular Therapy",
+        "sets": 29
+      },
+      {
+        "type_combination": "Targeted Molecular Therapy",
+        "sets": 28
+      },
+      {
+        "type_combination": "Radiation, External Beam",
+        "sets": 25
+      },
+      {
+        "type_combination": "Immunotherapy (Including Vaccines)",
+        "sets": 12
+      },
+      {
+        "type_combination": "Chemotherapy + Immunotherapy (Including Vaccines)",
+        "sets": 5
+      },
+      {
+        "type_combination": "Radiation Therapy, NOS",
+        "sets": 5
+      },
+      {
+        "type_combination": "Pharmaceutical Therapy, NOS",
+        "sets": 4
+      },
+      {
+        "type_combination": "Chemotherapy + Surgery, NOS",
+        "sets": 3
+      },
+      {
+        "type_combination": "Chemotherapy + Hormone Therapy",
+        "sets": 2
+      },
+      {
+        "type_combination": "Radiation, Radioisotope",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Radiation, External Beam",
+        "sets": 1
+      }
+    ],
+    "therapeutic_agent_strings_top_25": [
+      {
+        "agent_string": "Carboplatin",
+        "sets_containing_agent": 677
+      },
+      {
+        "agent_string": "Paclitaxel",
+        "sets_containing_agent": 624
+      },
+      {
+        "agent_string": "Cisplatin",
+        "sets_containing_agent": 168
+      },
+      {
+        "agent_string": "Pegylated Liposomal Doxorubicin Hydrochloride",
+        "sets_containing_agent": 142
+      },
+      {
+        "agent_string": "Docetaxel",
+        "sets_containing_agent": 124
+      },
+      {
+        "agent_string": "Topotecan",
+        "sets_containing_agent": 124
+      },
+      {
+        "agent_string": "Gemcitabine",
+        "sets_containing_agent": 94
+      },
+      {
+        "agent_string": "Gemcitabine Hydrochloride",
+        "sets_containing_agent": 62
+      },
+      {
+        "agent_string": "Bevacizumab",
+        "sets_containing_agent": 55
+      },
+      {
+        "agent_string": "Tamoxifen",
+        "sets_containing_agent": 32
+      },
+      {
+        "agent_string": "Cyclophosphamide",
+        "sets_containing_agent": 29
+      },
+      {
+        "agent_string": "Vinorelbine Tartrate",
+        "sets_containing_agent": 21
+      },
+      {
+        "agent_string": "Clinical Trial",
+        "sets_containing_agent": 16
+      },
+      {
+        "agent_string": "Doxorubicin",
+        "sets_containing_agent": 14
+      },
+      {
+        "agent_string": "Etoposide",
+        "sets_containing_agent": 13
+      },
+      {
+        "agent_string": "Altretamine",
+        "sets_containing_agent": 9
+      },
+      {
+        "agent_string": "Letrozole",
+        "sets_containing_agent": 8
+      },
+      {
+        "agent_string": "Oxaliplatin",
+        "sets_containing_agent": 8
+      },
+      {
+        "agent_string": "Cetuximab",
+        "sets_containing_agent": 6
+      },
+      {
+        "agent_string": "Doxorubicin Hydrochloride",
+        "sets_containing_agent": 6
+      },
+      {
+        "agent_string": "Amifostine",
+        "sets_containing_agent": 5
+      },
+      {
+        "agent_string": "Ifosfamide",
+        "sets_containing_agent": 4
+      },
+      {
+        "agent_string": "Capecitabine",
+        "sets_containing_agent": 4
+      },
+      {
+        "agent_string": "Anastrozole",
+        "sets_containing_agent": 4
+      },
+      {
+        "agent_string": "Oregovomab",
+        "sets_containing_agent": 3
+      }
+    ],
+    "post_start_links_by_action_type_top_25": [
+      {
+        "type_combination": "Chemotherapy",
+        "sets": 1227
+      },
+      {
+        "type_combination": "Surgery, NOS",
+        "sets": 104
+      },
+      {
+        "type_combination": "Hormone Therapy",
+        "sets": 41
+      },
+      {
+        "type_combination": "Targeted Molecular Therapy",
+        "sets": 28
+      },
+      {
+        "type_combination": "Radiation, External Beam",
+        "sets": 25
+      },
+      {
+        "type_combination": "Chemotherapy + Targeted Molecular Therapy",
+        "sets": 25
+      },
+      {
+        "type_combination": "Immunotherapy (Including Vaccines)",
+        "sets": 12
+      },
+      {
+        "type_combination": "Radiation Therapy, NOS",
+        "sets": 5
+      },
+      {
+        "type_combination": "Pharmaceutical Therapy, NOS",
+        "sets": 4
+      },
+      {
+        "type_combination": "Chemotherapy + Immunotherapy (Including Vaccines)",
+        "sets": 3
+      },
+      {
+        "type_combination": "Chemotherapy + Surgery, NOS",
+        "sets": 2
+      },
+      {
+        "type_combination": "Radiation, Radioisotope",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Hormone Therapy",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Radiation, External Beam",
+        "sets": 1
+      }
+    ],
+    "post_completion_links_by_action_type_top_25": [
+      {
+        "type_combination": "Chemotherapy",
+        "sets": 1104
+      },
+      {
+        "type_combination": "Hormone Therapy",
+        "sets": 28
+      },
+      {
+        "type_combination": "Targeted Molecular Therapy",
+        "sets": 23
+      },
+      {
+        "type_combination": "Chemotherapy + Targeted Molecular Therapy",
+        "sets": 22
+      },
+      {
+        "type_combination": "Radiation, External Beam",
+        "sets": 20
+      },
+      {
+        "type_combination": "Immunotherapy (Including Vaccines)",
+        "sets": 9
+      },
+      {
+        "type_combination": "Pharmaceutical Therapy, NOS",
+        "sets": 3
+      },
+      {
+        "type_combination": "Radiation Therapy, NOS",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Immunotherapy (Including Vaccines)",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Radiation, External Beam",
+        "sets": 1
+      }
+    ],
+    "strict_isolated_post_completion_sets_by_action_type": [
+      {
+        "type_combination": "Chemotherapy",
+        "sets": 327
+      },
+      {
+        "type_combination": "Radiation, External Beam",
+        "sets": 13
+      },
+      {
+        "type_combination": "Targeted Molecular Therapy",
+        "sets": 10
+      },
+      {
+        "type_combination": "Chemotherapy + Targeted Molecular Therapy",
+        "sets": 8
+      },
+      {
+        "type_combination": "Hormone Therapy",
+        "sets": 6
+      },
+      {
+        "type_combination": "Immunotherapy (Including Vaccines)",
+        "sets": 1
+      },
+      {
+        "type_combination": "Chemotherapy + Radiation, External Beam",
+        "sets": 1
+      }
+    ]
+  },
+  "response_lag_days": {
+    "from_treatment_start_to_first_later_known_response": {
+      "count": 1479,
+      "min_days": 3,
+      "median_days": 556,
+      "p90_days": 1630,
+      "max_days": 4580
+    },
+    "from_latest_treatment_end_to_first_later_known_response": {
+      "count": 1212,
+      "min_days": 1,
+      "median_days": 481.5,
+      "max_days": 4448
+    },
+    "strict_isolated_post_completion_links": {
+      "count": 366,
+      "min_days": 1,
+      "median_days": 207.5,
+      "p90_days": 1469,
+      "max_days": 3072
+    },
+    "strict_isolated_post_completion_response_labels": {
+      "WT-With Tumor": 263,
+      "TF-Tumor Free": 103
+    }
+  },
+  "anonymized_examples": [
+    {
+      "example": "linked_1",
+      "start_day": 53,
+      "member_count": 2,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin",
+        "Docetaxel"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 221,
+      "first_known_response_after_start": {
+        "day": 1036,
+        "label": "WT-With Tumor"
+      },
+      "first_known_response_after_all_ends": {
+        "day": 1036,
+        "label": "WT-With Tumor"
+      },
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "linked_2",
+      "start_day": 1084,
+      "member_count": 1,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Topotecan"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 1112,
+      "first_known_response_after_start": {
+        "day": 1190,
+        "label": "WT-With Tumor"
+      },
+      "first_known_response_after_all_ends": {
+        "day": 1190,
+        "label": "WT-With Tumor"
+      },
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "linked_3",
+      "start_day": 1586,
+      "member_count": 2,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin",
+        "Gemcitabine Hydrochloride"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 1698,
+      "first_known_response_after_start": {
+        "day": 1919,
+        "label": "TF-Tumor Free"
+      },
+      "first_known_response_after_all_ends": {
+        "day": 1919,
+        "label": "TF-Tumor Free"
+      },
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "linked_4",
+      "start_day": 76,
+      "member_count": 1,
+      "treatment_types": [
+        "Targeted Molecular Therapy"
+      ],
+      "agents": [
+        "Bevacizumab"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 160,
+      "first_known_response_after_start": {
+        "day": 944,
+        "label": "WT-With Tumor"
+      },
+      "first_known_response_after_all_ends": {
+        "day": 944,
+        "label": "WT-With Tumor"
+      },
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "linked_5",
+      "start_day": 21,
+      "member_count": 2,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin",
+        "Gemcitabine"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 189,
+      "first_known_response_after_start": {
+        "day": 947,
+        "label": "WT-With Tumor"
+      },
+      "first_known_response_after_all_ends": {
+        "day": 947,
+        "label": "WT-With Tumor"
+      },
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "no_later_response_1",
+      "start_day": 947,
+      "member_count": 4,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin"
+      ],
+      "all_member_end_days_observed": true,
+      "last_member_end_day": 947,
+      "first_known_response_after_start": null,
+      "first_known_response_after_all_ends": null,
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "no_later_response_2",
+      "start_day": 6,
+      "member_count": 2,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin",
+        "Paclitaxel"
+      ],
+      "all_member_end_days_observed": false,
+      "last_member_end_day": null,
+      "first_known_response_after_start": null,
+      "first_known_response_after_all_ends": null,
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    },
+    {
+      "example": "no_later_response_3",
+      "start_day": 1197,
+      "member_count": 2,
+      "treatment_types": [
+        "Chemotherapy"
+      ],
+      "agents": [
+        "Carboplatin",
+        "Paclitaxel"
+      ],
+      "all_member_end_days_observed": false,
+      "last_member_end_day": null,
+      "first_known_response_after_start": null,
+      "first_known_response_after_all_ends": null,
+      "parent_diagnosis_count": 1,
+      "intervening_treatment_start_days_before_first_response": [],
+      "intervening_treatment_start_days_after_completion_before_first_response": []
+    }
+  ],
+  "interpretation_and_limits": [
+    "Same-day grouping is a provisional data aggregation, not proof that grouped entries form a prescribed clinical regimen.",
+    "A later follow-up response is an observed association after treatment start/completion; it is not attributable to that treatment and is not a counterfactual treatment effect.",
+    "Isolation counts only exclude intervening treatment starts that have recorded numeric dates. Undated treatment records mean true isolation cannot be confirmed; strict counts are upper-bound candidate links.",
+    "Follow-up response is sparse, irregular, and may represent a status at last contact or a named timepoint rather than a fixed-horizon outcome.",
+    "Dose, agent, end date, side effects, and other clinically important fields are often missing; an action label may therefore be incomplete.",
+    "These counts assess feasibility and do not approve this cohort, schema, simulator, or policy for RL."
+  ]
+}
