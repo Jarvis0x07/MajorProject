@@ -46,7 +46,37 @@ Record important choices here so that the project explains not only **what** was
 - **Consequences and risks:** More preprocessing work and potentially larger feature spaces, but lower risk of invalid comparisons or silent data corruption.
 - **Validation / follow-up:** Generate missingness reports and unit-frequency summaries; reject or flag invalid conversions.
 
+## ADR-004 — Use diagnosis-anchored follow-up days only for eligible TCGA-OV cases
+- **Date:** 2026-10-24
+- **Status:** Accepted for the exploratory follow-up response benchmark
+- **Context:** Follow-up records are irregular and their source array order is not always chronological. The dataset contains an `index_date` field, and merging unverified `days_to_*` fields could create invalid order.
+- **Decision:** For the next-observed-follow-up response benchmark, include only cases with `index_date = Diagnosis`; order follow-ups by numeric `days_to_follow_up`; collapse duplicate same-day responses; exclude same-day conflicts and unknown/missing responses.
+- **Alternatives considered:** Trust JSON array order; include all cases regardless of index metadata; merge diagnosis, treatment, and follow-up day fields immediately.
+- **Rationale and evidence:** TCGA follow-up instructions define submitted intervals from initial pathological diagnosis. The supplied export has `index_date = Diagnosis` in 587/608 cases, 1,720 integer follow-up-day fields from 0 to 5,481, 80/511 repeated-response arrays stored out of time order, and no same-day conflicting known-response groups. See `docs/data/FOLLOWUP_TIMELINE_AUDIT.md`.
+- **Consequences and risks:** The benchmark has only 118 eligible cases with at least two distinct, unambiguous, timed response observations (122 adjacent transitions). These are sparse observational categories at variable intervals, not regular trajectories or treatment-effect evidence. Twenty-one cases are excluded because the index reference is not explicit.
+- **Validation / follow-up:** Confirm event linkages and time origin for treatment, progression, and survival fields separately; repeat evaluation with grouped cross-validation and patient-level uncertainty intervals.
+
+## ADR-005 — Select local MedGemma 1.5 4B as first LLM comparison candidate
+- **Date:** 2026-10-24
+- **Status:** Proposed; benchmark adapter implemented, runtime/model unavailable
+- **Context:** The forecast interface needs a reproducible model backend. No local LLM runtime was installed in the inspected environment.
+- **Decision:** Prepare a zero-shot comparison adapter for MedGemma 1.5 4B via local Ollama. The adapter uses constrained JSON output and the same fixed patient-level holdout as the simple baselines.
+- **Alternatives considered:** Hosted model API (requires credentials/data-handling review); larger medical LLM (higher compute requirement); leave the forecast as a mock.
+- **Rationale and evidence:** MedGemma 1.5 4B is published as a medical-domain model and the Ollama registry lists a 3.3 GB artifact. Local inference avoids sending this cohort to a hosted service. Medical-domain pretraining does not establish predictive validity for this task.
+- **Consequences and risks:** Actual LLM metrics remain unavailable until Ollama and model weights are installed; output coverage and invalid-response rate must be reported with accuracy. It remains an observational forecast, not counterfactual treatment simulation.
+- **Validation / follow-up:** Install Ollama, pull `medgemma1.5:4b`, run `scripts/compare_llm_trajectory.py`, and compare valid-output coverage and class metrics with the fixed holdout baselines. Follow model terms and intended-use restrictions.
+
 ## Future decisions to document
+
+## ADR-006 — Finalize a decision-time state schema, withhold RL readiness approval
+- **Date:** 2026-10-27
+- **Status:** Schema accepted as the project specification; RL dataset/training approval withheld
+- **Context:** The initial state schema was a candidate. The full supplied TCGA-OV JSON needed a field-level audit before selecting a stable state definition.
+- **Decision:** Define a pre-action decision-time state containing patient profile, temporally attributable disease status/pathology, prior treatment history, latest known follow-up, and provenance/missingness metadata. Keep the action, future response/progression/survival, and reward outside that state. Audit all JSON paths with `scripts/audit_tcga_ov_fields.py`; retain its result at `docs/data/dataset_field_audit.json`.
+- **Alternatives considered:** Approve the cohort schema directly for RL; include the entire retrospective patient record; defer defining fields until an RL implementation exists.
+- **Rationale and evidence:** The audit found 108 field paths in 608 cases, 4,125 treatment records, but only 2,501 treatment start days and 101 treatment outcomes. Follow-up timing is usable for a narrow exploratory response forecast, but treatment time origins and treatment-to-outcome linkage are not verified. Full retrospective records would leak future information into pre-action states.
+- **Consequences and risks:** The project now has a stable schema contract and explicit exclusions, enabling aligned implementation and data-quality work. The schema does not itself establish that valid RL transitions, action support, causal effects, rewards, or safe policies can be learned.
+- **Validation / follow-up:** Complete the readiness gates in `docs/data/patient_state_schema.md`, especially treatment time-origin verification, manually audited decision-time extraction, transition/action support analysis, domain review of actions/reward/safety, and held-out simulator/off-policy evaluation.
 
 - Target patient population and clinical decision.
 - Definition of a decision time and prediction horizon.

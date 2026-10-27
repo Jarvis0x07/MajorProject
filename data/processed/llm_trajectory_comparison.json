@@ -1,0 +1,167 @@
+{
+  "study": "Zero-shot local LLM forecast of next recorded follow-up response",
+  "model": "medgemma1.5:4b",
+  "split": {
+    "seed": 42,
+    "test_fraction": 0.2,
+    "test_patients": 24,
+    "test_transitions": 24
+  },
+  "test_target_support": {
+    "TF-Tumor Free": 5,
+    "WT-With Tumor": 19
+  },
+  "llm_valid_predictions": 0,
+  "llm_abstentions_or_errors": 24,
+  "errors": [
+    {
+      "test_transition": 1,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 2,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 3,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 4,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 5,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 6,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 7,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 8,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 9,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 10,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 11,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 12,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 13,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 14,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 15,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 16,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 17,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 18,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 19,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 20,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 21,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 22,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 23,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "test_transition": 24,
+      "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    }
+  ],
+  "metrics": {
+    "last_response_persistence": {
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.7684210526315789,
+      "macro_f1": 0.6974789915966386,
+      "confusion_matrix_actual_by_predicted": {
+        "TF-Tumor Free": {
+          "TF-Tumor Free": 4,
+          "WT-With Tumor": 1
+        },
+        "WT-With Tumor": {
+          "TF-Tumor Free": 5,
+          "WT-With Tumor": 14
+        }
+      }
+    },
+    "training_majority_class": {
+      "accuracy": 0.7916666666666666,
+      "balanced_accuracy": 0.5,
+      "macro_f1": 0.4418604651162791,
+      "confusion_matrix_actual_by_predicted": {
+        "TF-Tumor Free": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 5
+        },
+        "WT-With Tumor": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 19
+        }
+      }
+    },
+    "llm_zero_shot": {
+      "accuracy": 0.0,
+      "balanced_accuracy": 0.0,
+      "macro_f1": 0.0,
+      "confusion_matrix_actual_by_predicted": {
+        "TF-Tumor Free": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 0
+        },
+        "WT-With Tumor": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 0
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Small held-out set; this single split is exploratory.",
+    "LLM input excludes treatment history to avoid unresolved event-linkage and treatment-effect assumptions.",
+    "Forecast is an observational response-category prediction, not a counterfactual treatment effect.",
+    "Self-reported model rationales/confidence are not treated as validated evidence or calibrated probabilities."
+  ]
+}

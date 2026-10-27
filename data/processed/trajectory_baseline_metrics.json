@@ -1,0 +1,111 @@
+{
+  "study": "Next observed follow-up disease_response category",
+  "target": "follow_ups[].disease_response",
+  "time_field": "follow_ups[].days_to_follow_up",
+  "dataset_cases": 608,
+  "cases_excluded_without_index_date_diagnosis": 21,
+  "patients_with_at_least_one_transition": 118,
+  "train_patients": 94,
+  "test_patients": 24,
+  "train_transitions": 98,
+  "test_transitions": 24,
+  "repeated_patient_stratified_holdout": {
+    "requested_repeats": 100,
+    "completed_repeats": 100,
+    "test_fraction": 0.2,
+    "seed_start": 42,
+    "mean_test_transitions_per_split": 24.73,
+    "metric_distributions": {
+      "persistence_last_response.accuracy": {
+        "mean": 0.743744017094017,
+        "standard_deviation_across_splits": 0.0813816427059886,
+        "minimum": 0.5833333333333334,
+        "maximum": 0.92,
+        "splits": 100
+      },
+      "persistence_last_response.balanced_accuracy": {
+        "mean": 0.7907662337662338,
+        "standard_deviation_across_splits": 0.08571779277207908,
+        "minimum": 0.5595238095238095,
+        "maximum": 0.95,
+        "splits": 100
+      },
+      "persistence_last_response.macro_f1": {
+        "mean": 0.684249418425999,
+        "standard_deviation_across_splits": 0.08524729189428108,
+        "minimum": 0.503968253968254,
+        "maximum": 0.8903508771929824,
+        "splits": 100
+      },
+      "training_majority_class.accuracy": {
+        "mean": 0.8239584045584046,
+        "standard_deviation_across_splits": 0.01681261066679139,
+        "minimum": 0.7692307692307693,
+        "maximum": 0.8461538461538461,
+        "splits": 100
+      },
+      "training_majority_class.balanced_accuracy": {
+        "mean": 0.5,
+        "standard_deviation_across_splits": 0.0,
+        "minimum": 0.5,
+        "maximum": 0.5,
+        "splits": 100
+      },
+      "training_majority_class.macro_f1": {
+        "mean": 0.45169542062052304,
+        "standard_deviation_across_splits": 0.005091693995545516,
+        "minimum": 0.4347826086956522,
+        "maximum": 0.4583333333333333,
+        "splits": 100
+      }
+    }
+  },
+  "test_target_support": {
+    "WT-With Tumor": 19,
+    "TF-Tumor Free": 5
+  },
+  "training_majority_label": "WT-With Tumor",
+  "training_target_support": {
+    "WT-With Tumor": 81,
+    "TF-Tumor Free": 17
+  },
+  "metrics": {
+    "persistence_last_response": {
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.7684210526315789,
+      "macro_f1": 0.6974789915966386,
+      "confusion_matrix_actual_by_predicted": {
+        "TF-Tumor Free": {
+          "TF-Tumor Free": 4,
+          "WT-With Tumor": 1
+        },
+        "WT-With Tumor": {
+          "TF-Tumor Free": 5,
+          "WT-With Tumor": 14
+        }
+      }
+    },
+    "training_majority_class": {
+      "accuracy": 0.7916666666666666,
+      "balanced_accuracy": 0.5,
+      "macro_f1": 0.4418604651162791,
+      "confusion_matrix_actual_by_predicted": {
+        "TF-Tumor Free": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 5
+        },
+        "WT-With Tumor": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 19
+        }
+      }
+    }
+  },
+  "method_notes": [
+    "Patient-level split with deterministic seed; no patient occurs in both partitions.",
+    "Same-day records with conflicting response labels are excluded; Unknown/missing responses and records without numeric follow-up day are excluded.",
+    "Uses only cases whose index_date is Diagnosis; the TCGA follow-up form defines permitted intervals from initial pathological diagnosis.",
+    "The predictor uses the last observed response only; it does not use treatment actions, estimate treatment effects, or support counterfactual claims.",
+    "This is a non-LLM forecasting baseline. Performance does not validate the digital twin or imply clinical utility."
+  ]
+}

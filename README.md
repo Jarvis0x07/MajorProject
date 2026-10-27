@@ -25,20 +25,21 @@ The project combines:
 
 ### Objective 1 — Develop the LLM-Based Patient Digital Twin
 
-- [~] Collect suitable healthcare datasets — TCGA-OV was analyzed, but its source JSON is not in this workspace
+- [x] Collect a suitable prototype dataset — TCGA-OV JSON is present and processed (608 cases)
 - [x] Study available healthcare datasets and select the primary dataset for the prototype (TCGA-OV)
-- [x] Define a candidate patient state representation
-- [x] Implement preprocessing and explicit missingness/unit handling
+- [x] Finalize the patient state schema specification (RL readiness remains gated)
+- [x] Preprocess the supplied TCGA-OV JSON (8,465 event rows) and preserve missingness/units
 - [x] Represent diagnosis, treatment, and pathology history in the initial state builder
-- [~] Represent disease progression — outcomes are extracted, but safe point-in-time ordering awaits time-origin verification
+- [~] Represent disease progression — follow-up time origin is audited; point-in-time state and treatment-time linkage still need validation
 - [x] Review suitable healthcare LLMs; model selection awaits comparative evaluation
 - [x] Design structured LLM input and validated forecast output
 - [x] Implement the initial patient-state builder and model-agnostic forecast interface
-- [x] Test state generation and forecast-interface behavior on a synthetic fixture
-- [~] Test predictive accuracy on real patient trajectories — requires source JSON and a selected LLM
+- [x] Generate 608 patient summaries from the supplied cohort; test state generation and forecast interface on a synthetic fixture
+- [~] Evaluate next-follow-up response on 100 real patient holdouts; LLM predictive accuracy remains pending local runtime/model availability
 - [x] Document the prototype architecture and limitations
 
 Objective 1 progress details and the remaining empirical work are tracked in [docs/architecture/OBJECTIVE_1_STATUS.md](docs/architecture/OBJECTIVE_1_STATUS.md).
+The audited field inventory and final state specification are in [docs/data/dataset_field_audit.json](docs/data/dataset_field_audit.json) and [docs/data/patient_state_schema.md](docs/data/patient_state_schema.md). The schema is finalized as a specification; the dataset is not yet approved for RL training because treatment-time alignment, action support, and treatment-to-outcome linkage remain unvalidated.
 
 ---
 

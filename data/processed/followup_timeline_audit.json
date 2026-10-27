@@ -1,0 +1,116 @@
+{
+  "dataset_case_count": 608,
+  "index_date_values": {
+    "Diagnosis": 587
+  },
+  "follow_up_day_records": 1720,
+  "follow_up_day_type_counts": {
+    "integer_values": 1720,
+    "other_numeric_or_string_values": 0
+  },
+  "follow_up_day_range": [
+    0,
+    5481
+  ],
+  "negative_follow_up_days": 0,
+  "known_response_records_with_numeric_day": 1151,
+  "known_response_records_missing_day": 1,
+  "known_response_records_nonnumeric_day": 0,
+  "known_response_labels": {
+    "WT-With Tumor": 867,
+    "TF-Tumor Free": 284
+  },
+  "patients_with_two_or_more_timed_known_response_records": 511,
+  "those_patients_with_nonchronological_source_array_order": 80,
+  "same_day_conflicting_response_groups": 0,
+  "patients_with_two_or_more_distinct_unambiguous_response_timepoints": 118,
+  "adjacent_distinct_response_transitions": 122,
+  "manual_examples": [
+    {
+      "case_label": "example_1",
+      "timed_response_records_in_source_order": [
+        {
+          "day": 1036,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1156,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1156,
+          "response": "WT-With Tumor"
+        }
+      ],
+      "ordered_distinct_timepoints": [
+        {
+          "day": 1036,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1156,
+          "response": "WT-With Tumor"
+        }
+      ]
+    },
+    {
+      "case_label": "example_2",
+      "timed_response_records_in_source_order": [
+        {
+          "day": 1199,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1199,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1190,
+          "response": "WT-With Tumor"
+        }
+      ],
+      "ordered_distinct_timepoints": [
+        {
+          "day": 1190,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1199,
+          "response": "WT-With Tumor"
+        }
+      ]
+    },
+    {
+      "case_label": "example_3",
+      "timed_response_records_in_source_order": [
+        {
+          "day": 1881,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1881,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 944,
+          "response": "WT-With Tumor"
+        }
+      ],
+      "ordered_distinct_timepoints": [
+        {
+          "day": 944,
+          "response": "WT-With Tumor"
+        },
+        {
+          "day": 1881,
+          "response": "WT-With Tumor"
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "TCGA follow-up intervals are documented as measured from initial pathologic diagnosis; GDC uses the study's index date. This export's index_date values must be checked alongside that source convention.",
+    "Follow-up arrays are not always in chronological order. The evaluator sorts by numeric days_to_follow_up and collapses same-day duplicate labels.",
+    "Distinct numeric dates establish ordering only; they do not establish regular intervals or an observed clinical assessment on every day."
+  ]
+}
