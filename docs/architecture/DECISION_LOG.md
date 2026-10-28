@@ -86,6 +86,24 @@ Record important choices here so that the project explains not only **what** was
 - Train/validation/test split and evaluation metrics.
 - Choice of structured baseline, LLM architecture, and RL algorithm.
 
+## ADR-010 — Use a causal Transformer ensemble as the digital twin
+- **Date:** 2026-10-29
+- **Status:** Accepted and implemented; initial training/evaluation complete
+- **Context:** The base paper uses a causal Transformer ensemble for state transitions. The previous LLM prototype predicted only the majority response class on its full held-out run and did not outperform the training-majority baseline. The user chose to follow the paper's Transformer twin design.
+- **Decision:** Implement a five-member causal Transformer ensemble that forecasts the next observed state from ordered state/action histories, with the paper's bounded residual update and uncertainty from ensemble variance. Retain the LLM script and its results only as a historical comparison/reporting track. Do not describe an untrained Transformer as a completed or validated twin.
+- **Rationale and evidence:** The paper assigns transition modeling to a causal Transformer and uses an LLM for interpretability/reporting. The local mapped dataset supplies 739/101/102 adjacent recorded-decision transitions across train/validation/test, but these are observational next-decision forecasts, not isolated treatment effects; only two complete-timeline response links were identified.
+- **Consequences and risks:** This is a paper-inspired adaptation rather than a faithful reproduction. Aggregate held-out error is lower than persistence, but per-feature scores are mixed. Only 13 tumor-status targets are known in test and all are `WT-With Tumor`; dataset sparsity, undated therapies, and confounding prevent causal treatment-response claims or RL approval.
+- **Validation / follow-up:** Preserve the feature-level report and assess an outcome dataset with adequate class support and verified treatment timing before building the reward model or BCQ policy.
+
+## ADR-011 — Keep Transformer rollout environment as a smoke-test sandbox
+- **Date:** 2026-10-29
+- **Status:** Accepted; integration smoke test complete, reward signal unavailable
+- **Context:** The project needed to connect the trained Stage 1 Transformer to a sequential environment interface before considering the paper's offline RL stage.
+- **Decision:** Add `scripts/transformer_twin_rl_environment.py` with reset/step rollouts, training-split action-frequency restrictions, and model uncertainty output. Return reward as unavailable whenever predicted tumor status is missing; otherwise expose the predicted tumor-free state component only as an explicitly unvalidated proxy. Do not train an RL policy from this sandbox.
+- **Rationale and evidence:** The first smoke run assigned positive scores while all 15 states had tumor-status missingness near 1.0. After the missingness gate and minimum action support of five, the v2 run completed 15 steps, retained 25 action combinations, and reported 15 unavailable rewards.
+- **Consequences and risks:** Checkpoint-to-environment plumbing works, but there is no measured reward signal in these episodes. Historical action frequency is not clinical safety or causal support; reward optimization would exploit model artifacts.
+- **Validation / follow-up:** Obtain well-timed, adequately labeled treatment/outcome transitions and domain-reviewed reward/safety definitions before implementing the outcome model or offline RL.
+
 ## ADR-007 — Audit treatment-to-follow-up transition feasibility before modelling
 - **Date:** 2026-10-27
 - **Status:** Accepted; transition feasibility insufficient for RL approval
@@ -104,4 +122,14 @@ Record important choices here so that the project explains not only **what** was
 - **Alternatives considered:** Force local counts to equal the paper's; treat all post-treatment responses as rewards; move directly to RL training; discard the previous prototype scripts.
 - **Rationale and evidence:** The local export contains 4,125 nested treatments versus 2,552 reported by the paper; the adaptation finds 51 action combinations versus 47. 575/587 patients have at least one treatment without a start day, and only 2 links remain in patients whose full recorded treatment-start timeline is known. The paper also reports 7,395 observations without enough described preprocessing detail to reconstruct them from the stated events.
 - **Consequences and risks:** The pipeline makes the intended methodology and mapping reviewable, but its rows remain candidate observational associations. Different audit scripts have different filters: the broad transition audit reports 366 dated-event-only links, while mapped-action preprocessing reports 364. Neither count establishes causal attribution or sufficient RL support.
-- **Validation / follow-up:** Reconcile paper/local event counts from source preprocessing details; manually review class mappings and candidate rows; resolve treatment-date completeness and timing; define and validate a transition dataset. Only then implement the dynamics model, reward/outcome model, and offline RL evaluation.
+- **Validation / follow-up:** Reconcile paper/local event counts from source preprocessing details; manually review class mappings and candidate rows; resolve treatment-date completeness and timing; define and validate a transition dataset before making any claim about model or policy performance. See ADR-009 for the experimental LLM-twin substitution and its evaluation gate.
+
+## ADR-009 — Use an LLM-based transition hypothesis generator for Objectives 2 and 3
+- **Date:** 2026-10-28
+- **Status:** Superseded as the selected twin architecture; retained as a historical experiment
+- **Context:** At the time, the project explored an LLM-based transition hypothesis model as a temporary alternative to the paper's Transformer. Objective 2 requires simulation; Objective 3 requires an MDP, reward, constraints, termination, and baselines.
+- **Decision:** Implement `scripts/llm_twin_rl.py` as a constrained local Ollama adapter and event-based environment. Use supported 11-class combinations from training rows, an explicit opt-in flag for counterfactual hypotheses, a response-only reward proxy, and random/historical/status-conditioned behavior baselines. Require strict JSON outputs and abstention for unsupported response forecasts. Do not implement toxicity/cost/wellbeing penalties without measurements or call simulated outputs causal effects.
+- **Alternatives considered:** Treat free-form LLM output as a clinically meaningful simulator; infer toxicities/costs/QoL from unavailable fields; train an RL agent using the current weak action-response links; block all code until a better dataset is obtained.
+- **Rationale and evidence:** Only 2 candidate links remain among patients with complete recorded treatment-start histories; missing treatment starts are common, and the export has no adequate toxicity, cost, or quality-of-life targets. The full local-model report covers 31 held-out rows from 28 patients: LLM accuracy 73.3% on 30 valid predictions, balanced accuracy 50%, and tumor-free recall 0%, versus training-majority accuracy 74.2%. Fifteen counterfactual rollout hypotheses all predicted `WT-With Tumor`.
+- **Consequences and risks:** This remains a historical runnable experiment. Its output collapsed to the majority class and did not outperform the majority baseline. Comparisons between policies inside the same LLM are circular model-based comparisons, not evidence of treatment benefit. It is not the selected digital twin and is not for patient care.
+- **Validation / follow-up:** Improve and re-evaluate minority-class prediction, inspect saved row-level errors/predictions, and use patient-level uncertainty estimates. Obtain a sufficiently complete action-linked dataset and independent simulator validation before offline policy optimization.

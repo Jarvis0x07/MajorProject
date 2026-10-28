@@ -1,0 +1,523 @@
+{
+  "study": "Experimental LLM digital-twin policy-baseline comparison",
+  "model": "medgemma1.5:4b",
+  "dataset": "data\\processed\\paper_method\\state_action_outcome_candidates.csv",
+  "method": "Candidate counterfactual rollouts from training-split states; LLM predicts next recorded response category",
+  "mdp": {
+    "state_fields": [
+      "state_age_years",
+      "state_gender",
+      "state_tumor_status_pre_action",
+      "state_tumor_grade",
+      "state_figo_stage",
+      "state_cumulative_dated_drug_record_count",
+      "state_radiation_history",
+      "state_ecog_pre_action",
+      "state_karnofsky_pre_action",
+      "state_has_undated_treatment_records"
+    ],
+    "actions": [
+      "alkylating_agents",
+      "alkylating_agents+platinum",
+      "anthracyclines",
+      "anti_angiogenics",
+      "antimetabolites",
+      "antimetabolites+platinum",
+      "antimetabolites+platinum+taxanes",
+      "hormonal_agents",
+      "other",
+      "platinum",
+      "platinum+taxanes",
+      "radiation",
+      "taxanes",
+      "topoisomerase_inhibitors",
+      "topoisomerase_inhibitors+vinca_alkaloids"
+    ],
+    "action_support_minimum_training_rows": 10,
+    "decision_epoch": "one simulated treatment decision; irregular clinical time is not represented",
+    "reward": "1 for predicted TF-Tumor Free, 0 for predicted WT-With Tumor; abstention has no reward",
+    "gamma": 0.95,
+    "max_steps": 1,
+    "episode_termination": "model abstention or max_steps",
+    "treatment_constraints": "class combinations observed at least min_action_support times in training split; no dose actions",
+    "safety_constraints": "only dataset-supported action classes; no toxicity, contraindication, or dose-safety model exists"
+  },
+  "policy_training": "none; these are random and historical-frequency baselines for Objective 3, not an RL-optimized policy",
+  "split": {
+    "source": "patient_splits.csv embedded in candidate rows",
+    "seed": 42,
+    "rollout_initial_states": 5,
+    "state_seed_partition": "train only"
+  },
+  "policy_metrics": {
+    "random_supported": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    },
+    "historical_most_common": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    },
+    "status_conditioned_historical": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    }
+  },
+  "observed_holdout_check": {
+    "evaluation": "factual observed-action predictions on held-out test patients",
+    "evaluated_rows": 31,
+    "training_majority_label": "WT-With Tumor",
+    "actual_label_counts": {
+      "TF-Tumor Free": 8,
+      "WT-With Tumor": 23
+    },
+    "per_model_metrics": {
+      "llm": {
+        "scored_rows": 30,
+        "coverage": 0.967741935483871,
+        "accuracy_on_scored_rows": 0.7333333333333333,
+        "accuracy_with_abstentions_wrong": 0.7096774193548387,
+        "balanced_accuracy_on_scored_rows": 0.5,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 8,
+          "WT-With Tumor": 22
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": 0.0,
+          "WT-With Tumor": 1.0
+        }
+      },
+      "last_response_persistence": {
+        "scored_rows": 2,
+        "coverage": 0.06451612903225806,
+        "accuracy_on_scored_rows": 1.0,
+        "accuracy_with_abstentions_wrong": 0.06451612903225806,
+        "balanced_accuracy_on_scored_rows": 1.0,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 2
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": null,
+          "WT-With Tumor": 1.0
+        }
+      },
+      "training_majority": {
+        "scored_rows": 31,
+        "coverage": 1.0,
+        "accuracy_on_scored_rows": 0.7419354838709677,
+        "accuracy_with_abstentions_wrong": 0.7419354838709677,
+        "balanced_accuracy_on_scored_rows": 0.5,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 8,
+          "WT-With Tumor": 23
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": 0.0,
+          "WT-With Tumor": 1.0
+        }
+      }
+    },
+    "paired_comparison": {
+      "description": "All three predictions scored on the same rows where LLM and persistence both returned permitted labels.",
+      "rows": 2,
+      "llm": {
+        "scored_rows": 2,
+        "coverage": 1.0,
+        "accuracy_on_scored_rows": 1.0,
+        "accuracy_with_abstentions_wrong": 1.0,
+        "balanced_accuracy_on_scored_rows": 1.0,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 2
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": null,
+          "WT-With Tumor": 1.0
+        }
+      },
+      "last_response_persistence": {
+        "scored_rows": 2,
+        "coverage": 1.0,
+        "accuracy_on_scored_rows": 1.0,
+        "accuracy_with_abstentions_wrong": 1.0,
+        "balanced_accuracy_on_scored_rows": 1.0,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 2
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": null,
+          "WT-With Tumor": 1.0
+        }
+      },
+      "training_majority": {
+        "scored_rows": 2,
+        "coverage": 1.0,
+        "accuracy_on_scored_rows": 1.0,
+        "accuracy_with_abstentions_wrong": 1.0,
+        "balanced_accuracy_on_scored_rows": 1.0,
+        "class_support_on_scored_rows": {
+          "TF-Tumor Free": 0,
+          "WT-With Tumor": 2
+        },
+        "recall_by_class": {
+          "TF-Tumor Free": null,
+          "WT-With Tumor": 1.0
+        }
+      }
+    },
+    "request_errors": [
+      {
+        "row_number": 7,
+        "type": "ValueError",
+        "message": "LLM cited a field not provided to it"
+      }
+    ],
+    "row_predictions": [
+      {
+        "row_number": 1,
+        "decision_day": "76",
+        "action": "anti_angiogenics",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 2,
+        "decision_day": "25",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 3,
+        "decision_day": "105",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 4,
+        "decision_day": "432",
+        "action": "antimetabolites",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 5,
+        "decision_day": "75",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 6,
+        "decision_day": "43",
+        "action": "other",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 7,
+        "decision_day": "1101",
+        "action": "topoisomerase_inhibitors",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": null,
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": {
+          "type": "ValueError",
+          "message": "LLM cited a field not provided to it"
+        }
+      },
+      {
+        "row_number": 8,
+        "decision_day": "225",
+        "action": "topoisomerase_inhibitors",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 9,
+        "decision_day": "706",
+        "action": "alkylating_agents",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 10,
+        "decision_day": "30",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 11,
+        "decision_day": "365",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 12,
+        "decision_day": "427",
+        "action": "topoisomerase_inhibitors",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 13,
+        "decision_day": "35",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 14,
+        "decision_day": "962",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": "WT-With Tumor",
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 15,
+        "decision_day": "454",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 16,
+        "decision_day": "577",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 17,
+        "decision_day": "346",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 18,
+        "decision_day": "70",
+        "action": "anti_angiogenics",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 19,
+        "decision_day": "35",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 20,
+        "decision_day": "161",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 21,
+        "decision_day": "744",
+        "action": "platinum",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": "WT-With Tumor",
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 22,
+        "decision_day": "774",
+        "action": "platinum",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 23,
+        "decision_day": "49",
+        "action": "platinum+taxanes",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 24,
+        "decision_day": "794",
+        "action": "platinum",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 25,
+        "decision_day": "36",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 26,
+        "decision_day": "782",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 27,
+        "decision_day": "8",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 28,
+        "decision_day": "876",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 29,
+        "decision_day": "31",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 30,
+        "decision_day": "321",
+        "action": "anthracyclines",
+        "actual_response": "WT-With Tumor",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      },
+      {
+        "row_number": 31,
+        "decision_day": "94",
+        "action": "platinum+taxanes",
+        "actual_response": "TF-Tumor Free",
+        "llm_prediction": "WT-With Tumor",
+        "persistence_prediction": null,
+        "training_majority_prediction": "WT-With Tumor",
+        "request_error": null
+      }
+    ],
+    "limitations": [
+      "This evaluates observed action/outcome pairs, not alternative-treatment effects.",
+      "Undated treatments can still hide intervening actions in dated_event_only_candidate records.",
+      "The target is the next qualifying recorded response, not a fixed-horizon response.",
+      "Small support and class imbalance can make the estimate unstable; compare balanced accuracy and class recall, not accuracy alone."
+    ],
+    "unique_patients": 28
+  },
+  "warnings": [
+    "Every rollout is a model-generated hypothesis, not an observed or causal treatment effect.",
+    "Action support is observational frequency and does not prove clinical appropriateness or treatment overlap.",
+    "The candidate initial states include incomplete treatment histories flagged in source data.",
+    "No toxicities, costs, quality-of-life values, or calibrated confidence are available; safety and multi-objective utility cannot be evaluated.",
+    "Do not use this prototype for patient care or real treatment recommendations."
+  ],
+  "episodes": null
+}

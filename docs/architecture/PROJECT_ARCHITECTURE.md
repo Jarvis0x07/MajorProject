@@ -1,18 +1,18 @@
 # Project Architecture and Methodology
 
-**Project:** LLM-Based Patient Digital Twin with Reinforcement Learning for Treatment Optimization  
-**Document status:** Paper-aligned working architecture, version 0.3  
-**Last updated:** 2026-10-27
+**Project:** Transformer Patient Digital Twin and Offline RL for Ovarian Cancer
+**Document status:** Current working architecture, version 0.6
+**Last updated:** 2026-10-29
 
 ## 1. What are we building?
 
-The target method follows the base paper: represent patient history and treatment actions, learn a next-state/outcome simulator, and evaluate a constrained offline-RL policy inside that simulator. The repository is at the **data-preparation stage**. It has not trained the paper's models or established treatment effects.
+The project adapts the base paper's three-stage workflow: (1) a causal Transformer ensemble forecasts next recorded patient states, (2) an outcome/reward model, and (3) BCQ offline RL. Stage 1 is implemented and trained. The Transformer-backed environment wrapper passes a 5-episode/15-step software smoke run, but all 15 rewards were unavailable because predicted tumor status was missing. Stages 2 and 3 are not implemented or validated.
 
 This is a research prototype, not a clinical tool. It must not be used to recommend treatment to real patients.
 
 ## 2. The paper's method and the local implementation
 
-### A. Learned digital twin (planned)
+### A. Digital twin (Transformer dynamics model implemented and trained)
 
 A digital twin is a computational model of a patient's evolving clinical state. At time \(t\), it receives a representation of the observed patient history and predicts a future state or trajectory. The representation should preserve the time of observations, treatment history, and missingness.
 
@@ -22,13 +22,13 @@ A generic transition target is:
 
 The action must be explicit in the model input if the model is intended to compare treatments. A model that predicts outcomes from history alone is a forecasting model; it does not, by itself, establish what would happen under a different treatment.
 
-The paper uses a Transformer ensemble to predict next state from a sequence of prior states and treatment actions. It also describes an adversarially trained treatment-outcome/reward model and ensemble disagreement for uncertainty. These models are not present in the current repository.
+The paper uses a five-member Transformer ensemble, an adversarially trained outcome/reward model, and ensemble disagreement for uncertainty. `scripts/transformer_digital_twin.py` implements the Stage 1 ensemble; its local target is the next recorded mapped treatment-decision state. It is trained, but tumor status is known for only 13 held-out targets, all with tumor. `scripts/llm_twin_rl.py` is a historical experiment, not the selected twin.
 
 ### B. Offline RL policy (planned)
 
 An RL policy observes a state and proposes an action. The environment uses the digital twin to simulate a next state and calculates a reward. In a future stage, the policy may be trained offline or in a validated simulator, with strict action constraints and evaluation against held-out patients.
 
-The paper uses BCQ to constrain choices to actions supported by historical treatment data. A simulator rollout is a model-based estimate, not observed clinical evidence. The RL environment and policy are **not implemented** here.
+The paper uses BCQ to constrain choices to actions supported by historical treatment data. `scripts/transformer_twin_rl_environment.py` wraps the frozen dynamics model in a Gym-like `reset()`/`step()` interface and restricts actions to combinations observed in training. It is an integration sandbox; it does not train BCQ or any RL policy. The v2 smoke report has 15/15 unavailable rewards because tumor response is missing. A rollout is a model-generated hypothesis, not observed clinical evidence.
 
 ### C. Current data preparation (implemented)
 
@@ -42,7 +42,7 @@ The JSON currently analysed is `clinical.project-tcga-ov.2026-10-09.json`, a TCG
 
 This is not MIMIC-IV. Earlier project discussions identified MIMIC-IV as a possible primary dataset, so the repository must explicitly record this change in dataset scope. TCGA-OV is useful for exploring ovarian-cancer diagnosis, treatment, recurrence, response, and survival trajectories, but it does not provide the dense repeated vital-sign and laboratory time series typically needed for an ICU-style physiological twin.
 
-**Current decision:** use TCGA-OV for data inspection and a first trajectory-preprocessing prototype. Do not claim it is sufficient for treatment optimization until the number and quality of usable state–action–next-state transitions have been measured.
+**Current decision:** use TCGA-OV for a retrospective next-recorded-state forecasting prototype. Measured transition counts and label coverage show that the export is not sufficient for treatment optimization or causal action comparisons.
 
 ## 4. Target pipeline and current stage
 
@@ -50,8 +50,8 @@ This is not MIMIC-IV. Earlier project discussions identified MIMIC-IV as a possi
 2. **Paper-style preprocessing (implemented):** run `paper_method_pipeline.py`; inspect mapping and candidate tables, not just summary counts.
 3. **Resolve data mismatch (open):** the export has 4,125 treatment records while the paper reports 2,552; the local normalization yields 51 combinations versus 47. Do not tune filters to match without evidence.
 4. **Validate decision-time transitions (open):** verify event timing, parent linkage, state availability, action definitions, and outcome horizon. The candidate CSV is not automatically a training table.
-5. **Train and validate the simulator (not implemented):** reproduce the dynamics ensemble and outcome model, compare held-out patients, and assess calibration and uncertainty.
-6. **Define and evaluate offline RL (not implemented):** after simulator validation, define supported actions, reward, episode termination, safety constraints, and off-policy evaluation; then implement BCQ and baselines.
+5. **Train/evaluate the Transformer twin (initial run complete):** the saved held-out report compares per-feature forecasts with persistence. Tumor status has 13 known test targets, all with tumor; broad response performance is not established. A successful next-state forecast still would not validate counterfactual treatment effects.
+6. **Offline RL (formulation/baselines present, optimization not implemented):** the MDP, reward proxy, episode termination, action-support constraints, and behavioral baselines are in `OBJECTIVES_2_3.md`; policy training and independent off-policy evaluation require a validated transition dataset and simulator.
 7. **Explanation/reporting layer (optional future work):** an LLM can explain outputs, but must not substitute for the action-conditioned model or invent outcomes.
 
 ## 5. Proposed conceptual architecture
@@ -99,10 +99,10 @@ This is a conceptual pipeline, not a claim that all components have been impleme
 
 ## 8. Immediate next steps
 
-1. Reconcile the 4,125 versus 2,552 event counts and 51 versus 47 action combinations using paper/source preprocessing details.
-2. Inspect `treatment_class_mapping.csv` and manually review the 1,449 fully mapped same-day action sets and linkage flags.
-3. Establish whether treatment start/end dates and parent diagnosis links are complete enough for the paper's state-action-outcome rows. In the conservative full-history check, only 2 response links remain.
-4. If evidence resolves these gates, define a reproducible transition dataset and implement/evaluate the digital twin. Otherwise, state clearly that this export supports retrospective response forecasting but not treatment optimization.
+1. Keep the current smoke report as evidence that model/environment integration runs, and do not treat its zero available rewards as a policy result.
+2. Improve or replace the outcome target so it has observed, temporally linked tumor-response labels with adequate class support; the current held-out response subset has 13 known labels, all `WT-With Tumor`.
+3. Obtain domain review for reward, action definitions, and safety constraints; the current 11-class action support is a frequency filter, not a safety screen.
+4. Only after outcome and transition validation, implement the paper's outcome/reward model and BCQ with held-out/off-policy evaluation. Current data do not meet that gate.
 
 ## 9. How to maintain this document
 

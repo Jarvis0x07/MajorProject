@@ -1,0 +1,319 @@
+{
+  "model": "Causal Transformer dynamics ensemble (paper-inspired Stage 1)",
+  "device": "cpu",
+  "data_audit": {
+    "eligible_decision_rows": 1449,
+    "sequence_length": 8,
+    "transitions_by_split": {
+      "train": 739,
+      "test": 102,
+      "validation": 101
+    },
+    "patients_with_transitions_by_split": {
+      "train": 262,
+      "test": 36,
+      "validation": 34
+    },
+    "transitions_with_undated_history_by_split": {
+      "train": 738,
+      "test": 102,
+      "validation": 91
+    },
+    "target_definition": "next strictly later recorded treatment-decision state, not an immediate post-treatment or causal outcome",
+    "state_features": [
+      "age_norm",
+      "age_missing",
+      "tumor_free",
+      "tumor_missing",
+      "grade_norm",
+      "grade_missing",
+      "stage_norm",
+      "stage_missing",
+      "cumulative_dated_drug_count_norm",
+      "prior_radiation",
+      "ecog_norm",
+      "ecog_missing",
+      "karnofsky_norm",
+      "karnofsky_missing",
+      "has_undated_treatment_records"
+    ],
+    "action_classes": [
+      "platinum",
+      "taxanes",
+      "anthracyclines",
+      "antimetabolites",
+      "topoisomerase_inhibitors",
+      "alkylating_agents",
+      "anti_angiogenics",
+      "hormonal_agents",
+      "vinca_alkaloids",
+      "radiation",
+      "other"
+    ],
+    "training_target": "next strictly later mapped treatment-decision state",
+    "causal_claim": false
+  },
+  "training": [
+    {
+      "seed": 42,
+      "best_epoch": 0,
+      "best_validation_loss": Infinity,
+      "epochs_run": 8,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015838448216527468,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001549063563894985,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015471514020646282,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0015475633032716967,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.001544425568458981,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0015472999558975669,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0015361892581798504,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0015265613636377868,
+          "validation_loss": NaN
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "best_epoch": 0,
+      "best_validation_loss": Infinity,
+      "epochs_run": 8,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.001559788241138449,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001532813118804673,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.001534180323081576,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0015326676142043045,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.0015089099950576685,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.001509790062452036,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0015177847941837779,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0015048572631712887,
+          "validation_loss": NaN
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "best_epoch": 0,
+      "best_validation_loss": Infinity,
+      "epochs_run": 8,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.001570162218437569,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001547469496775496,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015530457758359262,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.001517580935190684,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.001489366829446226,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0014891160831211891,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014804598375424878,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014760736651927193,
+          "validation_loss": NaN
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "best_epoch": 0,
+      "best_validation_loss": Infinity,
+      "epochs_run": 8,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015664164034205896,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.0015308962395768806,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015260287584624166,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0015217955187836196,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.001510045104623714,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0014879645659675589,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014794930790837195,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.001477212891131785,
+          "validation_loss": NaN
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "best_epoch": 0,
+      "best_validation_loss": Infinity,
+      "epochs_run": 8,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015413319739915703,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.0015152580790527281,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0014994415735903506,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0014822392240603222,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.0014630264592293922,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0014701506197525305,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014534441518965953,
+          "validation_loss": NaN
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014536741994864617,
+          "validation_loss": NaN
+        }
+      ]
+    }
+  ],
+  "held_out_test": {
+    "transition_count": 102,
+    "mean_ensemble_variance": NaN,
+    "metrics": {
+      "transformer_mae": NaN,
+      "transformer_mse": NaN,
+      "persistence_mae": 0.010699755512177944,
+      "persistence_mse": 0.004684702958911657,
+      "tumor_status_accuracy": 1.0,
+      "tumor_status_persistence_accuracy": 1.0,
+      "tumor_status_balanced_accuracy": 1.0,
+      "tumor_status_known_targets": 13
+    }
+  },
+  "limitations": [
+    "Transitions target the next recorded treatment-decision state, not a treatment-isolated immediate outcome.",
+    "The patient histories contain undated treatment records, flagged in the state but not recoverable by this model.",
+    "This is a next-recorded-state forecaster; it does not identify causal treatment effects.",
+    "This is Stage 1 only; it does not implement the paper's adversarial outcome model or BCQ policy.",
+    "A model score from this small observational cohort is not clinical validation."
+  ]
+}

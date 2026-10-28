@@ -1,0 +1,815 @@
+{
+  "environment": "frozen Transformer ensemble rollout sandbox",
+  "device": "cpu",
+  "policy": "uniform random over training-supported action combinations; no RL policy trained",
+  "supported_action_count": 25,
+  "min_action_support": 5,
+  "episodes": [
+    {
+      "episode": 1,
+      "initial_observation": {
+        "features": {
+          "age_norm": 0.5,
+          "age_missing": 0.0,
+          "tumor_free": 0.0,
+          "tumor_missing": 1.0,
+          "grade_norm": 0.6666666666666666,
+          "grade_missing": 0.0,
+          "stage_norm": 0.6666666666666666,
+          "stage_missing": 0.0,
+          "cumulative_dated_drug_count_norm": 0.0,
+          "prior_radiation": 0.0,
+          "ecog_norm": 0.0,
+          "ecog_missing": 1.0,
+          "karnofsky_norm": 0.0,
+          "karnofsky_missing": 1.0,
+          "has_undated_treatment_records": 1.0
+        },
+        "history_length": 1,
+        "step": 0
+      },
+      "transitions": [
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.4994259774684906,
+              "age_missing": 0.0,
+              "tumor_free": 0.03937267139554024,
+              "tumor_missing": 0.9993394613265991,
+              "grade_norm": 0.6679791808128357,
+              "grade_missing": 0.0,
+              "stage_norm": 0.66689133644104,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.04992266371846199,
+              "prior_radiation": 0.002328029368072748,
+              "ecog_norm": 0.008341188542544842,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.01588933914899826,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 2,
+            "step": 1
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 0,
+          "action_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "action_support_count_in_train": 25,
+          "ensemble_variance": 5.3574738558381796e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.4978201985359192,
+              "age_missing": 0.0,
+              "tumor_free": 0.07513768970966339,
+              "tumor_missing": 0.9881380200386047,
+              "grade_norm": 0.669296145439148,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6661552786827087,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.09984664618968964,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.0201399028301239,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.026622306555509567,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 3,
+            "step": 2
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 23,
+          "action_vector": [
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 16,
+          "ensemble_variance": 0.00011566341709112749,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.49737662076950073,
+              "age_missing": 0.0,
+              "tumor_free": 0.11022356897592545,
+              "tumor_missing": 0.9962226748466492,
+              "grade_norm": 0.6699249744415283,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6646245718002319,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.14968080818653107,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.0294965747743845,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.04464360699057579,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 4,
+            "step": 3
+          },
+          "reward": null,
+          "terminated": true,
+          "truncated": false,
+          "action_index": 8,
+          "action_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 10,
+          "ensemble_variance": 0.00012145147047704086,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        }
+      ],
+      "sum_available_model_proxy_reward": 0,
+      "unavailable_reward_steps": 3
+    },
+    {
+      "episode": 2,
+      "initial_observation": {
+        "features": {
+          "age_norm": 0.9166666666666666,
+          "age_missing": 0.0,
+          "tumor_free": 0.0,
+          "tumor_missing": 1.0,
+          "grade_norm": 0.6666666666666666,
+          "grade_missing": 0.0,
+          "stage_norm": 0.6666666666666666,
+          "stage_missing": 0.0,
+          "cumulative_dated_drug_count_norm": 0.05,
+          "prior_radiation": 0.0,
+          "ecog_norm": 0.0,
+          "ecog_missing": 1.0,
+          "karnofsky_norm": 0.0,
+          "karnofsky_missing": 1.0,
+          "has_undated_treatment_records": 1.0
+        },
+        "history_length": 2,
+        "step": 0
+      },
+      "transitions": [
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.9173954129219055,
+              "age_missing": 0.0,
+              "tumor_free": 0.03937724977731705,
+              "tumor_missing": 0.996804416179657,
+              "grade_norm": 0.6681464910507202,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6655543446540833,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.09989070892333984,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.013052466325461864,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.017753470689058304,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 3,
+            "step": 1
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 9,
+          "action_vector": [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 45,
+          "ensemble_variance": 5.823439278174192e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.916581928730011,
+              "age_missing": 0.0,
+              "tumor_free": 0.07585825771093369,
+              "tumor_missing": 0.9962568283081055,
+              "grade_norm": 0.6694340705871582,
+              "grade_missing": 0.0,
+              "stage_norm": 0.663356602191925,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.14976701140403748,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.024847999215126038,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.034979306161403656,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 4,
+            "step": 2
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 22,
+          "action_vector": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 6,
+          "ensemble_variance": 0.00010170462337555364,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.916033148765564,
+              "age_missing": 0.0,
+              "tumor_free": 0.11213066428899765,
+              "tumor_missing": 0.9958426356315613,
+              "grade_norm": 0.6710883975028992,
+              "grade_missing": 0.0,
+              "stage_norm": 0.66169273853302,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.19964788854122162,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.03604689985513687,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.05271341651678085,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 5,
+            "step": 3
+          },
+          "reward": null,
+          "terminated": true,
+          "truncated": false,
+          "action_index": 24,
+          "action_vector": [
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 8,
+          "ensemble_variance": 0.00011641796299954876,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        }
+      ],
+      "sum_available_model_proxy_reward": 0,
+      "unavailable_reward_steps": 3
+    },
+    {
+      "episode": 3,
+      "initial_observation": {
+        "features": {
+          "age_norm": 0.4861111111111111,
+          "age_missing": 0.0,
+          "tumor_free": 0.0,
+          "tumor_missing": 1.0,
+          "grade_norm": 0.3333333333333333,
+          "grade_missing": 0.0,
+          "stage_norm": 0.6666666666666666,
+          "stage_missing": 0.0,
+          "cumulative_dated_drug_count_norm": 0.0,
+          "prior_radiation": 0.0,
+          "ecog_norm": 0.0,
+          "ecog_missing": 1.0,
+          "karnofsky_norm": 0.0,
+          "karnofsky_missing": 1.0,
+          "has_undated_treatment_records": 1.0
+        },
+        "history_length": 1,
+        "step": 0
+      },
+      "transitions": [
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.48673519492149353,
+              "age_missing": 0.0,
+              "tumor_free": 0.03948213905096054,
+              "tumor_missing": 0.997033953666687,
+              "grade_norm": 0.3355385959148407,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6649729013442993,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.0498582161962986,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.015261727385222912,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.017582539469003677,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 2,
+            "step": 1
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 16,
+          "action_vector": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 5,
+          "ensemble_variance": 6.41731676296331e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.48758378624916077,
+              "age_missing": 0.0,
+              "tumor_free": 0.07677936553955078,
+              "tumor_missing": 0.9918087720870972,
+              "grade_norm": 0.33804628252983093,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6638839840888977,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.099755197763443,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.02509082481265068,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.032418232411146164,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 3,
+            "step": 2
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 17,
+          "action_vector": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 46,
+          "ensemble_variance": 9.979324386222288e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.48750004172325134,
+              "age_missing": 0.0,
+              "tumor_free": 0.11523834615945816,
+              "tumor_missing": 0.9922420382499695,
+              "grade_norm": 0.34045952558517456,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6625520586967468,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.14962907135486603,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.032512202858924866,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.04887042194604874,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 4,
+            "step": 3
+          },
+          "reward": null,
+          "terminated": true,
+          "truncated": false,
+          "action_index": 22,
+          "action_vector": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 6,
+          "ensemble_variance": 0.00010408587695565075,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        }
+      ],
+      "sum_available_model_proxy_reward": 0,
+      "unavailable_reward_steps": 3
+    },
+    {
+      "episode": 4,
+      "initial_observation": {
+        "features": {
+          "age_norm": 0.7083333333333334,
+          "age_missing": 0.0,
+          "tumor_free": 0.0,
+          "tumor_missing": 1.0,
+          "grade_norm": 0.6666666666666666,
+          "grade_missing": 0.0,
+          "stage_norm": 0.6666666666666666,
+          "stage_missing": 0.0,
+          "cumulative_dated_drug_count_norm": 0.0,
+          "prior_radiation": 0.0,
+          "ecog_norm": 0.0,
+          "ecog_missing": 1.0,
+          "karnofsky_norm": 0.0,
+          "karnofsky_missing": 1.0,
+          "has_undated_treatment_records": 1.0
+        },
+        "history_length": 1,
+        "step": 0
+      },
+      "transitions": [
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.7086865901947021,
+              "age_missing": 0.0,
+              "tumor_free": 0.03949066251516342,
+              "tumor_missing": 0.9868590235710144,
+              "grade_norm": 0.6683885455131531,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6664474606513977,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.04992969334125519,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.01161191612482071,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.016604237258434296,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 2,
+            "step": 1
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 13,
+          "action_vector": [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 96,
+          "ensemble_variance": 6.627726543229073e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.7100299000740051,
+              "age_missing": 0.0,
+              "tumor_free": 0.07472094148397446,
+              "tumor_missing": 0.984775722026825,
+              "grade_norm": 0.6705885529518127,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6654521226882935,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.09984537214040756,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.020752664655447006,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.03364996239542961,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 3,
+            "step": 2
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 15,
+          "action_vector": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 15,
+          "ensemble_variance": 0.00010723091691033915,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.710671067237854,
+              "age_missing": 0.0,
+              "tumor_free": 0.1099233478307724,
+              "tumor_missing": 0.9949582815170288,
+              "grade_norm": 0.6718432307243347,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6644360423088074,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.1496855914592743,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.029629509896039963,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.05257861688733101,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 4,
+            "step": 3
+          },
+          "reward": null,
+          "terminated": true,
+          "truncated": false,
+          "action_index": 8,
+          "action_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 10,
+          "ensemble_variance": 0.00011912686022697017,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        }
+      ],
+      "sum_available_model_proxy_reward": 0,
+      "unavailable_reward_steps": 3
+    },
+    {
+      "episode": 5,
+      "initial_observation": {
+        "features": {
+          "age_norm": 0.6388888888888888,
+          "age_missing": 0.0,
+          "tumor_free": 0.0,
+          "tumor_missing": 1.0,
+          "grade_norm": 0.6666666666666666,
+          "grade_missing": 0.0,
+          "stage_norm": 0.6666666666666666,
+          "stage_missing": 0.0,
+          "cumulative_dated_drug_count_norm": 0.15,
+          "prior_radiation": 0.0,
+          "ecog_norm": 0.0,
+          "ecog_missing": 1.0,
+          "karnofsky_norm": 0.0,
+          "karnofsky_missing": 1.0,
+          "has_undated_treatment_records": 1.0
+        },
+        "history_length": 2,
+        "step": 0
+      },
+      "transitions": [
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.6387287378311157,
+              "age_missing": 0.0,
+              "tumor_free": 0.03943996876478195,
+              "tumor_missing": 0.9961991310119629,
+              "grade_norm": 0.6671196818351746,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6638632416725159,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.19987852871418,
+              "prior_radiation": 0.0,
+              "ecog_norm": 0.01521883625537157,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.016785994172096252,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 3,
+            "step": 1
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 12,
+          "action_vector": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 9,
+          "ensemble_variance": 6.737653893651441e-05,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.6363500356674194,
+              "age_missing": 0.0,
+              "tumor_free": 0.05416954681277275,
+              "tumor_missing": 0.9856839179992676,
+              "grade_norm": 0.6710196733474731,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6682854890823364,
+              "stage_missing": 0.0025101113133132458,
+              "cumulative_dated_drug_count_norm": 0.24667473137378693,
+              "prior_radiation": 0.039874739944934845,
+              "ecog_norm": 0.015256893821060658,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.024508273229002953,
+              "karnofsky_missing": 0.9968884587287903,
+              "has_undated_treatment_records": 0.9990688562393188
+            },
+            "history_length": 4,
+            "step": 2
+          },
+          "reward": null,
+          "terminated": false,
+          "truncated": false,
+          "action_index": 1,
+          "action_vector": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "action_support_count_in_train": 20,
+          "ensemble_variance": 0.00017141785065177828,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        },
+        {
+          "observation": {
+            "features": {
+              "age_norm": 0.6335090398788452,
+              "age_missing": 0.0,
+              "tumor_free": 0.08375176787376404,
+              "tumor_missing": 0.9928569793701172,
+              "grade_norm": 0.673743724822998,
+              "grade_missing": 0.0,
+              "stage_norm": 0.6696368455886841,
+              "stage_missing": 0.0,
+              "cumulative_dated_drug_count_norm": 0.296395480632782,
+              "prior_radiation": 0.06429212540388107,
+              "ecog_norm": 0.017768220975995064,
+              "ecog_missing": 1.0,
+              "karnofsky_norm": 0.037911318242549896,
+              "karnofsky_missing": 1.0,
+              "has_undated_treatment_records": 1.0
+            },
+            "history_length": 5,
+            "step": 3
+          },
+          "reward": null,
+          "terminated": true,
+          "truncated": false,
+          "action_index": 18,
+          "action_vector": [
+            1.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "action_support_count_in_train": 7,
+          "ensemble_variance": 0.00018890699720941484,
+          "reward_semantics": "unavailable_predicted_tumor_status_missing",
+          "warning": "Model-generated state forecasts are not causal treatment effects or clinical recommendations."
+        }
+      ],
+      "sum_available_model_proxy_reward": 0,
+      "unavailable_reward_steps": 3
+    }
+  ],
+  "limits": [
+    "The dynamics model forecasts the next recorded decision state, not an immediate treatment outcome.",
+    "Candidate actions are observationally supported in training, not clinically safe or causally evaluated.",
+    "Reward is the model-predicted tumor-free state component, not observed utility or a validated outcome model.",
+    "This smoke run does not train, evaluate, or recommend an RL policy."
+  ]
+}

@@ -1,10 +1,10 @@
 # Objective 1 — Patient Digital Twin: implementation and status
 
-**Updated:** 2026-10-27  
+**Updated:** 2026-10-29
 **Scope:** TCGA-OV ovarian-cancer retrospective clinical JSON export  
-**Status:** Initial prototype implemented and run on the supplied TCGA-OV JSON; follow-up time-axis audit and repeated baseline evaluation are complete. Local LLM comparison is prepared but awaits runtime/model availability.
+**Status:** TCGA-OV preprocessing, Transformer training, and a rollout-environment smoke run are complete. The Transformer is an experimental next-recorded-state forecaster; response labels and treatment timing remain too incomplete for causal claims or RL approval.
 
-**Current paper-aligned status:** The project now has a separate paper-inspired preprocessing pipeline at `../../scripts/paper_method_pipeline.py`. It builds 11-class treatment actions and candidate state/action/outcome rows, but does **not** implement the paper's Transformer ensemble, adversarial outcome model, or BCQ. The previous patient-summary and response-forecast code is an exploratory prototype, not the paper's digital twin. See `PAPER_METHOD_REPLICATION.md` for the current counts and limitations.
+**Current paper-aligned status:** The five-member Transformer ensemble in `../../scripts/transformer_digital_twin.py` has been trained and evaluated on 739/101/102 train/validation/test transitions. Its aggregate error is lower than persistence, but per-feature results are mixed; tumor status has 13 known held-out labels, all `WT-With Tumor`. The environment smoke wrapper completed 15 transitions, with all rewards unavailable because the model predicts tumor status is missing. The outcome model and BCQ policy remain unimplemented. Earlier patient-summary and LLM scripts are legacy/exploratory work. See `PAPER_METHOD_REPLICATION.md` and `OBJECTIVES_2_3.md`.
 
 ## Progress audit
 
@@ -17,11 +17,11 @@
 | Handle missing/noisy data | Initial policy implemented | State builder preserves absent vs explicit `Unknown`/`Not Reported`; doses retain units. There is no clinical denoising model because the export has sparse categorical events, not repeated sensor/lab signals. |
 | Represent medical and treatment history | Initial implementation complete | `../../scripts/patient_twin.py` extracts diagnosis/pathology/treatment history with provenance and raw day fields. |
 | Represent disease progression | Partial | Follow-up responses/progression are kept in a separate retrospective outcome section. A validated point-in-time progression state cannot yet be built because relative-day origins and availability are unverified. |
-| Research suitable LLMs | Review complete; model choice deferred | See the model-selection note below. No model is installed/configured and no patient-level inference has been run. |
-| Design LLM patient representation | Initial design complete | Structured state JSON plus a constrained forecast prompt and strict JSON output validation are implemented. |
-| Implement initial Digital Twin | Earlier forecast prototype complete; paper digital twin not implemented | The legacy implementation is a retrospective state builder plus injected LLM forecast interface. It is not the paper's action-conditioned Transformer simulator and does not generate validated treatment counterfactuals. |
+| Review the base paper's twin architecture | Complete | The paper's causal Transformer transition model is documented in `PAPER_METHOD_REPLICATION.md`. |
+| Design patient representation | Initial design complete | The paper-style state/action schema and encoding are documented in `../data/patient_state_schema.md` and implemented in the pipeline/model. |
+| Implement initial Digital Twin | Transformer ensemble trained; empirical validation remains limited | `../../scripts/transformer_digital_twin.py` predicts the next recorded decision state. It does not estimate treatment effects. |
 | Test patient-state generation | Run on real cohort; unit-tested on synthetic fixture | `../../data/processed/patient_states.jsonl` contains 608 generated summaries. Four unit checks pass. |
-| Test trajectory prediction | Exploratory non-LLM baseline evaluated on repeated real patient holdouts | `../../scripts/evaluate_trajectory_baseline.py` evaluates next observed follow-up response over 100 seeded patient-stratified splits. LLM predictive performance remains untested. |
+| Test trajectory prediction | Initial Transformer evaluation complete; tumor-response evidence inadequate | Transformer regression metrics and per-feature counts are in `../../data/processed/transformer_twin/transformer_training_report.json`. The response subset has only 13 test targets, all `WT-With Tumor`. |
 | Document architecture | Complete for current prototype | See `PROJECT_ARCHITECTURE.md`, this status report, schema, mapping, and decision log. |
 
 ## Dataset review and decision
@@ -48,7 +48,7 @@ On 2026-10-27, `../../scripts/audit_tcga_ov_fields.py` was run over all 608 case
 
 The final state specification is `../data/patient_state_schema.md`. It distinguishes the pre-action state from the chosen treatment action, future outcomes, and reward. The treatment-transition audit is `../data/TREATMENT_TRANSITION_AUDIT.md`, with full counts in `../../data/processed/treatment_transition_audit.json`. **RL use is not approved:** 575/587 eligible patients have at least one treatment with no start day. There are 366 candidate post-completion links after excluding intervening dated treatments, but only 2 links among patients whose entire recorded treatment history has start dates. The official forms support a shared diagnosis-based time origin, while missing dates, irregular outcome lags, incomplete action details, and observational confounding prevent these counts from validating RL transitions.
 
-## LLM selection note
+## Historical LLM comparison note
 
 The first implementation deliberately does not bind to a vendor or model. The code uses an injected callable so the same state/prompt/response checks can be used with an approved local or hosted backend.
 
@@ -58,7 +58,7 @@ The first implementation deliberately does not bind to a vendor or model. The co
 
 **Initial comparison candidate:** MedGemma 1.5 4B through Ollama. Its published model page describes medical/EHR text understanding; the Ollama registry lists a 3.3 GB model artifact. The benchmark adapter uses Ollama's local generation endpoint and JSON-schema constrained output. This is a practical candidate for this workstation, not a presumption that it forecasts ovarian-cancer outcomes accurately. See [MedGemma 1.5 model information](https://ollama.com/library/medgemma1.5) and [Ollama API documentation](https://ollama.readthedocs.io/en/api/). Model terms and Google’s intended-use statement must be followed; the model is not a clinical treatment tool ([intended use](https://ai.google.dev/gemma/intended_use_statement)).
 
-**Selection rule:** compare the local medical model against the persistence and majority baselines on held-out patients for valid-output coverage and response-category prediction. Freeze model/version/prompt before evaluation. No model should create unsupported observations, reorder events, or emit treatment advice.
+**Historical result:** the earlier local MedGemma run predicted only `WT-With Tumor` and did not beat the majority baseline. The LLM was not selected as the digital twin; the paper uses an LLM for explanation/reporting, while the Transformer models transitions. Keep this section only as project history. No model should create unsupported observations, reorder events, or emit treatment advice.
 
 ## Implementation and usage
 
@@ -88,8 +88,8 @@ The majority classifier has higher raw accuracy because the held-out labels are 
 
 ## Work required to close Objective 1 empirically
 
-1. Confirm the export-to-form time-field mapping for all treatment types and resolve missing/negative dates; inspect `../data/TREATMENT_TRANSITION_AUDIT.md` before using any action-linked target.
-2. Run `compare_llm_trajectory.py` using the local Ollama endpoint; compare it on the fixed holdout with persistence/majority baselines and report valid-output coverage.
-3. For stronger estimates, use grouped cross-validation or patient-level bootstrap confidence intervals, then add only features available at the chosen decision time.
+1. Improve time and response completeness or select a dataset with enough dated, linked transitions and both outcome classes.
+2. Re-evaluate on patient-grouped folds with feature-specific metrics and uncertainty; keep stable-feature forecasts separate from changing outcomes.
+3. Domain-review the reward/action/safety design before considering the paper's outcome model and BCQ stage.
 
-Until those steps are complete, Objective 1 is an implemented prototype, not an empirically validated LLM digital twin.
+Objective 1 has a trained experimental Transformer, but the small, incomplete cohort does not support a validated treatment-response simulator. The earlier LLM experiment is retained only as a comparison artifact.

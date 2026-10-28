@@ -1,0 +1,693 @@
+{
+  "model": "Causal Transformer dynamics ensemble (paper-inspired Stage 1)",
+  "device": "cpu",
+  "data_audit": {
+    "eligible_decision_rows": 1449,
+    "sequence_length": 8,
+    "transitions_by_split": {
+      "train": 739,
+      "test": 102,
+      "validation": 101
+    },
+    "patients_with_transitions_by_split": {
+      "train": 262,
+      "test": 36,
+      "validation": 34
+    },
+    "transitions_with_undated_history_by_split": {
+      "train": 738,
+      "test": 102,
+      "validation": 91
+    },
+    "target_definition": "next strictly later recorded treatment-decision state, not an immediate post-treatment or causal outcome",
+    "state_features": [
+      "age_norm",
+      "age_missing",
+      "tumor_free",
+      "tumor_missing",
+      "grade_norm",
+      "grade_missing",
+      "stage_norm",
+      "stage_missing",
+      "cumulative_dated_drug_count_norm",
+      "prior_radiation",
+      "ecog_norm",
+      "ecog_missing",
+      "karnofsky_norm",
+      "karnofsky_missing",
+      "has_undated_treatment_records"
+    ],
+    "action_classes": [
+      "platinum",
+      "taxanes",
+      "anthracyclines",
+      "antimetabolites",
+      "topoisomerase_inhibitors",
+      "alkylating_agents",
+      "anti_angiogenics",
+      "hormonal_agents",
+      "vinca_alkaloids",
+      "radiation",
+      "other"
+    ],
+    "training_target": "next strictly later mapped treatment-decision state",
+    "causal_claim": false
+  },
+  "training": [
+    {
+      "seed": 42,
+      "best_epoch": 6,
+      "best_validation_loss": 0.0020330186234787107,
+      "epochs_run": 14,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015882503851874692,
+          "validation_loss": 0.0020578929088514997
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001537315855178652,
+          "validation_loss": 0.0020448628729354823
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015460002517405276,
+          "validation_loss": 0.002080611859128112
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.00154298828207781,
+          "validation_loss": 0.0020557698535412783
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.0015236662528650413,
+          "validation_loss": 0.0020395537358126603
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0015068819166117464,
+          "validation_loss": 0.0020330186234787107
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0015039326705543015,
+          "validation_loss": 0.0020543433238344733
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0015045285153973964,
+          "validation_loss": 0.0020423868827492697
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.0014972842239634094,
+          "validation_loss": 0.0020519840581982862
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.0015005048723348107,
+          "validation_loss": 0.002054313456028467
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.0024844498420861783,
+          "validation_loss": 0.0020581702410709113
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.0015094023337951512,
+          "validation_loss": 0.002055766111880075
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.001498663424778594,
+          "validation_loss": 0.0020534457835310604
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.0015025815161304006,
+          "validation_loss": 0.002050017315923469
+        }
+      ]
+    },
+    {
+      "seed": 43,
+      "best_epoch": 9,
+      "best_validation_loss": 0.0018801838723447872,
+      "epochs_run": 17,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015552717495666002,
+          "validation_loss": 0.002034779639870976
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001519727998735713,
+          "validation_loss": 0.0020399907753017033
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.001511059355228402,
+          "validation_loss": 0.002045220457148389
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0015141931745953723,
+          "validation_loss": 0.002034820954577299
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.0015070580960430864,
+          "validation_loss": 0.001965809762623394
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.001489022285113606,
+          "validation_loss": 0.0019622123745648423
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014862339952136001,
+          "validation_loss": 0.0018983985173690598
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014618950438792429,
+          "validation_loss": 0.0019115285867883358
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.0019387377506063785,
+          "validation_loss": 0.0018801838723447872
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.0014722505630307599,
+          "validation_loss": 0.0018788404977385653
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.0014680945411479722,
+          "validation_loss": 0.0018900945669884095
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.0014543928702247892,
+          "validation_loss": 0.001894836936116917
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.0019208871105244423,
+          "validation_loss": 0.0018773615138343303
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.0014569720278814202,
+          "validation_loss": 0.001882495289464714
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.0014484766603951964,
+          "validation_loss": 0.0018940785721497377
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.0019406098855749103,
+          "validation_loss": 0.0018822644069587113
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.0014488384461704602,
+          "validation_loss": 0.0018875448731705546
+        }
+      ]
+    },
+    {
+      "seed": 44,
+      "best_epoch": 7,
+      "best_validation_loss": 0.001878690003650263,
+      "epochs_run": 15,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015699968548688048,
+          "validation_loss": 0.0020380255209602183
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.0015465485336486988,
+          "validation_loss": 0.0020768189497175626
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015580880035486189,
+          "validation_loss": 0.002036980267803301
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0015253481593996792,
+          "validation_loss": 0.0020351187649794156
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.001519763791141789,
+          "validation_loss": 0.0019992470406577922
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0015102231996024784,
+          "validation_loss": 0.0018909357295342488
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014873279460516642,
+          "validation_loss": 0.001878690003650263
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014785085212830988,
+          "validation_loss": 0.0018846962502720999
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.0014776103297056882,
+          "validation_loss": 0.0018804493374773301
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.0014797603009052789,
+          "validation_loss": 0.0018779439033096423
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.001467012048124161,
+          "validation_loss": 0.0018759828853944782
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.001464930637970004,
+          "validation_loss": 0.0018755497385427589
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.0014554191440462698,
+          "validation_loss": 0.001882894177470007
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.0014616109143995952,
+          "validation_loss": 0.0018803698167175753
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.0014513289142996655,
+          "validation_loss": 0.0018791240127029596
+        }
+      ]
+    },
+    {
+      "seed": 45,
+      "best_epoch": 7,
+      "best_validation_loss": 0.0018864529283746378,
+      "epochs_run": 15,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.001558605395075574,
+          "validation_loss": 0.0020211162209307076
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.001517088403791907,
+          "validation_loss": 0.002038052392890677
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.001526169484577622,
+          "validation_loss": 0.002038618073129328
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.001517865732997355,
+          "validation_loss": 0.002000961198064033
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.0015077597457396525,
+          "validation_loss": 0.0019285187263449188
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.001482211444757316,
+          "validation_loss": 0.0019071077404078096
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014750592557296234,
+          "validation_loss": 0.0018864529283746378
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014659439563426229,
+          "validation_loss": 0.0018897920126619283
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.0014770458631877166,
+          "validation_loss": 0.0018851983495551394
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.0014646396005749314,
+          "validation_loss": 0.0018906596287706634
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.0014699114914643967,
+          "validation_loss": 0.001886300520709483
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.001473772551359313,
+          "validation_loss": 0.001887142321720603
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.0014510947074389453,
+          "validation_loss": 0.0018859980336856097
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.0014578133718714525,
+          "validation_loss": 0.001893262424346176
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.0014492452964987024,
+          "validation_loss": 0.0018833200465451228
+        }
+      ]
+    },
+    {
+      "seed": 46,
+      "best_epoch": 3,
+      "best_validation_loss": 0.0018796242256939877,
+      "epochs_run": 11,
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.0015516148582719325,
+          "validation_loss": 0.0019956973774242215
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.0015266470018104883,
+          "validation_loss": 0.0018966773259307956
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.0015122698878258234,
+          "validation_loss": 0.0018796242256939877
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.0014931904534023488,
+          "validation_loss": 0.0018987107905559242
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.001484735612393706,
+          "validation_loss": 0.001878206536275684
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.0014761961982306577,
+          "validation_loss": 0.001876696613180684
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.0014838114755946208,
+          "validation_loss": 0.0018777795685309684
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.0014835659778024517,
+          "validation_loss": 0.0018793612525769277
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.0014856207396102643,
+          "validation_loss": 0.0018765520471788477
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.0014899979534372203,
+          "validation_loss": 0.0018755719447653973
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.0014863735814287793,
+          "validation_loss": 0.0018756571516860276
+        }
+      ]
+    }
+  ],
+  "held_out_test": {
+    "transition_count": 102,
+    "mean_ensemble_variance": 7.473528967238963e-05,
+    "metrics": {
+      "transformer_mae": 0.008589384146034718,
+      "transformer_mse": 0.004072325769811869,
+      "persistence_mae": 0.010699755512177944,
+      "persistence_mse": 0.004684702958911657,
+      "valid_target_value_count": 1229,
+      "tumor_status_accuracy": 1.0,
+      "tumor_status_persistence_accuracy": 1.0,
+      "tumor_status_class_counts": {
+        "actual_TF_Tumor_Free": 0,
+        "actual_WT_With_Tumor": 13,
+        "transformer_predicted_TF_Tumor_Free": 0,
+        "transformer_predicted_WT_With_Tumor": 13,
+        "persistence_predicted_TF_Tumor_Free": 0,
+        "persistence_predicted_WT_With_Tumor": 13
+      },
+      "tumor_status_balanced_accuracy": 1.0,
+      "tumor_status_known_targets": 13
+    },
+    "per_feature_metrics": {
+      "age_norm": {
+        "known_targets": 102,
+        "transformer_mae": 0.0004369759699329734,
+        "transformer_mse": 4.1729896338438266e-07,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "age_missing": {
+        "known_targets": 102,
+        "transformer_mae": 0.0,
+        "transformer_mse": 0.0,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "tumor_free": {
+        "known_targets": 13,
+        "transformer_mae": 0.03936763107776642,
+        "transformer_mse": 0.0015498168068006635,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "tumor_missing": {
+        "known_targets": 102,
+        "transformer_mae": 0.043271444737911224,
+        "transformer_mse": 0.02883806638419628,
+        "persistence_mae": 0.029411764815449715,
+        "persistence_mse": 0.029411764815449715
+      },
+      "grade_norm": {
+        "known_targets": 94,
+        "transformer_mae": 0.0017844742396846414,
+        "transformer_mse": 3.725616579686175e-06,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "grade_missing": {
+        "known_targets": 102,
+        "transformer_mae": 0.0007501431391574442,
+        "transformer_mse": 7.442921742040198e-06,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "stage_norm": {
+        "known_targets": 102,
+        "transformer_mae": 0.0013352339155972004,
+        "transformer_mse": 2.290451675435179e-06,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "stage_missing": {
+        "known_targets": 102,
+        "transformer_mae": 4.762000753544271e-05,
+        "transformer_mse": 1.2022287876334303e-07,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "cumulative_dated_drug_count_norm": {
+        "known_targets": 102,
+        "transformer_mae": 0.03192640095949173,
+        "transformer_mse": 0.0019372906535863876,
+        "persistence_mae": 0.07990196347236633,
+        "persistence_mse": 0.007426470518112183
+      },
+      "prior_radiation": {
+        "known_targets": 102,
+        "transformer_mae": 0.018968967720866203,
+        "transformer_mse": 0.018080556765198708,
+        "persistence_mae": 0.019607843831181526,
+        "persistence_mse": 0.019607843831181526
+      },
+      "ecog_norm": {
+        "known_targets": 0,
+        "transformer_mae": null,
+        "transformer_mse": null,
+        "persistence_mae": null,
+        "persistence_mse": null
+      },
+      "ecog_missing": {
+        "known_targets": 102,
+        "transformer_mae": 0.0,
+        "transformer_mse": 0.0,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "karnofsky_norm": {
+        "known_targets": 0,
+        "transformer_mae": null,
+        "transformer_mse": null,
+        "persistence_mae": null,
+        "persistence_mse": null
+      },
+      "karnofsky_missing": {
+        "known_targets": 102,
+        "transformer_mae": 8.841414091875777e-05,
+        "transformer_mse": 3.854452756968385e-07,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      },
+      "has_undated_treatment_records": {
+        "known_targets": 102,
+        "transformer_mae": 6.496321930171689e-06,
+        "transformer_mse": 4.304624212636554e-09,
+        "persistence_mae": 0.0,
+        "persistence_mse": 0.0
+      }
+    },
+    "tumor_status_predictions": [
+      {
+        "test_transition_index": 26,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03949951380491257,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 45,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03949921205639839,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 46,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03929835557937622,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 47,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.039267610758543015,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 48,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.039352722465991974,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 49,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.039318956434726715,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 50,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03930853307247162,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 51,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03932705521583557,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 76,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03952391445636749,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 77,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.039309851825237274,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 78,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03937380388379097,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 79,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.0393730103969574,
+        "persistence_prediction": "WT-With Tumor"
+      },
+      {
+        "test_transition_index": 80,
+        "actual": "WT-With Tumor",
+        "transformer_prediction": "WT-With Tumor",
+        "transformer_tumor_free_score": 0.03932662308216095,
+        "persistence_prediction": "WT-With Tumor"
+      }
+    ]
+  },
+  "limitations": [
+    "Transitions target the next recorded treatment-decision state, not a treatment-isolated immediate outcome.",
+    "The patient histories contain undated treatment records, flagged in the state but not recoverable by this model.",
+    "This is a next-recorded-state forecaster; it does not identify causal treatment effects.",
+    "This is Stage 1 only; it does not implement the paper's adversarial outcome model or BCQ policy.",
+    "A model score from this small observational cohort is not clinical validation."
+  ],
+  "detailed_evaluation": {
+    "checkpoint": "data\\processed\\transformer_twin\\transformer_ensemble.pt",
+    "retrained": false,
+    "prediction_rows_include_patient_identifiers": false
+  }
+}

@@ -12,6 +12,8 @@ The paper describes an offline-trained clinical decision support system with thr
 
 The paper also describes uncertainty-based clinician querying and online updates. Those deployment components are later-stage work and are not implemented in this repository.
 
+**Project decision:** follow the paper's Stage 1 Transformer ensemble, using the paper-inspired cohort, state features, multi-hot actions, and patient-level split. The Stage 1 implementation is [`transformer_digital_twin.py`](../../scripts/transformer_digital_twin.py), documented in [`OBJECTIVES_2_3.md`](OBJECTIVES_2_3.md). The LLM-based prototype remains only as a historical comparison; the paper uses its LLM for explanations/report generation, not disease dynamics. The local Transformer is an adaptation and does not claim to reproduce the paper's unreported preprocessing details or results.
+
 ### Paper's TCGA-OV setup as reported
 
 - 587 ovarian-cancer patients and 2,552 treatment events.
@@ -76,12 +78,15 @@ Implemented:
 Not implemented or validated:
 
 - The paper's exact 2,552-event preprocessing and 7,395 training observations.
-- Transformer dynamics ensemble, adversarial outcome model, BCQ, DQN, Double DQN, NFQ, or CQL training.
+- Exact reproduction of the paper's reported Transformer results. The local five-member Transformer has been trained, but its test labels and per-feature scores are too limited for strong response claims.
+- Adversarial outcome model, BCQ, DQN, Double DQN, NFQ, or CQL training.
 - A validated dose/action space, reward utility beyond the paper's simple tumor-free label, toxicity features, calibrated uncertainty, or off-policy evaluation.
 - Reliable causal treatment effects. The paper's adversarial representation does not remove unmeasured confounding.
 - Online learning, clinician querying, or a clinical interface.
 
-The next project gate is to resolve the event-count discrepancy and improve/justify treatment-date coverage. Until then, model training on this export would either have too few high-confidence transitions or rely on undocumented assumptions about missing actions and outcome linkage.
+The earlier experimental LLM transition adapter has one full eligible held-out report at `data/processed/objectives_2_3/full_holdout_comparison.json`. It predicted only the majority `WT-With Tumor` category, achieved 73.3% accuracy on 30 valid rows (71.0% when its failed request counts wrong), and had 0% recall for tumor-free rows. The training-majority baseline reached 74.2% accuracy. This result is why the LLM was not retained as the twin. It does not resolve weak factual action/outcome linkage.
+
+The trained Stage 1 model has a finite report at `data/processed/transformer_twin/transformer_training_report.json`. The environment smoke test is recorded in `data/processed/transformer_twin/rl_environment_smoke_v2.json`: 15 steps completed, but all 15 rewards were unavailable because tumor status was predicted missing. This confirms integration only. Do not proceed to treatment-outcome training or an RL policy until treatment timing and labeled outcomes are sufficiently complete and the target includes adequate class support.
 
 ## Reproduce the local preprocessing
 

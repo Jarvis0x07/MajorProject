@@ -1,0 +1,52 @@
+{
+  "eligible_decision_rows": 1449,
+  "sequence_length": 8,
+  "transitions_by_split": {
+    "train": 739,
+    "test": 102,
+    "validation": 101
+  },
+  "patients_with_transitions_by_split": {
+    "train": 262,
+    "test": 36,
+    "validation": 34
+  },
+  "transitions_with_undated_history_by_split": {
+    "train": 738,
+    "test": 102,
+    "validation": 91
+  },
+  "target_definition": "next strictly later recorded treatment-decision state, not an immediate post-treatment or causal outcome",
+  "state_features": [
+    "age_norm",
+    "age_missing",
+    "tumor_free",
+    "tumor_missing",
+    "grade_norm",
+    "grade_missing",
+    "stage_norm",
+    "stage_missing",
+    "cumulative_dated_drug_count_norm",
+    "prior_radiation",
+    "ecog_norm",
+    "ecog_missing",
+    "karnofsky_norm",
+    "karnofsky_missing",
+    "has_undated_treatment_records"
+  ],
+  "action_classes": [
+    "platinum",
+    "taxanes",
+    "anthracyclines",
+    "antimetabolites",
+    "topoisomerase_inhibitors",
+    "alkylating_agents",
+    "anti_angiogenics",
+    "hormonal_agents",
+    "vinca_alkaloids",
+    "radiation",
+    "other"
+  ],
+  "training_target": "next strictly later mapped treatment-decision state",
+  "causal_claim": false
+}

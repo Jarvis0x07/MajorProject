@@ -1,0 +1,118 @@
+{
+  "study": "Experimental LLM digital-twin policy-baseline comparison",
+  "model": "medgemma1.5:4b",
+  "dataset": "data\\processed\\paper_method\\state_action_outcome_candidates.csv",
+  "method": "Candidate counterfactual rollouts from training-split states; LLM predicts next recorded response category",
+  "mdp": {
+    "state_fields": [
+      "state_age_years",
+      "state_gender",
+      "state_tumor_status_pre_action",
+      "state_tumor_grade",
+      "state_figo_stage",
+      "state_cumulative_dated_drug_record_count",
+      "state_radiation_history",
+      "state_ecog_pre_action",
+      "state_karnofsky_pre_action",
+      "state_has_undated_treatment_records"
+    ],
+    "actions": [
+      "alkylating_agents",
+      "alkylating_agents+platinum",
+      "anthracyclines",
+      "anti_angiogenics",
+      "antimetabolites",
+      "antimetabolites+platinum",
+      "antimetabolites+platinum+taxanes",
+      "hormonal_agents",
+      "other",
+      "platinum",
+      "platinum+taxanes",
+      "radiation",
+      "taxanes",
+      "topoisomerase_inhibitors",
+      "topoisomerase_inhibitors+vinca_alkaloids"
+    ],
+    "action_support_minimum_training_rows": 10,
+    "decision_epoch": "one simulated treatment decision; irregular clinical time is not represented",
+    "reward": "1 for predicted TF-Tumor Free, 0 for predicted WT-With Tumor; abstention has no reward",
+    "gamma": 0.95,
+    "max_steps": 1,
+    "episode_termination": "model abstention or max_steps",
+    "treatment_constraints": "class combinations observed at least min_action_support times in training split; no dose actions",
+    "safety_constraints": "only dataset-supported action classes; no toxicity, contraindication, or dose-safety model exists"
+  },
+  "policy_training": "none; these are random and historical-frequency baselines for Objective 3, not an RL-optimized policy",
+  "split": {
+    "source": "patient_splits.csv embedded in candidate rows",
+    "seed": 42,
+    "rollout_initial_states": 5,
+    "state_seed_partition": "train only"
+  },
+  "policy_metrics": {
+    "random_supported": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    },
+    "historical_most_common": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    },
+    "status_conditioned_historical": {
+      "episodes": 5,
+      "simulated_steps": 5,
+      "valid_response_hypotheses": 5,
+      "abstentions": 0,
+      "predicted_tumor_free_fraction": 0.0,
+      "mean_response_proxy_reward": 0.0,
+      "toxicity_cost_wellbeing_evaluation": "not possible: these outcomes are absent from the dataset"
+    }
+  },
+  "observed_holdout_check": {
+    "evaluation": "factual observed-action predictions on held-out test patients",
+    "evaluated_rows": 10,
+    "valid_predictions": 9,
+    "abstentions_or_errors": 1,
+    "request_errors": 1,
+    "accuracy": 0.6666666666666666,
+    "balanced_accuracy": 0.5,
+    "class_metrics": {
+      "TF-Tumor Free": {
+        "support": 3,
+        "recall": 0.0
+      },
+      "WT-With Tumor": {
+        "support": 7,
+        "recall": 1.0
+      }
+    },
+    "actual_label_counts": {
+      "TF-Tumor Free": 3,
+      "WT-With Tumor": 7
+    },
+    "limitations": [
+      "This evaluates observed action/outcome pairs, not alternative-treatment effects.",
+      "Undated treatments can still hide intervening actions in dated_event_only_candidate records.",
+      "The target is the next qualifying recorded response, not a fixed-horizon response.",
+      "Small support and class imbalance can make the estimate unstable."
+    ]
+  },
+  "warnings": [
+    "Every rollout is a model-generated hypothesis, not an observed or causal treatment effect.",
+    "Action support is observational frequency and does not prove clinical appropriateness or treatment overlap.",
+    "The candidate initial states include incomplete treatment histories flagged in source data.",
+    "No toxicities, costs, quality-of-life values, or calibrated confidence are available; safety and multi-objective utility cannot be evaluated.",
+    "Do not use this prototype for patient care or real treatment recommendations."
+  ],
+  "episodes": null
+}

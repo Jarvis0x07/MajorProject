@@ -28,4 +28,4 @@ Paper workflow to reproduce
 3. Train and validate an action-conditioned Transformer ensemble and a treatment outcome/reward model.
 4. Train BCQ offline and evaluate its policy only inside a validated simulator, with supported actions and held-out patient evaluation.
 
-Repository status: only step 1 and a candidate version of step 2 are currently implemented. Steps 3–4 are not implemented; RL approval is withheld because dates/outcome links are incomplete and the local counts do not reconcile with the paper.
+Repository status (2026-10-29): preprocessing, a trained five-member Stage 1 Transformer ensemble, and a Transformer-backed rollout-environment smoke harness are in place. The Transformer predicts the next recorded decision state, not a treatment-attributable outcome. In the smoke run, all 15 reward values were unavailable because predicted tumor status remained missing. The previous LLM twin experiment is historical. The adversarial outcome model and BCQ/RL policy are not implemented; RL approval remains withheld because treatment timing and outcome linkage are incomplete.
