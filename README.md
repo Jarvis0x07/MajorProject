@@ -1,8 +1,30 @@
-# Transformer Patient Digital Twin and Offline RL for Ovarian Cancer
+# Patient Digital Twins and RL Treatment Optimization for Ovarian Cancer
 
-This project follows the base paper's core method: a causal Transformer ensemble models patient-state transitions from state/action histories; an outcome/reward model and BCQ policy are later stages. The LLM is reserved for explanation/reporting, not used as the disease-transition model.
+## Current system: `digital_twin_rl/`
 
-## Current status
+Every TCGA-OV patient gets a **digital twin**. Given the patient's current situation and a candidate regimen, the twin predicts tumor response, time to progression, survival and severe side-effect risk, with uncertainty. An **RL doctor** (masked Double DQN, plus a BCQ-constrained variant) learns a treatment strategy by treating the twins, which act as its environment.
+
+```powershell
+python -m pip install -r requirements-digital-twin-rl.txt
+python -m digital_twin_rl all                                 # data -> twin -> 587 patient twins -> agents -> evaluation
+python -m digital_twin_rl what-if --patient 098acb76 --line 2   # compare every regimen for one patient
+```
+
+The twin was evaluated on 59 held-out test patients:
+- Tumor response: AUROC 0.86.
+- Overall survival: C-index 0.70, with 12-month mortality predicted at 22.1% against 22.4% observed.
+
+When the twins replay each patient's actual regimens, their simulated survival tracks the observed Kaplan–Meier curve closely through 4 years (training patients: 0.63 simulated vs 0.63 observed at 36 months).
+
+Inside held-out patients' twins, the BCQ-constrained agent gains **+2.2 months** of simulated 5-year survival from first line (95% CI 1.4–3.0) and **+4.0 months** from first relapse (95% CI 2.2–5.9) over a clinician-imitation baseline. It stays within observed practice for 98% of its choices.
+
+These are simulation results on observational data. Side-effect risks are assumed priors, because the export has no adverse-event fields. The unconstrained agent over-uses platinum in platinum-resistant relapse. Full method, results and limits: [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md).
+
+## Earlier stages: base-paper Transformer twin
+
+This track follows the base paper's core method: a causal Transformer ensemble models patient-state transitions from state/action histories; an outcome/reward model and BCQ policy are later stages. The LLM is reserved for explanation/reporting, not used as the disease-transition model.
+
+### Status of the Transformer track
 
 The TCGA-OV export has 608 case records; 587 have `index_date = Diagnosis`. The paper-inspired preprocessing and 11-class treatment mapping are in `scripts/paper_method_pipeline.py`. The local export has 4,125 treatment records versus 2,552 reported in the paper, and 51 action combinations versus 47. Only two candidate response links remain among patients with complete recorded treatment-start histories.
 
@@ -12,6 +34,7 @@ The earlier LLM-based experiment remains as a comparison artifact, not the selec
 
 ## Read the docs
 
+0. [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md) — current system: per-patient twins, RL doctor, held-out results.
 1. [`docs/architecture/PAPER_METHOD_REPLICATION.md`](docs/architecture/PAPER_METHOD_REPLICATION.md) — what the paper did and where local results differ.
 2. [`docs/architecture/OBJECTIVES_2_3.md`](docs/architecture/OBJECTIVES_2_3.md) — Transformer twin, sequence target, MDP, and current status.
 3. [`docs/data/patient_state_schema.md`](docs/data/patient_state_schema.md) — state/action/target separation and field mapping.

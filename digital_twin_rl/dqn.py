@@ -156,6 +156,8 @@ class DQNPolicy:
             return self.network(torch.from_numpy(observation).unsqueeze(0))[0].numpy()
 
     def act(self, observation: np.ndarray, info: dict) -> int:
+        if not info["action_mask"].any():
+            raise ValueError("Action mask allows no regimen")
         return int(np.argmax(np.where(info["action_mask"], self.q_values(observation), -np.inf)))
 
 

@@ -147,6 +147,9 @@ def build_patient(case: dict, split: str) -> dict:
     progressions = progression_days(case)
     death_day = as_day(demographic.get("days_to_death"))
     last_day = last_contact_day(case, members)
+    death_day_imputed = death_day is None and clean(demographic.get("vital_status")).lower() == "dead"
+    if death_day_imputed:
+        death_day = last_day    # recorded dead without a death day: event at last contact, not censoring
     static = {
         "age_at_diagnosis": age,
         "stage": stage_number(primary.get("figo_stage")),
@@ -187,12 +190,14 @@ def build_patient(case: dict, split: str) -> dict:
                          if start + RESPONSE_MIN_DAYS <= p["day"] <= response_window_end), None)
         # Progression proxy: explicit progression/recurrence day, the start of
         # the next line (time to next treatment), or death, whichever is first.
-        candidates = [d for d in progressions if d > start + PROGRESSION_MIN_DAYS]
+        # The cause is kept so the twin can split the event into progression or death.
+        candidates = [(d, "progression") for d in progressions if d > start + PROGRESSION_MIN_DAYS]
         if next_start is not None:
-            candidates.append(next_start)
+            candidates.append((next_start, "next_line"))
         if death_day is not None and death_day >= start:
-            candidates.append(death_day)
-        pfs_day = min(candidates) if candidates else None
+            candidates.append((death_day, "death"))
+        first_event = min(candidates, key=lambda c: (c[0], c[1] == "death")) if candidates else None
+        pfs_day = first_event[0] if first_event else None
         valid_death = death_day is not None and death_day >= start
         built.append({
             "line_index": index,
@@ -204,6 +209,7 @@ def build_patient(case: dict, split: str) -> dict:
                 "response": 1 if response == "TF-Tumor Free" else 0 if response == "WT-With Tumor" else None,
                 "pfs_months": months(pfs_day - start) if pfs_day is not None else months(max(0, last_day - start)),
                 "pfs_event": int(pfs_day is not None),
+                "pfs_event_is_death": int(first_event[1] == "death") if first_event else None,
                 "os_months": months(death_day - start) if valid_death else months(max(0, last_day - start)),
                 "os_event": int(valid_death),
                 "next_setting": lines[index + 1]["setting"] if index + 1 < len(lines) else None,
@@ -211,6 +217,7 @@ def build_patient(case: dict, split: str) -> dict:
         })
     return {"patient_id": patient_id, "split": split, "static": static,
             "vital_status": clean(demographic.get("vital_status")) or None,
+            "death_day_imputed": death_day_imputed,
             "undated_given_treatments": undated_given, "lines": built}
 
 
@@ -233,13 +240,16 @@ def summarize(histories: list[dict]) -> dict:
         "line_settings": dict(Counter(line["state"]["setting"] for line in lines)),
         "response_labels": dict(Counter(str(line["outcome"]["response"]) for line in lines)),
         "pfs_events": sum(line["outcome"]["pfs_event"] for line in lines),
+        "pfs_events_that_are_deaths": sum(line["outcome"]["pfs_event_is_death"] or 0 for line in lines),
         "os_events": sum(line["outcome"]["os_event"] for line in lines),
+        "patients_dead_without_death_day": sum(p["death_day_imputed"] for p in histories),
         "train_regimens": dict(regimen_counts.most_common()),
         "definitions": {
             "line_window_days": LINE_WINDOW_DAYS,
             "response": f"first known follow-up response {RESPONSE_MIN_DAYS}-{RESPONSE_MAX_DAYS} days after line start and before the next line; 1 = TF-Tumor Free",
-            "pfs": "months to the first of explicit progression/recurrence, next line start (time to next treatment), or death; otherwise censored at last contact",
-            "os": "months from line start to death; otherwise censored at last contact",
+            "pfs": "months to the first of explicit progression/recurrence, next line start (time to next treatment), or death; otherwise censored at last contact. pfs_event_is_death records whether that first event was death",
+            "os": "months from line start to death; otherwise censored at last contact. Patients recorded dead without a death day die at last contact",
+            "undated_history": "patient-level flag kept for information; not a model input because undated records cannot be placed before or after a line",
             "excluded_records": "treatment_or_therapy = 'no', surgery, and records without a mappable class",
         },
     }

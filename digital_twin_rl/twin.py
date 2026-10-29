@@ -20,13 +20,14 @@ import random
 
 import numpy as np
 
-from .outcome_model import (HORIZON_MONTHS, TIME_BINS, OutcomeEnsemble, restricted_mean_months,
+from .outcome_model import (HORIZON_MONTHS, TIME_BINS, OutcomeEnsemble, months_bucket, restricted_mean_months,
                             survival_curve, time_bin)
 from .toxicity import ToxicityModel
 
 LINE_DURATION_MONTHS = 4.0     # about six 3-weekly cycles; used to age platinum-free intervals
 CALIBRATION_PRIOR_LINES = 5.0  # shrinkage strength for patient-specific offsets
-LAST_BIN_WIDTH = 24.0          # width used to place events inside the open-ended last bin
+# The open-ended last bin is closed at the horizon, exactly as restricted_mean_months does.
+LAST_BIN_WIDTH = HORIZON_MONTHS - TIME_BINS[-1]
 
 
 def _logit(p: np.ndarray | float) -> np.ndarray:
@@ -36,6 +37,28 @@ def _logit(p: np.ndarray | float) -> np.ndarray:
 
 def _shift(p: np.ndarray, offset: float) -> np.ndarray:
     return 1.0 / (1.0 + np.exp(-(_logit(p) + offset))) if offset else p
+
+
+def _sample_category(distribution: dict[str, float], rng: random.Random) -> str | None:
+    if not distribution:
+        return None
+    r, cumulative = rng.random(), 0.0
+    for key, p in distribution.items():
+        cumulative += p
+        if r < cumulative:
+            return key
+    return key
+
+
+def hazard_shift_for_rate(hazards: np.ndarray, target: float, months: float = 12.0) -> float:
+    """Logit shift of every bin hazard that makes the mean event rate by `months` equal `target`."""
+    index = time_bin(months) - 1
+    low, high = -6.0, 6.0
+    for _ in range(40):
+        mid = (low + high) / 2.0
+        rate = float(np.mean(1.0 - survival_curve(_shift(hazards, mid))[:, index]))
+        low, high = (mid, high) if rate < target else (low, mid)
+    return (low + high) / 2.0
 
 
 def initial_state(static: dict) -> dict:
@@ -73,7 +96,8 @@ class PatientDigitalTwin:
         self.members = members if members is not None else list(range(len(ensemble)))
         lines = patient["lines"]
         if lines:
-            start_line = min(start_line, len(lines) - 1)
+            if not 0 <= start_line < len(lines):
+                raise ValueError(f"start_line {start_line} is outside the patient's {len(lines)} observed lines")
             self.state = copy.deepcopy(lines[start_line]["state"])
             self.state_source = f"observed line {start_line + 1}"
         else:
@@ -82,35 +106,37 @@ class PatientDigitalTwin:
             self.state_source = "synthesized from diagnosis record (no dated treatment lines)"
         self.state["severe_toxicity_history"] = {}
         self.observed_before = lines[:start_line]
-        self.offsets = self._calibrate() if calibrate else {"response": 0.0, "pfs": 0.0, "os": 0.0}
+        self.offsets = self._calibrate() if calibrate else {"response": 0.0, "pfs": 0.0}
         self.months_elapsed = 0.0
         self.end_reason: str | None = None   # "death", "long_term_remission" or "horizon"
 
     def _calibrate(self) -> dict[str, float]:
-        """Shrunken logit offsets from the patient's own earlier observed lines."""
-        offsets = {"response": 0.0, "pfs": 0.0, "os": 0.0}
+        """Shrunken offsets from the patient's own earlier observed lines.
+
+        Only response and progression are used: both are observed before the
+        current line starts. Overall survival of earlier lines would reveal
+        follow-up after the current decision, so it is not used.
+        """
+        offsets = {"response": 0.0, "pfs": 0.0}
         if not self.observed_before:
             return offsets
         pred = self.ensemble.predict([l["state"] for l in self.observed_before],
                                      [l["regimen"] for l in self.observed_before], self.members)
-        s12 = time_bin(12.0) - 1
-        targets = {
-            "response": [(l["outcome"]["response"], p) for l, p in zip(self.observed_before, pred["response"].mean(0))
-                         if l["outcome"]["response"] is not None],
-            "pfs": [(int(l["outcome"]["pfs_months"] < 12 and l["outcome"]["pfs_event"]), 1 - s)
-                    for l, s in zip(self.observed_before, survival_curve(pred["pfs"].mean(0))[:, s12])
-                    if l["outcome"]["pfs_event"] or l["outcome"]["pfs_months"] >= 12],
-            "os": [(int(l["outcome"]["os_months"] < 12 and l["outcome"]["os_event"]), 1 - s)
-                   for l, s in zip(self.observed_before, survival_curve(pred["os"].mean(0))[:, s12])
-                   if l["outcome"]["os_event"] or l["outcome"]["os_months"] >= 12],
-        }
-        for key, pairs in targets.items():
-            if not pairs:
-                continue
-            observed = np.clip(np.mean([o for o, _ in pairs]), 0.05, 0.95)
-            predicted = np.clip(np.mean([p for _, p in pairs]), 0.05, 0.95)
-            weight = len(pairs) / (len(pairs) + CALIBRATION_PRIOR_LINES)
-            offsets[key] = float(weight * (_logit(observed) - _logit(predicted)))
+        responses = [(l["outcome"]["response"], p) for l, p in zip(self.observed_before, pred["response"].mean(0))
+                     if l["outcome"]["response"] is not None]
+        if responses:
+            observed = np.clip(np.mean([o for o, _ in responses]), 0.05, 0.95)
+            predicted = np.clip(np.mean([p for _, p in responses]), 0.05, 0.95)
+            weight = len(responses) / (len(responses) + CALIBRATION_PRIOR_LINES)
+            offsets["response"] = float(weight * (_logit(observed) - _logit(predicted)))
+        known = [i for i, l in enumerate(self.observed_before)
+                 if l["outcome"]["pfs_event"] or l["outcome"]["pfs_months"] >= 12]
+        if known:
+            observed = np.clip(np.mean([int(self.observed_before[i]["outcome"]["pfs_event"]
+                                            and self.observed_before[i]["outcome"]["pfs_months"] < 12) for i in known]),
+                               0.05, 0.95)
+            weight = len(known) / (len(known) + CALIBRATION_PRIOR_LINES)
+            offsets["pfs"] = float(weight * hazard_shift_for_rate(pred["pfs"].mean(0)[known], observed))
         return offsets
 
     def _member_predictions(self, regimen: list[str], members: list[int]) -> dict[str, np.ndarray]:
@@ -118,8 +144,16 @@ class PatientDigitalTwin:
         return {
             "response": _shift(pred["response"][:, 0], self.offsets["response"]),
             "pfs": _shift(pred["pfs"][:, 0, :], self.offsets["pfs"]),
-            "os": _shift(pred["os"][:, 0, :], self.offsets["os"]),
+            "death_cause": pred["death_cause"][:, 0, :],
+            "os": pred["os"][:, 0, :],
         }
+
+    @staticmethod
+    def _death_share(pfs_hazards: np.ndarray, death_cause: np.ndarray) -> np.ndarray:
+        """Probability that the first event (within the modelled range) is death."""
+        before = np.concatenate([np.ones(pfs_hazards.shape[:-1] + (1,)), survival_curve(pfs_hazards)[..., :-1]], axis=-1)
+        mass = before * pfs_hazards
+        return (mass * death_cause).sum(-1) / np.maximum(mass.sum(-1), 1e-9)
 
     def predict(self, regimen: list[str]) -> dict:
         """Expected outcomes of giving `regimen` now, averaged over ensemble members."""
@@ -134,6 +168,7 @@ class PatientDigitalTwin:
             "response_probability": float(pred["response"].mean()),
             "progression_free_probability": {f"{int(m)}m": float(pfs_curve[:, i].mean()) for m, i in at.items()},
             "expected_progression_free_months_5y": float(pfs_rmst.mean()),
+            "probability_first_event_is_death": float(self._death_share(pred["pfs"], pred["death_cause"]).mean()),
             "survival_probability": {f"{int(m)}m": float(os_curve[:, i].mean()) for m, i in at.items()},
             "expected_survival_months_5y": float(os_rmst.mean()),
             "side_effects": self.toxicity.risk(self.state, regimen),
@@ -152,36 +187,31 @@ class PatientDigitalTwin:
         pred = self._member_predictions(regimen, [chosen])
         all_pred = self._member_predictions(regimen, self.members)
         events, tox = self.toxicity.sample(self.state, regimen, rng)
-        # One shared uniform couples response and progression: responders tend
-        # to have longer progression-free intervals, as observed clinically.
+        # One shared uniform couples response and the first event: responders
+        # tend to stay progression-free longer, as observed clinically.
         u = rng.random()
         response = int(u < float(pred["response"][0]))
-        t_progression = sample_event_time(pred["pfs"][0], u)
-        t_death = sample_event_time(pred["os"][0], rng.random())
-
-        if t_death is not None and (t_progression is None or t_death <= t_progression):
-            duration, died, progressed = t_death, True, False
-        elif t_progression is not None:
-            duration, died, progressed = t_progression, False, True
-        else:
-            duration, died, progressed = math.inf, False, False
+        # Competing risks: the progression-free model gives the time of the
+        # first event (progression or death); the cause model splits it.
+        t_event = sample_event_time(pred["pfs"][0], u)
+        event_is_death = t_event is not None and rng.random() < float(pred["death_cause"][0][time_bin(t_event)])
+        duration = t_event if t_event is not None else math.inf
         remaining = HORIZON_MONTHS - self.months_elapsed
         within = duration <= remaining
         months_alive = min(duration, remaining)
-        if died and within:
-            self.end_reason = "death"
-        elif progressed and within:
-            self.end_reason = None
-        elif not died and not progressed:
+        if t_event is None:
             self.end_reason = "long_term_remission"
-        else:
+        elif not within:
             self.end_reason = "horizon"
+        else:
+            self.end_reason = "death" if event_is_death else None
+        progressed = t_event is not None and within and not event_is_death
 
         outcome = {
             "regimen": "+".join(regimen), "member": chosen, "response": response,
             "severe_side_effects": events, "side_effect_risk": tox,
             "months_on_line": months_alive, "died": self.end_reason == "death",
-            "progressed": progressed and within, "end_reason": self.end_reason,
+            "progressed": progressed, "end_reason": self.end_reason,
             # Expectations under the chosen member, for low-variance training rewards.
             "expected": {"months_on_line": float(restricted_mean_months(pred["pfs"][0], remaining)),
                          "response": float(pred["response"][0]),
@@ -191,16 +221,19 @@ class PatientDigitalTwin:
                             "progression_free_months_std": float(restricted_mean_months(all_pred["pfs"]).std())},
         }
         self.months_elapsed += months_alive
-        self._advance(regimen, outcome, months_alive)
+        self._advance(regimen, outcome, months_alive, rng)
         return outcome
 
-    def _advance(self, regimen: list[str], outcome: dict, months_on_line: float) -> None:
+    def _advance(self, regimen: list[str], outcome: dict, months_on_line: float, rng: random.Random) -> None:
         s = self.state
         history = s.setdefault("severe_toxicity_history", {})
         for organ in outcome["severe_side_effects"]:
             history[organ] = history.get(organ, 0) + 1
+        # ECOG is never recorded at line start in this export, so the outcome
+        # model has not seen it; performance decline after severe side effects
+        # is tracked separately and used only by the side-effect and safety rules.
         if outcome["severe_side_effects"]:
-            s["ecog"] = min(4.0, (s["ecog"] if s.get("ecog") is not None else 1.0) + 1.0)
+            s["performance_decline"] = s.get("performance_decline", 0) + 1
         if not outcome["progressed"]:
             return
         if s.get("age_years") is not None:
@@ -209,12 +242,29 @@ class PatientDigitalTwin:
         exposure = s.setdefault("prior_exposure", {})
         for c in regimen:
             exposure[c] = exposure.get(c, 0) + 1
-        off_treatment = max(0.0, months_on_line - LINE_DURATION_MONTHS)
+        transitions = self.ensemble.transitions
+        setting = status = None
+        if transitions:
+            # Record the next state the way the data records it: intervals run
+            # from the line's end date when one exists, otherwise from its start;
+            # setting and last tumor status follow the training-line frequencies.
+            if rng.random() < transitions["end_day_known_rate"]:
+                quantiles = transitions["treatment_months_quantiles"]
+                on_treatment = min(months_on_line, quantiles[rng.randrange(len(quantiles))])
+            else:
+                on_treatment = 0.0
+            setting = _sample_category(transitions["next_setting_by_months_to_event"][months_bucket(months_on_line)], rng)
+            status = _sample_category(transitions["next_tumor_status_by_response"].get(str(outcome["response"]), {}), rng)
+        else:
+            on_treatment = min(months_on_line, LINE_DURATION_MONTHS)
+        if setting is None:
+            setting = "progressive" if months_on_line < 6.0 else "recurrent"
+        off_treatment = max(0.0, months_on_line - on_treatment)
         if "platinum" in regimen:
             s["months_since_last_platinum"] = off_treatment
         elif s.get("months_since_last_platinum") is not None:
             s["months_since_last_platinum"] += months_on_line
         s["months_since_last_line"] = off_treatment
         s["line_number"] = s.get("line_number", 1) + 1
-        s["setting"] = "recurrent" if outcome["response"] else "progressive"
-        s["last_tumor_status"] = "WT"
+        s["setting"] = setting
+        s["last_tumor_status"] = None if status in (None, "None") else status

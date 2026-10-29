@@ -48,11 +48,12 @@ def supported_regimens(histories: list[dict], min_support: int = 10) -> list[tup
     return [(list(r), n) for r, n in counts.most_common() if n >= min_support and "other" not in r]
 
 
-def safety_mask(state: dict, regimens: list[list[str]]) -> np.ndarray:
+def rule_mask(state: dict, regimens: list[list[str]]) -> np.ndarray:
     """Illustrative hard constraints; they are simulation rules, not clinical guidance."""
     severe = state.get("severe_toxicity_history") or {}
     exposure = state.get("prior_exposure") or {}
     ecog = state.get("ecog")
+    poor_performance = (ecog is not None and ecog >= 3) or state.get("performance_decline", 0) >= 2
     allowed = []
     for regimen in regimens:
         ok = True
@@ -62,24 +63,40 @@ def safety_mask(state: dict, regimens: list[list[str]]) -> np.ndarray:
             ok = False      # severe neuropathy: avoid further neurotoxic agents
         if severe.get("hypersensitivity") and "platinum" in regimen:
             ok = False      # severe platinum hypersensitivity
-        if ecog is not None and ecog >= 3 and len(regimen) > 1:
-            ok = False      # poor performance status: single agents only
+        if poor_performance and len(regimen) > 1:
+            ok = False      # poor performance status (or repeated severe toxicity): single agents only
         allowed.append(ok)
-    mask = np.array(allowed, dtype=bool)
+    return np.array(allowed, dtype=bool)
+
+
+def safety_mask(state: dict, regimens: list[list[str]]) -> np.ndarray:
+    """Rule mask; if the rules exclude everything, fall back to single agents, then to all."""
+    mask = rule_mask(state, regimens)
     if not mask.any():
         mask = np.array([len(r) == 1 for r in regimens], dtype=bool)
     return mask if mask.any() else np.ones(len(regimens), dtype=bool)
 
 
-def action_mask(state: dict, regimens: list[list[str]], behavior=None, bcq_threshold: float = 0.0) -> np.ndarray:
-    """Safety mask, narrowed (when possible) to regimens with clinician support >= threshold."""
+def mask_with_flags(state: dict, regimens: list[list[str]], behavior=None,
+                    bcq_threshold: float = 0.0) -> tuple[np.ndarray, dict[str, bool]]:
+    """Safety mask, narrowed (when possible) to regimens with clinician support >= threshold.
+
+    Flags report when a fallback overrode the rules, so evaluation can count it.
+    """
+    flags = {"safety_fallback": not rule_mask(state, regimens).any(), "bcq_relaxed": False}
     mask = safety_mask(state, regimens)
     if bcq_threshold > 0:
         probs = behavior.probabilities(state)
         supported = probs / max(probs.max(), 1e-12) >= bcq_threshold
         if (mask & supported).any():
             mask = mask & supported
-    return mask
+        else:
+            flags["bcq_relaxed"] = True
+    return mask, flags
+
+
+def action_mask(state: dict, regimens: list[list[str]], behavior=None, bcq_threshold: float = 0.0) -> np.ndarray:
+    return mask_with_flags(state, regimens, behavior, bcq_threshold)[0]
 
 
 def build_observation(twin: PatientDigitalTwin, organs: list[str]) -> np.ndarray:
@@ -141,8 +158,9 @@ class TwinTreatmentEnv:
         return action_mask(self.twin.state, self.regimens, self.behavior, self.bcq_threshold)
 
     def _info(self) -> dict:
-        return {"patient_id": self.twin.patient_id, "state": self.twin.state,
-                "action_mask": self.action_mask(), "months_elapsed": self.twin.months_elapsed}
+        mask, flags = mask_with_flags(self.twin.state, self.regimens, self.behavior, self.bcq_threshold)
+        return {"patient_id": self.twin.patient_id, "state": self.twin.state, "action_mask": mask,
+                "mask_flags": flags, "months_elapsed": self.twin.months_elapsed}
 
     def start_points(self) -> list[tuple[str, int]]:
         return [(p["patient_id"], i) for p, i in self.starts]

@@ -2,7 +2,11 @@
 
 This document identifies the active workflow, older exploratory scripts, and generated outputs. The project root is the active repository. `Code Files/MajorProject/` is a nested archived proposal repository; its literature files are retained so that archive remains self-contained.
 
-## Active workflow
+## Current workflow: digital twins + RL doctor
+
+Run from the project root: `python -m digital_twin_rl all`, or stage by stage: `data`, `train-twin`, `twins`, `train-agent`, `evaluate`, `what-if --patient <id>`. Outputs go to `data/processed/digital_twin_rl/`. See `docs/architecture/DIGITAL_TWIN_RL.md`. Tests: `python -m pytest tests -q`.
+
+## Earlier workflow: base-paper Transformer track
 
 Run from the project root:
 
@@ -30,12 +34,13 @@ The smoke test is not RL training. Its current 15 transitions returned 15 unavai
 | `scripts/llm_twin_rl.py` | LLM response-hypothesis environment and simple policy baselines. | Historical; not the selected twin or current RL environment |
 | `scripts/demo_patient_twin.py` | Demonstrates the legacy interface with fictional data and a mock forecast. | Demo only |
 
-`tests/test_patient_twin.py` covers the legacy patient-state/LLM interface. It does not test or validate the Transformer or the RL environment.
+`tests/test_patient_twin.py` covers the legacy patient-state/LLM interface. `tests/test_digital_twin_rl.py` covers the `digital_twin_rl` package: line building, survival likelihood, toxicity and safety rules, twin stepping, environment, n-step DQN buffer and the guideline policy. Neither tests the earlier Transformer.
 
 ## Data and reports
 
 - `clinical.project-tcga-ov.2026-10-09.json`: local source export (608 case records).
-- `data/processed/paper_method/`: active paper-inspired mapped tables and split.
+- `data/processed/digital_twin_rl/`: treatment-line histories, outcome ensemble, 587 patient twin cards, DQN agents, held-out evaluation and figures.
+- `data/processed/paper_method/`: paper-inspired mapped tables and split (earlier track).
 - `data/processed/transformer_twin/`: current model checkpoint, audit, evaluation report, and smoke outputs.
 - `data/processed/transformer_twin_initial_nan_run/`: diagnostic report/audit from the failed first run; its invalid checkpoint has been removed.
 - `data/processed/objectives_2_3/`: historical LLM run reports.

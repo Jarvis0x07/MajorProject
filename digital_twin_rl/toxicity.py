@@ -51,6 +51,7 @@ class ToxicityModel:
         severe_history = state.get("severe_toxicity_history") or {}
         age = state.get("age_years")
         ecog = state.get("ecog")
+        declined = state.get("performance_decline", 0) >= 1
         probabilities = {}
         for organ, score in base.items():
             if score <= 0:
@@ -58,7 +59,7 @@ class ToxicityModel:
                 continue
             if age is not None and age >= 70:
                 score += m["age_at_least_70"]
-            if ecog is not None and ecog >= 2:
+            if (ecog is not None and ecog >= 2) or declined:
                 score += m["ecog_at_least_2"]
             if organ in m["cumulative_organs"]:
                 prior_lines = sum(n for cls, n in exposure.items() if self.class_levels.get(cls, {}).get(organ, 0) >= 1)

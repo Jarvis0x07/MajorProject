@@ -20,7 +20,7 @@ from pathlib import Path
 from .data import build_histories, load_histories, write_histories
 from .dqn import DQNConfig, DQNPolicy, load_agent, save_agent, train_dqn
 from .environment import RewardConfig, TwinTreatmentEnv, supported_regimens
-from .evaluate import evaluate_policies, plot_results
+from .evaluate import evaluate_policies, plot_results, simulation_fidelity
 from .outcome_model import OutcomeEnsemble, evaluate_ensemble, train_ensemble, write_json
 from .policies import BehaviorModel, ClinicianPolicy, GuidelinePolicy, RandomPolicy
 from .registry import build_registry, what_if
@@ -33,9 +33,13 @@ AGENTS = {"dqn": 0.0, "dqn_bcq": None}   # None -> --bcq-threshold
 
 
 def member_split(n: int) -> tuple[list[int], list[int]]:
-    """First half of the ensemble drives agent training; the second half is held out for evaluation."""
+    """First half of the ensemble drives agent training; the second half is held out for evaluation.
+
+    Both halves are trained on the same patients and early-stopped on the same
+    validation split, so the evaluation twin is a different model, not independent data.
+    """
     if n < 4:
-        return list(range(n)), list(range(n))
+        raise SystemExit("At least 4 ensemble members are needed to hold some out for evaluation")
     return list(range(n // 2)), list(range(n // 2, n))
 
 
@@ -125,6 +129,16 @@ def cmd_evaluate(args) -> None:
         raise SystemExit("No trained agents found; run `python -m digital_twin_rl train-agent` first")
     policies = {"random": (RandomPolicy(args.seed), 0.0), "clinician": (ClinicianPolicy(ctx["behavior"]), 0.0),
                 "guideline": (GuidelinePolicy(ctx["regimens"]), 0.0), **agents}
+    print("Checking simulation fidelity against observed survival ...")
+    fidelity = simulation_fidelity(ctx["histories"], ctx["ensemble"], ctx["toxicity"], ctx["behavior"],
+                                   ctx["regimens"], eval_members, args.split, args.rollouts, args.seed)
+    fidelity["by_split"] = {}
+    for split, rollouts in (("train", 10), ("validation", args.rollouts)):
+        f = simulation_fidelity(ctx["histories"], ctx["ensemble"], ctx["toxicity"], ctx["behavior"],
+                                ctx["regimens"], eval_members, split, rollouts, args.seed)
+        fidelity["by_split"][split] = {"patients": f["patients"], "simulated": f["simulated_survival"],
+                                       "observed": f["observed_kaplan_meier_survival"]}
+    print(json.dumps({k: fidelity[k] for k in ("observed_kaplan_meier_survival", "simulated_survival")}, indent=2))
     results = {}
     for twin_name, members in (("evaluation_twin", eval_members), ("training_twin", train_members)):
         for start in ("first", "relapse"):
@@ -138,12 +152,12 @@ def cmd_evaluate(args) -> None:
     write_json(args.out / "evaluation" / "policy_evaluation.json", {
         "split": args.split, "rollouts_per_patient": args.rollouts,
         "training_twin_members": train_members, "evaluation_twin_members": eval_members,
-        "reward": RewardConfig().__dict__, "results": results,
+        "reward": RewardConfig().__dict__, "simulation_fidelity": fidelity, "results": results,
     })
     history_path = args.out / "agents" / "training_history.json"
     training_history = json.loads(history_path.read_text(encoding="utf-8")) if history_path.exists() else {}
     figures = plot_results({k: v for k, v in results.items() if k.endswith("evaluation_twin")},
-                           training_history, args.out / "evaluation" / "figures")
+                           training_history, args.out / "evaluation" / "figures", fidelity)
     write_recommendations(ctx, agents, args)
     summary = {k: {p: {m: round(v["metrics"][m]["mean"], 3) for m in ("survival_months_5y", "first_line_response",
                                                                        "severe_side_effects", "clinician_supported_actions")}
@@ -186,6 +200,9 @@ def cmd_what_if(args) -> None:
     matches = [p for p in ctx["histories"] if p["patient_id"].startswith(args.patient)]
     if len(matches) != 1:
         raise SystemExit(f"Patient id prefix {args.patient!r} matched {len(matches)} patients")
+    line_count = max(1, len(matches[0]["lines"]))
+    if not 1 <= args.line <= line_count:
+        raise SystemExit(f"--line must be between 1 and {line_count} for this patient")
     result = what_if(matches[0], args.line - 1, ctx["ensemble"], ctx["toxicity"], ctx["regimens"],
                      list(range(len(ctx["ensemble"]))), ctx["behavior"], load_agents(args.out, args.bcq_threshold))
     print(json.dumps(result, indent=2))

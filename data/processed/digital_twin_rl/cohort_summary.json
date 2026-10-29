@@ -33,8 +33,10 @@
     "None": 1036,
     "1": 82
   },
-  "pfs_events": 1148,
-  "os_events": 935,
+  "pfs_events": 1149,
+  "pfs_events_that_are_deaths": 230,
+  "os_events": 936,
+  "patients_dead_without_death_day": 1,
   "train_regimens": {
     "platinum+taxanes": 419,
     "platinum": 86,
@@ -102,8 +104,9 @@
   "definitions": {
     "line_window_days": 42,
     "response": "first known follow-up response 30-548 days after line start and before the next line; 1 = TF-Tumor Free",
-    "pfs": "months to the first of explicit progression/recurrence, next line start (time to next treatment), or death; otherwise censored at last contact",
-    "os": "months from line start to death; otherwise censored at last contact",
+    "pfs": "months to the first of explicit progression/recurrence, next line start (time to next treatment), or death; otherwise censored at last contact. pfs_event_is_death records whether that first event was death",
+    "os": "months from line start to death; otherwise censored at last contact. Patients recorded dead without a death day die at last contact",
+    "undated_history": "patient-level flag kept for information; not a model input because undated records cannot be placed before or after a line",
     "excluded_records": "treatment_or_therapy = 'no', surgery, and records without a mappable class"
   }
 }

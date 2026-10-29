@@ -45,6 +45,9 @@ class RandomPolicy:
     def __init__(self, seed: int = 0):
         self.rng = random.Random(seed)
 
+    def reset(self, seed: int) -> None:
+        self.rng.seed(seed)
+
     def act(self, observation: np.ndarray, info: dict) -> int:
         return self.rng.choice(np.flatnonzero(info["action_mask"]).tolist())
 
@@ -80,7 +83,7 @@ class GuidelinePolicy:
         severe = state.get("severe_toxicity_history") or {}
         exposure = state.get("prior_exposure") or {}
         choice = None
-        if state.get("ecog") is not None and state["ecog"] >= 3:
+        if (state.get("ecog") is not None and state["ecog"] >= 3) or state.get("performance_decline", 0) >= 2:
             choice = self._pick(mask, "hormonal_agents")
         pfi = state.get("months_since_last_platinum")
         if choice is None and (state.get("setting") == "primary" or state.get("line_number", 1) == 1):

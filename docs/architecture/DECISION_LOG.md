@@ -150,7 +150,13 @@ Record important choices here so that the project explains not only **what** was
 - **Context:** The project goal is a per-patient twin that answers "given this patient's current situation and this regimen, what happens (improvement, progression, death, side effects)?" and serves as an RL environment. The next-recorded-state Transformer (ADR-010) did not produce a usable outcome signal.
 - **Decision:** Model each patient as a sequence of treatment *lines* (dated given records starting within 42 days). Learn, from 1,346 lines in 508 patients, a 10-member multi-task MLP ensemble predicting tumor response, progression-free survival and overall survival (discrete-time hazards with censoring) from the pre-line state and the 11-class regimen. Side effects come from an editable knowledge-based prior (`toxicity_profiles.json`), because the export has no adverse-event fields. A twin is the ensemble instantiated at one patient's state, recalibrated with shrunken offsets from that patient's own earlier lines.
 - **Alternatives considered:** Keep the next-state Transformer; predict only `treatment_outcome` (27 informative records); omit side effects; invent side-effect labels from survival.
-- **Rationale and evidence:** Line-level outcomes use far more of the data: 310 response labels, 1,148 progression events and 935 deaths. On held-out test patients the twin reaches response AUROC 0.89 (28 labelled lines, wide uncertainty), overall-survival C-index 0.69 with 12-month calibration 22.4% predicted vs 22.4% observed, and progression C-index 0.60. Shuffling regimens worsens held-out likelihood, so the regimen carries predictive signal.
+- **Rationale and evidence:** Line-level outcomes use far more of the data: 310 response labels, 1,149 first events and 936 deaths. Final model, after ADR-015, on held-out test patients:
+  - response AUROC 0.86 (28 labelled lines, so wide uncertainty);
+  - overall-survival C-index 0.70, with 12-month mortality 22.1% predicted vs 22.4% observed;
+  - first-event C-index 0.60;
+  - death-cause AUROC 0.73.
+
+  Shuffling regimens worsens held-out likelihood, so the regimen carries predictive signal.
 - **Consequences and risks:** Regimen effects are observational associations (confounding by indication). Progression is a real-world proxy (explicit progression/recurrence day, next-line start, or death), not RECIST. Side-effect probabilities are assumptions, not data.
 - **Validation / follow-up:** External validation; clinician review of the toxicity priors; sensitivity analysis of policy conclusions to those priors.
 
@@ -162,4 +168,28 @@ Record important choices here so that the project explains not only **what** was
 - **Alternatives considered:** Offline BCQ on observed transitions only (too few clean transitions); unconstrained online RL without pessimism; PPO.
 - **Rationale and evidence:** Masked Double DQN suits a small discrete regimen set with short episodes. The uncertainty penalty, held-out evaluation members, and BCQ support filter are standard defences against an agent exploiting simulator error.
 - **Consequences and risks:** Policy gains are measured inside a learned simulator built on observational data. They are hypotheses about treatment strategies, not evidence of clinical benefit. Safety rules and side-effect penalties are illustrative.
-- **Validation / follow-up:** Off-policy evaluation on observed trajectories; clinician review of recommended regimens; sensitivity to reward weights and toxicity priors.
+- **Results (held-out test patients, evaluation twin, final run after ADR-015):**
+  - **From first line:** dqn 43.6 and dqn_bcq 43.7 months of simulated 5-year survival, against 41.5 for the clinician model and 42.6 for the guideline. The paired gain over the clinician model is +2.0 (95% CI 0.5–3.4) for dqn and +2.2 (1.4–3.0) for dqn_bcq.
+  - **From first relapse:** 36.8 and 36.9 months, against 32.9 and 33.9; both agents gain +4.0 over the clinician model.
+  - **Exploitation:** inside the training twin, dqn gains more (+3.8 and +6.4), so it partly exploits its training members. dqn_bcq transfers better (+2.7 and +5.1).
+  - **Platinum:** dqn gives platinum in 68% of platinum-resistant relapses (clinicians 16%, dqn_bcq 33%), extrapolating a confounded association.
+
+  dqn_bcq is the recommended agent.
+- **Validation / follow-up:** Off-policy evaluation on observed trajectories; clinician review of recommended regimens; sensitivity to reward weights and toxicity priors; consider a platinum-resistance constraint or a causal adjustment for platinum effects.
+
+## ADR-015 — Competing-risk twin transitions and validation against observed survival
+- **Date:** 2026-10-30
+- **Status:** Accepted; supersedes the per-line transition rules first shipped with ADR-013. Results from before this decision are void.
+- **Context:** A code review found that the twin drew death independently of the progression-free event, although that event already includes death. Personal calibration also used survival information from after the decision point. A new check replays each held-out patient's observed regimens in their twin and compares survival with Kaplan–Meier estimates. It showed the simulator was too pessimistic: 36-month survival was 46% simulated against 73% observed.
+- **Decision:**
+  1. Model the first event of each line as competing risks: discrete-time hazards for the first event, plus a per-time-bin probability that the event is death.
+  2. Calibrate twins only on response and progression from earlier lines, solving for the hazard shift that matches the observed 12-month rate.
+  3. Stop writing ECOG into the model state; ECOG is never recorded at line start in this export. Track performance decline separately, for the side-effect and safety rules only.
+  4. Generate the next line's recorded state (setting, last tumor status, whether an end date exists, treatment duration) from training-line frequencies stored with the model.
+  5. Treat patients recorded dead without a death day as deaths at last contact.
+  6. Report simulation fidelity with every evaluation.
+- **Rationale and evidence:** The outcome model was calibrated line by line, but simulated states drifted from how the data records states. After an event 12 or more months out, 72% of next lines are "recurrent", whereas the old rule mostly produced "progressive". After a tumor-free response, 75% of next lines record a tumor-free last status, whereas the old rule always wrote "with tumor". After these changes, simulated against observed survival at 12, 24, 36, 48 and 60 months is:
+  - training patients: 0.92/0.92, 0.78/0.80, 0.63/0.63, 0.50/0.48, 0.28/0.35;
+  - validation patients: 0.91/0.96, 0.78/0.78, 0.65/0.63, 0.53/0.41, 0.31/0.24.
+- **Consequences and risks:** Trajectories now track observed survival through 4 years on training patients. Residual 5-year bias is within about ±0.1 and changes sign between splits. The evaluation twin (ensemble members 5–9) shares training data and early stopping with the training twin, so it guards against member-specific exploitation, not dataset bias.
+- **Validation / follow-up:** Repeat the fidelity check for subgroups (stage, residual tumor, platinum sensitivity); add external data if available.

@@ -7,7 +7,8 @@ import torch
 
 from digital_twin_rl.data import build_patient, stage_number
 from digital_twin_rl.dqn import DQNConfig, DQNPolicy, ReplayBuffer, train_dqn
-from digital_twin_rl.environment import RewardConfig, TwinTreatmentEnv, safety_mask
+from digital_twin_rl.environment import RewardConfig, TwinTreatmentEnv, mask_with_flags, safety_mask
+from digital_twin_rl.evaluate import kaplan_meier
 from digital_twin_rl.outcome_model import (HORIZON_MONTHS, STATE_FEATURES, OutcomeEnsemble, OutcomeNet,
                                            discrete_survival_nll, encode_state, restricted_mean_months, time_bin)
 from digital_twin_rl.policies import GuidelinePolicy
@@ -65,8 +66,16 @@ class DataTests(unittest.TestCase):
         self.assertEqual(first["outcome"]["response"], 1)
         self.assertEqual(first["outcome"]["pfs_event"], 1)
         self.assertAlmostEqual(first["outcome"]["pfs_months"], (380 - 20) / 30.44, places=3)
+        self.assertEqual(first["outcome"]["pfs_event_is_death"], 0)
         self.assertEqual(first["outcome"]["os_event"], 1)
         self.assertAlmostEqual(second["outcome"]["os_months"], (900 - 400) / 30.44, places=3)
+        self.assertEqual(second["outcome"]["pfs_event_is_death"], 1)
+
+    def test_dead_without_death_day_is_an_event_not_censoring(self):
+        case = dict(CASE, demographic={"age_at_index": 60, "vital_status": "Dead"})
+        patient = build_patient(case, "train")
+        self.assertTrue(patient["death_day_imputed"])
+        self.assertEqual(patient["lines"][-1]["outcome"]["os_event"], 1)
 
     def test_second_line_state_tracks_prior_platinum(self):
         state = self.patient["lines"][1]["state"]
@@ -99,6 +108,13 @@ class OutcomeModelTests(unittest.TestCase):
         self.assertIsNone(sample_event_time(np.zeros(6), 0.5))
         t = sample_event_time(np.array([1.0, 0, 0, 0, 0, 0]), 0.5)
         self.assertTrue(0.0 <= t <= 3.0)
+        last = sample_event_time(np.array([0, 0, 0, 0, 0, 1.0]), 0.5)
+        self.assertTrue(48.0 <= last <= HORIZON_MONTHS)
+
+    def test_kaplan_meier(self):
+        km = kaplan_meier(np.array([5.0, 10.0, 20.0, 30.0]), np.array([1, 0, 1, 0]), (12.0, 24.0))
+        self.assertAlmostEqual(km["12m"], 0.75)
+        self.assertAlmostEqual(km["24m"], 0.75 * 0.5)
 
 
 class ToxicityAndSafetyTests(unittest.TestCase):
@@ -126,6 +142,12 @@ class ToxicityAndSafetyTests(unittest.TestCase):
         self.assertFalse(poor[0])
         self.assertTrue(poor.any())
 
+    def test_fallback_is_flagged_when_rules_exclude_everything(self):
+        mask, flags = mask_with_flags({"severe_toxicity_history": {"hypersensitivity": 1}},
+                                      [["platinum"], ["platinum", "taxanes"]])
+        self.assertTrue(flags["safety_fallback"])
+        self.assertTrue(mask.any())
+
 
 class TwinEnvironmentTests(unittest.TestCase):
     def setUp(self):
@@ -141,8 +163,13 @@ class TwinEnvironmentTests(unittest.TestCase):
         self.assertIn("neuropathy", prediction["side_effects"]["levels"])
         outcome = twin.step(["platinum"], random.Random(0))
         self.assertGreaterEqual(outcome["months_on_line"], 0.0)
+        self.assertFalse(outcome["progressed"] and outcome["died"])
         if outcome["progressed"]:
             self.assertEqual(twin.state["line_number"], 3)
+        with self.assertRaises(ValueError):
+            PatientDigitalTwin(self.histories[0], self.ensemble, self.tox, start_line=-1)
+        with self.assertRaises(ValueError):
+            PatientDigitalTwin(self.histories[0], self.ensemble, self.tox, start_line=2)
 
     def test_episode_runs_and_masked_actions_are_rejected(self):
         env = TwinTreatmentEnv(self.histories, self.ensemble, self.tox, REGIMENS, start="random",
