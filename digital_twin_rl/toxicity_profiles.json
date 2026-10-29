@@ -1,0 +1,30 @@
+{
+  "status": "ASSUMPTION - knowledge-based prior, not learned from TCGA-OV (the export has no adverse-event fields). Requires clinician review before any use beyond simulation research.",
+  "basis": "Qualitative class-level toxicity profiles summarised from standard drug labelling for the agents mapped to each class in this cohort (e.g. carboplatin, paclitaxel, pegylated liposomal doxorubicin, topotecan, gemcitabine, cyclophosphamide, bevacizumab, tamoxifen/letrozole, vinorelbine). Levels are ordinal (0 none, 1 low, 2 moderate, 3 high), not incidence rates.",
+  "organs": ["hematologic", "neuropathy", "cardiac", "renal", "gastrointestinal", "dermatologic", "vascular", "hypersensitivity"],
+  "class_levels": {
+    "platinum":                 {"hematologic": 2, "neuropathy": 1, "renal": 1, "gastrointestinal": 2, "hypersensitivity": 1},
+    "taxanes":                  {"hematologic": 2, "neuropathy": 3, "gastrointestinal": 1, "dermatologic": 1, "hypersensitivity": 1},
+    "anthracyclines":           {"hematologic": 2, "cardiac": 2, "gastrointestinal": 1, "dermatologic": 3, "hypersensitivity": 1},
+    "antimetabolites":          {"hematologic": 2, "gastrointestinal": 1, "dermatologic": 1},
+    "topoisomerase_inhibitors": {"hematologic": 3, "gastrointestinal": 2},
+    "alkylating_agents":        {"hematologic": 2, "renal": 1, "gastrointestinal": 1},
+    "anti_angiogenics":         {"cardiac": 1, "renal": 1, "gastrointestinal": 1, "vascular": 2},
+    "hormonal_agents":          {"vascular": 1},
+    "vinca_alkaloids":          {"hematologic": 2, "neuropathy": 2, "gastrointestinal": 1},
+    "radiation":                {"hematologic": 1, "gastrointestinal": 2, "dermatologic": 1},
+    "other":                    {"hematologic": 1, "gastrointestinal": 1}
+  },
+  "severe_event_probability_by_score": {"0": 0.0, "1": 0.04, "2": 0.12, "3": 0.25, "4": 0.35},
+  "max_probability": 0.5,
+  "combination_overlap_weight": 0.3,
+  "modifiers": {
+    "age_at_least_70": 0.5,
+    "ecog_at_least_2": 0.5,
+    "cumulative_per_prior_line": 0.25,
+    "cumulative_cap": 1.0,
+    "cumulative_organs": ["neuropathy", "cardiac", "renal", "hypersensitivity"],
+    "prior_severe_event_same_organ": 0.5
+  },
+  "organ_disutility": {"hematologic": 1.0, "neuropathy": 1.0, "cardiac": 1.0, "renal": 1.0, "gastrointestinal": 1.0, "dermatologic": 1.0, "vascular": 1.0, "hypersensitivity": 1.0}
+}

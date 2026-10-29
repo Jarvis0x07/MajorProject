@@ -1,0 +1,204 @@
+{
+  "model": "multi-task MLP ensemble: response, progression-free and overall survival (discrete-time hazards)",
+  "members": [
+    {
+      "seed": 42,
+      "epochs_run": 68,
+      "best_validation_loss": 2.7087597846984863
+    },
+    {
+      "seed": 43,
+      "epochs_run": 75,
+      "best_validation_loss": 2.7043092250823975
+    },
+    {
+      "seed": 44,
+      "epochs_run": 75,
+      "best_validation_loss": 2.643552780151367
+    },
+    {
+      "seed": 45,
+      "epochs_run": 99,
+      "best_validation_loss": 2.682276725769043
+    },
+    {
+      "seed": 46,
+      "epochs_run": 77,
+      "best_validation_loss": 2.7111423015594482
+    },
+    {
+      "seed": 47,
+      "epochs_run": 73,
+      "best_validation_loss": 2.7259793281555176
+    },
+    {
+      "seed": 48,
+      "epochs_run": 78,
+      "best_validation_loss": 2.6545753479003906
+    },
+    {
+      "seed": 49,
+      "epochs_run": 83,
+      "best_validation_loss": 2.657243251800537
+    },
+    {
+      "seed": 50,
+      "epochs_run": 89,
+      "best_validation_loss": 2.6386897563934326
+    },
+    {
+      "seed": 51,
+      "epochs_run": 82,
+      "best_validation_loss": 2.601311206817627
+    }
+  ],
+  "validation": {
+    "split": "validation",
+    "lines": 144,
+    "response": {
+      "labelled_lines": 34,
+      "tumor_free": 8,
+      "auroc_twin": 0.9663461538461539,
+      "auroc_logistic_baseline": 0.9663461538461539,
+      "brier_twin": 0.04979276657104492,
+      "brier_prevalence_baseline": 0.181773925751362,
+      "brier_logistic_baseline": 0.05910138074772314,
+      "mean_predicted": 0.2303815633058548,
+      "observed_rate": 0.23529411764705882
+    },
+    "progression_free_survival": {
+      "lines": 144,
+      "events": 124,
+      "c_index_12m_risk": 0.6613641316190891,
+      "predicted_event_rate_12m": 0.682735025882721,
+      "observed_event_rate_12m_known_status": 0.6917293233082706
+    },
+    "overall_survival": {
+      "lines": 144,
+      "events": 95,
+      "c_index_12m_risk": 0.7606017191977077,
+      "predicted_event_rate_12m": 0.24526166915893555,
+      "observed_event_rate_12m_known_status": 0.20930232558139536
+    },
+    "regimen_signal": {
+      "heldout_nll_true_regimens": 2.6727839708328247,
+      "heldout_nll_shuffled_regimens_mean": 2.896107031106949,
+      "nll_increase_when_shuffled": 0.22332306027412407,
+      "interpretation": "Positive means the observed regimen carries predictive signal beyond the state; it is not a causal effect estimate."
+    },
+    "mean_member_std_response": 0.05041101947426796
+  },
+  "test": {
+    "split": "test",
+    "lines": 132,
+    "response": {
+      "labelled_lines": 28,
+      "tumor_free": 5,
+      "auroc_twin": 0.8869565217391305,
+      "auroc_logistic_baseline": 0.8608695652173913,
+      "brier_twin": 0.08650408685207367,
+      "brier_prevalence_baseline": 0.1566146685000743,
+      "brier_logistic_baseline": 0.09177295850519303,
+      "mean_predicted": 0.13130395114421844,
+      "observed_rate": 0.17857142857142858
+    },
+    "progression_free_survival": {
+      "lines": 132,
+      "events": 110,
+      "c_index_12m_risk": 0.5963749492763425,
+      "predicted_event_rate_12m": 0.6861714124679565,
+      "observed_event_rate_12m_known_status": 0.675
+    },
+    "overall_survival": {
+      "lines": 132,
+      "events": 77,
+      "c_index_12m_risk": 0.6917808219178082,
+      "predicted_event_rate_12m": 0.2241765260696411,
+      "observed_event_rate_12m_known_status": 0.22413793103448276
+    },
+    "regimen_signal": {
+      "heldout_nll_true_regimens": 3.0775462865829466,
+      "heldout_nll_shuffled_regimens_mean": 3.3259278929233553,
+      "nll_increase_when_shuffled": 0.24838160634040873,
+      "interpretation": "Positive means the observed regimen carries predictive signal beyond the state; it is not a causal effect estimate."
+    },
+    "mean_member_std_response": 0.04752662777900696
+  },
+  "test_training_twin_members": {
+    "split": "test",
+    "lines": 132,
+    "response": {
+      "labelled_lines": 28,
+      "tumor_free": 5,
+      "auroc_twin": 0.8782608695652174,
+      "auroc_logistic_baseline": 0.8608695652173913,
+      "brier_twin": 0.0871473178267479,
+      "brier_prevalence_baseline": 0.1566146685000743,
+      "brier_logistic_baseline": 0.09177295850519303,
+      "mean_predicted": 0.13051019608974457,
+      "observed_rate": 0.17857142857142858
+    },
+    "progression_free_survival": {
+      "lines": 132,
+      "events": 110,
+      "c_index_12m_risk": 0.5977275801433789,
+      "predicted_event_rate_12m": 0.6806200742721558,
+      "observed_event_rate_12m_known_status": 0.675
+    },
+    "overall_survival": {
+      "lines": 132,
+      "events": 77,
+      "c_index_12m_risk": 0.7073306182895224,
+      "predicted_event_rate_12m": 0.22016336023807526,
+      "observed_event_rate_12m_known_status": 0.22413793103448276
+    },
+    "regimen_signal": {
+      "heldout_nll_true_regimens": 3.0450285911560058,
+      "heldout_nll_shuffled_regimens_mean": 3.281139149665832,
+      "nll_increase_when_shuffled": 0.23611055850982643,
+      "interpretation": "Positive means the observed regimen carries predictive signal beyond the state; it is not a causal effect estimate."
+    },
+    "mean_member_std_response": 0.03908788040280342
+  },
+  "test_evaluation_twin_members": {
+    "split": "test",
+    "lines": 132,
+    "response": {
+      "labelled_lines": 28,
+      "tumor_free": 5,
+      "auroc_twin": 0.8782608695652174,
+      "auroc_logistic_baseline": 0.8608695652173913,
+      "brier_twin": 0.08611331880092621,
+      "brier_prevalence_baseline": 0.1566146685000743,
+      "brier_logistic_baseline": 0.09177295850519303,
+      "mean_predicted": 0.1320977360010147,
+      "observed_rate": 0.17857142857142858
+    },
+    "progression_free_survival": {
+      "lines": 132,
+      "events": 110,
+      "c_index_12m_risk": 0.5944812660624915,
+      "predicted_event_rate_12m": 0.6909692287445068,
+      "observed_event_rate_12m_known_status": 0.675
+    },
+    "overall_survival": {
+      "lines": 132,
+      "events": 77,
+      "c_index_12m_risk": 0.6830803406145872,
+      "predicted_event_rate_12m": 0.22785760462284088,
+      "observed_event_rate_12m_known_status": 0.22413793103448276
+    },
+    "regimen_signal": {
+      "heldout_nll_true_regimens": 3.110063982009888,
+      "heldout_nll_shuffled_regimens_mean": 3.3707166361808776,
+      "nll_increase_when_shuffled": 0.2606526541709897,
+      "interpretation": "Positive means the observed regimen carries predictive signal beyond the state; it is not a causal effect estimate."
+    },
+    "mean_member_std_response": 0.04429630935192108
+  },
+  "limits": [
+    "Observational associations: treatment choice depends on unrecorded clinical factors (confounding by indication).",
+    "Progression uses explicit progression/recurrence days, next-line start, or death; it is a real-world proxy, not RECIST.",
+    "Side effects come from toxicity_profiles.json (assumed priors), not from this model."
+  ]
+}

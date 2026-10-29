@@ -1,0 +1,94 @@
+[
+  {
+    "regimen": [
+      "platinum",
+      "taxanes"
+    ],
+    "train_lines": 419
+  },
+  {
+    "regimen": [
+      "platinum"
+    ],
+    "train_lines": 86
+  },
+  {
+    "regimen": [
+      "anthracyclines"
+    ],
+    "train_lines": 82
+  },
+  {
+    "regimen": [
+      "topoisomerase_inhibitors"
+    ],
+    "train_lines": 74
+  },
+  {
+    "regimen": [
+      "taxanes"
+    ],
+    "train_lines": 72
+  },
+  {
+    "regimen": [
+      "antimetabolites",
+      "platinum"
+    ],
+    "train_lines": 43
+  },
+  {
+    "regimen": [
+      "antimetabolites"
+    ],
+    "train_lines": 36
+  },
+  {
+    "regimen": [
+      "hormonal_agents"
+    ],
+    "train_lines": 28
+  },
+  {
+    "regimen": [
+      "antimetabolites",
+      "platinum",
+      "taxanes"
+    ],
+    "train_lines": 22
+  },
+  {
+    "regimen": [
+      "alkylating_agents"
+    ],
+    "train_lines": 16
+  },
+  {
+    "regimen": [
+      "alkylating_agents",
+      "platinum"
+    ],
+    "train_lines": 14
+  },
+  {
+    "regimen": [
+      "radiation"
+    ],
+    "train_lines": 12
+  },
+  {
+    "regimen": [
+      "topoisomerase_inhibitors",
+      "vinca_alkaloids"
+    ],
+    "train_lines": 11
+  },
+  {
+    "regimen": [
+      "anti_angiogenics",
+      "platinum",
+      "taxanes"
+    ],
+    "train_lines": 10
+  }
+]
