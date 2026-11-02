@@ -175,18 +175,26 @@ def _subset(data: dict[str, torch.Tensor], index: torch.Tensor) -> dict[str, tor
     return {k: v[index] for k, v in data.items()}
 
 
+def bootstrap_patients(patients: list[str], seed: int) -> list[str]:
+    """Patients drawn with replacement for the member trained with `seed`.
+
+    Bootstrapping by patient keeps all of one patient's lines together; it is
+    deterministic so out-of-bag membership can be recovered later.
+    """
+    rng = random.Random(seed)
+    return [rng.choice(patients) for _ in patients]
+
+
 def train_member(train_rows: list[dict], val: dict[str, torch.Tensor], seed: int,
                  hidden: int, epochs: int, patience: int) -> tuple[OutcomeNet, dict]:
     if not train_rows or val["state"].shape[0] == 0:
         raise ValueError("Outcome-model training needs non-empty train and validation splits")
     torch.manual_seed(seed)
-    rng = random.Random(seed)
-    # Bootstrap by patient so all of one patient's lines stay together.
     patients = sorted({r["patient_id"] for r in train_rows})
     by_patient: dict[str, list[dict]] = {}
     for row in train_rows:
         by_patient.setdefault(row["patient_id"], []).append(row)
-    sample = [row for _ in patients for row in by_patient[rng.choice(patients)]]
+    sample = [row for pid in bootstrap_patients(patients, seed) for row in by_patient[pid]]
     train = tensorize(sample)
     model = OutcomeNet(len(STATE_FEATURES), len(ACTION_CLASSES), hidden)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-3)
@@ -261,10 +269,12 @@ def transition_stats(histories: list[dict]) -> dict:
 
 
 class OutcomeEnsemble:
-    def __init__(self, models: list[OutcomeNet], hidden: int, transitions: dict | None = None):
+    def __init__(self, models: list[OutcomeNet], hidden: int, transitions: dict | None = None,
+                 member_seeds: list[int] | None = None):
         self.models = models
         self.hidden = hidden
         self.transitions = transitions
+        self.member_seeds = member_seeds
 
     def __len__(self) -> int:
         return len(self.models)
@@ -282,7 +292,7 @@ class OutcomeEnsemble:
     def save(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save({"hidden": self.hidden, "state_features": STATE_FEATURES, "action_classes": ACTION_CLASSES,
-                    "time_bins": TIME_BINS, "transitions": self.transitions,
+                    "time_bins": TIME_BINS, "transitions": self.transitions, "member_seeds": self.member_seeds,
                     "model_state_dicts": [m.state_dict() for m in self.models]}, path)
 
     @classmethod
@@ -298,7 +308,7 @@ class OutcomeEnsemble:
             model.load_state_dict(state_dict)
             model.eval()
             models.append(model)
-        return cls(models, checkpoint["hidden"], checkpoint.get("transitions"))
+        return cls(models, checkpoint["hidden"], checkpoint.get("transitions"), checkpoint.get("member_seeds"))
 
 
 def train_ensemble(histories: list[dict], members: int = 10, hidden: int = 64, epochs: int = 400,
@@ -310,7 +320,7 @@ def train_ensemble(histories: list[dict], members: int = 10, hidden: int = 64, e
         model, report = train_member(train_rows, val, seed + k, hidden, epochs, patience)
         models.append(model)
         reports.append(report)
-    return OutcomeEnsemble(models, hidden, transition_stats(histories)), reports
+    return OutcomeEnsemble(models, hidden, transition_stats(histories), [seed + k for k in range(members)]), reports
 
 
 def concordance_index(times: np.ndarray, events: np.ndarray, risks: np.ndarray) -> float | None:

@@ -1,0 +1,52 @@
+{
+  "format": "ovarian-twin-record/v1",
+  "patient_label": "Demo patient D",
+  "age_at_diagnosis": 74,
+  "figo_stage": "IIIC",
+  "tumor_grade": "G3",
+  "residual_tumor_after_surgery": "1-10 mm",
+  "treatments": [
+    {
+      "drugs": [
+        "Paclitaxel",
+        "Carboplatin"
+      ],
+      "start_month": 0.39,
+      "end_month": 4.76
+    },
+    {
+      "drugs": [
+        "Paclitaxel",
+        "Carboplatin"
+      ],
+      "start_month": 15.87,
+      "end_month": 22.34,
+      "reason": "recurrence"
+    },
+    {
+      "drugs": [
+        "Tamoxifen"
+      ],
+      "start_month": 22.01,
+      "end_month": 27.99,
+      "reason": "recurrence"
+    },
+    {
+      "drugs": [
+        "Carboplatin",
+        "Paclitaxel"
+      ],
+      "start_month": 28.91,
+      "end_month": 33.51,
+      "reason": "progression"
+    }
+  ],
+  "follow_ups": [
+    {
+      "month": 16.13,
+      "event": "recurrence"
+    }
+  ],
+  "today_month": 35.51,
+  "current_situation": "progression"
+}

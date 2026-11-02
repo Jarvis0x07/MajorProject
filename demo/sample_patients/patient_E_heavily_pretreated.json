@@ -1,0 +1,43 @@
+{
+  "format": "ovarian-twin-record/v1",
+  "patient_label": "Demo patient E",
+  "age_at_diagnosis": 65,
+  "figo_stage": "IIIC",
+  "tumor_grade": "G3",
+  "residual_tumor_after_surgery": "1-10 mm",
+  "treatments": [
+    {
+      "drugs": [
+        "Paclitaxel",
+        "Carboplatin"
+      ],
+      "start_month": 0.69,
+      "end_month": 5.29
+    },
+    {
+      "drugs": [
+        "Pegylated Liposomal Doxorubicin Hydrochloride"
+      ],
+      "start_month": 10.81,
+      "end_month": 17.25,
+      "reason": "recurrence"
+    },
+    {
+      "drugs": [
+        "Topotecan",
+        "Vinorelbine Tartrate"
+      ],
+      "start_month": 18.17,
+      "end_month": 19.15,
+      "reason": "progression"
+    }
+  ],
+  "follow_ups": [
+    {
+      "month": 10.51,
+      "event": "recurrence"
+    }
+  ],
+  "today_month": 19.61,
+  "current_situation": "progression"
+}

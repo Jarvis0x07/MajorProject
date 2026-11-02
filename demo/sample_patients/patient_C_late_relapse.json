@@ -1,0 +1,30 @@
+{
+  "format": "ovarian-twin-record/v1",
+  "patient_label": "Demo patient C",
+  "age_at_diagnosis": 53,
+  "figo_stage": "IIIC",
+  "tumor_grade": "G3",
+  "residual_tumor_after_surgery": "none",
+  "treatments": [
+    {
+      "drugs": [
+        "Paclitaxel",
+        "Cisplatin"
+      ],
+      "start_month": 1.15,
+      "end_month": 5.29
+    }
+  ],
+  "follow_ups": [
+    {
+      "month": 28.61,
+      "event": "recurrence"
+    },
+    {
+      "month": 29.96,
+      "tumor_status": "tumor present"
+    }
+  ],
+  "today_month": 31.6,
+  "current_situation": "recurrence"
+}

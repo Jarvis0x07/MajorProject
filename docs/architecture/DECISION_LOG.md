@@ -193,3 +193,18 @@ Record important choices here so that the project explains not only **what** was
   - validation patients: 0.91/0.96, 0.78/0.78, 0.65/0.63, 0.53/0.41, 0.31/0.24.
 - **Consequences and risks:** Trajectories now track observed survival through 4 years on training patients. Residual 5-year bias is within about ±0.1 and changes sign between splits. The evaluation twin (ensemble members 5–9) shares training data and early stopping with the training twin, so it guards against member-specific exploitation, not dataset bias.
 - **Validation / follow-up:** Repeat the fidelity check for subgroups (stage, residual tumor, platinum sensitivity); add external data if available.
+
+## ADR-016 — On-the-spot twins from the 5 nearest stored twins, and a guideline constraint layer (mid-semester demo)
+- **Date:** 2026-11-03
+- **Status:** Accepted and implemented (`digital_twin_rl/neighbor_twin.py`, `digital_twin_rl/record.py`, `demo/`)
+- **Context:** The mid-semester review covers Objectives 1–3 and needs a demo. In it, a patient record is uploaded, a new twin is created for that patient, a medication is chosen, and the twin predicts its effect. Showing similar patients' real outcomes was rejected, because it could look like copying answers from the dataset.
+- **Decision:**
+  1. Store every training patient's decision points (1,070) with out-of-bag outcome-model predictions, recovered from the deterministic per-member bootstrap.
+  2. For an uploaded record (`ovarian-twin-record/v1`, parsed through the same code as the training data), find the 5 nearest stored decision points from distinct patients by z-scored state distance.
+  3. Build a new twin: the shared ensemble evaluated at the patient's own state, with its progression hazards shifted by the shrunken observed/expected event ratio of those 5 twins plus the patient's own earlier lines (prior strength 10 expected events). Survival and response are not adjusted.
+  4. Show only this twin's predictions. Neighbours appear as non-outcome profiles.
+  5. Add a guideline constraint: platinum is flagged in platinum-resistant relapse, and the agent may not choose it.
+- **Alternatives considered:** Neighbours' outcomes as an evidence panel (rejected by the project owner); a pure 5-neighbour twin (cannot judge regimens the neighbours never received); fine-tuning a network on the 5 neighbours (too little data); 12-month binary residuals (noisier, and worse on validation).
+- **Rationale and evidence:** On validation patients, the chosen setting lowered 12-month progression Brier from 0.1955 to 0.1929. Test was unchanged (0.2123 to 0.2122). Survival and response adjustments from 5 neighbours made validation predictions worse. An early observed/expected version miscounted the event bin; it was corrected to match the training likelihood, after which the database-wide observed/expected ratio is 0.98. The constraint layer answers the confounding found in ADR-014: without it, the twin and the basic agent favour platinum for platinum-resistant patients.
+- **Consequences and risks:** Each uploaded patient gets a unique twin in about 10 ms. The personalisation effect is modest by design. 10 neighbours improved accuracy more in a quick check, which is a candidate change for semester 2. The constraint layer encodes one guideline rule; further rules need clinical review.
+- **Validation / follow-up:** Browser tests cover all demo files, all three explore views, invalid uploads and a 375 px viewport. Unit and API tests are in `tests/test_demo.py`.

@@ -1,5 +1,14 @@
 # Patient Digital Twins and RL Treatment Optimization for Ovarian Cancer
 
+## Mid-semester demo (Objectives 1–3)
+
+```powershell
+python -m pip install -r requirements-demo.txt
+python -m demo        # then open http://localhost:8000
+```
+
+Upload a patient record from `demo/sample_patients/`. A new twin is built for that patient on the spot from the 5 most similar of 1,070 stored twins. Choose a medication to see the twin's predicted response, progression, survival and side-effect risks, simulate the next five years, or ask the basic RL agent. See [`demo/README.md`](demo/README.md).
+
 ## Current system: `digital_twin_rl/`
 
 Every TCGA-OV patient gets a **digital twin**. Given the patient's current situation and a candidate regimen, the twin predicts tumor response, time to progression, survival and severe side-effect risk, with uncertainty. An **RL doctor** (masked Double DQN, plus a BCQ-constrained variant) learns a treatment strategy by treating the twins, which act as its environment.

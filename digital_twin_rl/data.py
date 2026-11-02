@@ -136,11 +136,55 @@ def latest_known(timeline: list[dict], day: int, field: str):
     return None
 
 
+def patient_static(case: dict, undated_given: int) -> dict:
+    primary = choose_primary_diagnosis(case)
+    return {
+        "age_at_diagnosis": as_number((case.get("demographic") or {}).get("age_at_index")),
+        "stage": stage_number(primary.get("figo_stage")),
+        "grade": GRADE_LEVELS.get(clean(primary.get("tumor_grade"))),
+        "residual": residual_level(primary),
+        "undated_history": int(undated_given > 0),
+    }
+
+
+def pre_line_state(static: dict, previous: list[dict], timeline: list[dict], start: int, setting: str) -> dict:
+    """What is known just before a treatment line starting on day `start`."""
+    age = static["age_at_diagnosis"]
+    exposure = Counter(c for p in previous for c in p["classes"])
+    platinum_lines = [p for p in previous if "platinum" in p["classes"]]
+    last_platinum = (platinum_lines[-1]["end"] or platinum_lines[-1]["start"]) if platinum_lines else None
+    prev_end = (previous[-1]["end"] or previous[-1]["start"]) if previous else None
+    tumor = latest_known(timeline, start, "response")
+    return {
+        "age_years": age + start / 365.25 if age is not None else None,
+        "stage": static["stage"],
+        "grade": static["grade"],
+        "residual": static["residual"],
+        "line_number": len(previous) + 1,
+        "months_since_diagnosis": months(start),
+        "setting": setting,
+        "last_tumor_status": "TF" if tumor == "TF-Tumor Free" else "WT" if tumor == "WT-With Tumor" else None,
+        "ecog": as_number(latest_known(timeline, start, "ecog")),
+        "karnofsky": as_number(latest_known(timeline, start, "karnofsky")),
+        "prior_exposure": {c: exposure[c] for c in ACTION_CLASSES if exposure[c]},
+        "months_since_last_platinum": months(max(0, start - last_platinum)) if last_platinum is not None else None,
+        "months_since_last_line": months(max(0, start - prev_end)) if prev_end is not None else None,
+        "undated_history": static["undated_history"],
+    }
+
+
+def state_at(case: dict, day: int, setting: str | None = None) -> dict:
+    """Pre-treatment state for a new line starting on `day` (for example 'today' in an uploaded record)."""
+    members, undated_given = given_treatments(case)
+    previous = [line for line in group_lines(members) if line["start"] < day]
+    if setting is None:
+        setting = "primary" if not previous else "unknown"
+    return pre_line_state(patient_static(case, undated_given), previous, response_timeline(case), day, setting)
+
+
 def build_patient(case: dict, split: str) -> dict:
     patient_id = str(case.get("case_id") or case.get("submitter_id"))
     demographic = case.get("demographic") or {}
-    primary = choose_primary_diagnosis(case)
-    age = as_number(demographic.get("age_at_index"))
     members, undated_given = given_treatments(case)
     lines = group_lines(members)
     timeline = response_timeline(case)
@@ -150,39 +194,12 @@ def build_patient(case: dict, split: str) -> dict:
     death_day_imputed = death_day is None and clean(demographic.get("vital_status")).lower() == "dead"
     if death_day_imputed:
         death_day = last_day    # recorded dead without a death day: event at last contact, not censoring
-    static = {
-        "age_at_diagnosis": age,
-        "stage": stage_number(primary.get("figo_stage")),
-        "grade": GRADE_LEVELS.get(clean(primary.get("tumor_grade"))),
-        "residual": residual_level(primary),
-        "undated_history": int(undated_given > 0),
-    }
+    static = patient_static(case, undated_given)
 
     built = []
     for index, line in enumerate(lines):
         start = line["start"]
-        previous = lines[:index]
-        exposure = Counter(c for p in previous for c in p["classes"])
-        platinum_lines = [p for p in previous if "platinum" in p["classes"]]
-        last_platinum = (platinum_lines[-1]["end"] or platinum_lines[-1]["start"]) if platinum_lines else None
-        prev_end = (previous[-1]["end"] or previous[-1]["start"]) if previous else None
-        tumor = latest_known(timeline, start, "response")
-        state = {
-            "age_years": age + start / 365.25 if age is not None else None,
-            "stage": static["stage"],
-            "grade": static["grade"],
-            "residual": static["residual"],
-            "line_number": index + 1,
-            "months_since_diagnosis": months(start),
-            "setting": line["setting"],
-            "last_tumor_status": "TF" if tumor == "TF-Tumor Free" else "WT" if tumor == "WT-With Tumor" else None,
-            "ecog": as_number(latest_known(timeline, start, "ecog")),
-            "karnofsky": as_number(latest_known(timeline, start, "karnofsky")),
-            "prior_exposure": {c: exposure[c] for c in ACTION_CLASSES if exposure[c]},
-            "months_since_last_platinum": months(max(0, start - last_platinum)) if last_platinum is not None else None,
-            "months_since_last_line": months(max(0, start - prev_end)) if prev_end is not None else None,
-            "undated_history": static["undated_history"],
-        }
+        state = pre_line_state(static, lines[:index], timeline, start, line["setting"])
 
         next_start = lines[index + 1]["start"] if index + 1 < len(lines) else None
         response_window_end = min(start + RESPONSE_MAX_DAYS, next_start) if next_start else start + RESPONSE_MAX_DAYS

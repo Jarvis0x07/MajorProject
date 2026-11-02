@@ -1,0 +1,12 @@
+{
+  "format": "ovarian-twin-record/v1",
+  "patient_label": "Demo patient B",
+  "age_at_diagnosis": 68,
+  "figo_stage": "IIIC",
+  "tumor_grade": "G3",
+  "residual_tumor_after_surgery": ">20 mm",
+  "treatments": [],
+  "follow_ups": [],
+  "today_month": 0.76,
+  "current_situation": "newly diagnosed"
+}

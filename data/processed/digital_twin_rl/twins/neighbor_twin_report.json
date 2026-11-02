@@ -1,0 +1,213 @@
+{
+  "validation": {
+    "split": "validation",
+    "k": 5,
+    "decision_points": 144,
+    "results": {
+      "prior_events=1": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.1963975830301899,
+          "auroc": 0.7033404029692472,
+          "mean_predicted": 0.6874846224498031,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.14454876049711538,
+          "auroc": 0.8017429193899782,
+          "mean_predicted": 0.23842560736707938,
+          "observed_rate": 0.20930232558139536
+        }
+      },
+      "prior_events=2": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.19484562063832017,
+          "auroc": 0.7054612937433722,
+          "mean_predicted": 0.6854892682312126,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.1415731693621876,
+          "auroc": 0.8064633260711691,
+          "mean_predicted": 0.23826634329418803,
+          "observed_rate": 0.20930232558139536
+        }
+      },
+      "prior_events=5": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.19317717170922433,
+          "auroc": 0.7059915164369034,
+          "mean_predicted": 0.6823413676785347,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.13719117519937313,
+          "auroc": 0.811909949164851,
+          "mean_predicted": 0.23947042319201683,
+          "observed_rate": 0.20930232558139536
+        }
+      },
+      "prior_events=10": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.19288879912946041,
+          "auroc": 0.7078472958642631,
+          "mean_predicted": 0.6803177321763864,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.1343819293072432,
+          "auroc": 0.8137254901960784,
+          "mean_predicted": 0.24145516360452932,
+          "observed_rate": 0.20930232558139536
+        }
+      },
+      "shared model only (no personalisation)": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.19549638635895178,
+          "auroc": 0.6940615058324497,
+          "mean_predicted": 0.6769692758868512,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.13002024752121277,
+          "auroc": 0.8115468409586056,
+          "mean_predicted": 0.24765004714330038,
+          "observed_rate": 0.20930232558139536
+        }
+      },
+      "chosen: pfs prior_events=10, os prior_events=inf": {
+        "pfs12": {
+          "n": 133,
+          "brier": 0.19288879912946041,
+          "auroc": 0.7078472958642631,
+          "mean_predicted": 0.6803177321763864,
+          "observed_rate": 0.6917293233082706
+        },
+        "os12": {
+          "n": 129,
+          "brier": 0.13002024752121277,
+          "auroc": 0.8115468409586056,
+          "mean_predicted": 0.24765004714330038,
+          "observed_rate": 0.20930232558139536
+        }
+      }
+    }
+  },
+  "test": {
+    "split": "test",
+    "k": 5,
+    "decision_points": 132,
+    "results": {
+      "prior_events=1": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.22264534784448892,
+          "auroc": 0.6296296296296297,
+          "mean_predicted": 0.6887869690855344,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.1386377183570266,
+          "auroc": 0.7662393162393163,
+          "mean_predicted": 0.20128359517146802,
+          "observed_rate": 0.22413793103448276
+        }
+      },
+      "prior_events=2": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.21917834781242412,
+          "auroc": 0.6340614118391896,
+          "mean_predicted": 0.6865215515096982,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.13710765433303151,
+          "auroc": 0.7623931623931623,
+          "mean_predicted": 0.20139343008912844,
+          "observed_rate": 0.22413793103448276
+        }
+      },
+      "prior_events=5": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.21446218498738517,
+          "auroc": 0.6419753086419753,
+          "mean_predicted": 0.6827469890316328,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.1359242657360494,
+          "auroc": 0.7641025641025642,
+          "mean_predicted": 0.20423772468649107,
+          "observed_rate": 0.22413793103448276
+        }
+      },
+      "prior_events=10": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.21224694254967277,
+          "auroc": 0.6438746438746438,
+          "mean_predicted": 0.6801685025294621,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.13561894727627716,
+          "auroc": 0.7611111111111112,
+          "mean_predicted": 0.2080468031866797,
+          "observed_rate": 0.22413793103448276
+        }
+      },
+      "shared model only (no personalisation)": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.21233422682823858,
+          "auroc": 0.6362773029439696,
+          "mean_predicted": 0.6763400922218958,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.1357954382586335,
+          "auroc": 0.7636752136752137,
+          "mean_predicted": 0.21889203170250202,
+          "observed_rate": 0.22413793103448276
+        }
+      },
+      "chosen: pfs prior_events=10, os prior_events=inf": {
+        "pfs12": {
+          "n": 120,
+          "brier": 0.21224694254967277,
+          "auroc": 0.6438746438746438,
+          "mean_predicted": 0.6801685025294621,
+          "observed_rate": 0.675
+        },
+        "os12": {
+          "n": 116,
+          "brier": 0.1357954382586335,
+          "auroc": 0.7636752136752137,
+          "mean_predicted": 0.21889203170250202,
+          "observed_rate": 0.22413793103448276
+        }
+      }
+    }
+  },
+  "chosen_prior_events": {
+    "pfs": 10.0,
+    "os": null
+  },
+  "note": "Brier score (lower is better) for 12-month progression and death, comparing the shared model alone with twins built from the 5 nearest stored twins (observed/expected events) at several shrinkage strengths. Strengths were chosen on validation; None means not personalised."
+}

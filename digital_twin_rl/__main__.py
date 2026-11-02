@@ -6,6 +6,7 @@ Run from the repository root:
   python -m digital_twin_rl data                      # treatment-line histories + action space
   python -m digital_twin_rl train-twin                # outcome-model ensemble + held-out report
   python -m digital_twin_rl twins                     # one twin card per patient
+  python -m digital_twin_rl twin-db                   # stored-twin database for on-the-spot (5-nearest) twins
   python -m digital_twin_rl train-agent               # DQN and DQN+BCQ doctors inside the twins
   python -m digital_twin_rl evaluate                  # held-out policy comparison + figures
   python -m digital_twin_rl what-if --patient <id>    # every option for one patient
@@ -15,6 +16,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 
 from .data import build_histories, load_histories, write_histories
@@ -23,6 +25,7 @@ from .environment import RewardConfig, TwinTreatmentEnv, supported_regimens
 from .evaluate import evaluate_policies, plot_results, simulation_fidelity
 from .outcome_model import OutcomeEnsemble, evaluate_ensemble, train_ensemble, write_json
 from .policies import BehaviorModel, ClinicianPolicy, GuidelinePolicy, RandomPolicy
+from .neighbor_twin import PRIOR_EVENTS, TwinDatabase, evaluate_neighbor_twins
 from .registry import build_registry, what_if
 from .toxicity import ToxicityModel
 
@@ -101,6 +104,31 @@ def cmd_twins(args) -> None:
     result = build_registry(ctx["histories"], ctx["ensemble"], ctx["toxicity"], ctx["regimens"],
                             list(range(len(ctx["ensemble"]))), args.out / "twins" / "patient_twins.jsonl")
     print(json.dumps(result, indent=2))
+
+
+def cmd_twin_db(args) -> None:
+    histories = load_histories(args.out / "patient_histories.jsonl")
+    ensemble = OutcomeEnsemble.load(args.out / "outcome_ensemble.pt")
+    if not ensemble.member_seeds:
+        # Checkpoints saved before member seeds were stored: recover them from the training report.
+        report = json.loads((args.out / "outcome_model_report.json").read_text(encoding="utf-8"))
+        ensemble.member_seeds = [member["seed"] for member in report["members"]]
+        ensemble.save(args.out / "outcome_ensemble.pt")
+    database = TwinDatabase.build(histories, ensemble)
+    database.save(args.out / "twins" / "twin_database.json")
+    strengths = (1.0, 2.0, 5.0, 10.0, math.inf, PRIOR_EVENTS)
+    report = {split: evaluate_neighbor_twins(histories, ensemble, database, split, strengths)
+              for split in ("validation", "test")}
+    report["chosen_prior_events"] = {k: (None if math.isinf(v) else v) for k, v in PRIOR_EVENTS.items()}
+    report["note"] = ("Brier score (lower is better) for 12-month progression and death, comparing the shared model "
+                      "alone with twins built from the 5 nearest stored twins (observed/expected events) at several "
+                      "shrinkage strengths. Strengths were chosen on validation; None means not personalised.")
+    write_json(args.out / "twins" / "neighbor_twin_report.json", report)
+    print(f"Twin database: {len(database.entries)} stored decision points")
+    for split in ("validation", "test"):
+        for label, metrics in report[split]["results"].items():
+            print(f"  {split:10s} {label:42s} " + "  ".join(
+                f"{k} brier {m['brier']:.4f}" for k, m in metrics.items()))
 
 
 def cmd_train_agent(args) -> None:
@@ -209,7 +237,7 @@ def cmd_what_if(args) -> None:
 
 
 def cmd_all(args) -> None:
-    for step in (cmd_data, cmd_train_twin, cmd_twins, cmd_train_agent, cmd_evaluate):
+    for step in (cmd_data, cmd_train_twin, cmd_twins, cmd_twin_db, cmd_train_agent, cmd_evaluate):
         print(f"\n=== {step.__name__.removeprefix('cmd_').replace('_', '-')} ===")
         step(args)
 
@@ -227,7 +255,7 @@ def main() -> None:
     parser.add_argument("--rollouts", type=int, default=30, help="evaluation rollouts per held-out patient")
     parser.add_argument("--split", default="test", choices=["validation", "test"], help="held-out patients to evaluate")
     sub = parser.add_subparsers(dest="command", required=True)
-    for name, func in (("data", cmd_data), ("train-twin", cmd_train_twin), ("twins", cmd_twins),
+    for name, func in (("data", cmd_data), ("train-twin", cmd_train_twin), ("twins", cmd_twins), ("twin-db", cmd_twin_db),
                        ("train-agent", cmd_train_agent), ("evaluate", cmd_evaluate), ("all", cmd_all)):
         sub.add_parser(name).set_defaults(func=func)
     what = sub.add_parser("what-if", help="compare every regimen for one patient")

@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* Semantic tokens. Teal is the ovarian-cancer awareness colour; coral is reserved for cautions. */
+@theme {
+  --color-paper: #f6f4ee;
+  --color-surface: #ffffff;
+  --color-ink: #16232b;
+  --color-ink-soft: #3e4f58;
+  --color-muted: #5b6b73;
+  --color-line: #dad6cb;
+  --color-line-soft: #e9e6dd;
+  --color-teal: #0e7c7b;
+  --color-teal-deep: #0a5c5b;
+  --color-teal-soft: #dcefec;
+  --color-coral: #b8432a;
+  --color-coral-soft: #f8e4dd;
+  --color-amber: #9a6512;
+  --color-amber-soft: #f6ead2;
+
+  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --shadow-card: 0 1px 0 rgb(22 35 43 / 0.04), 0 8px 24px -12px rgb(22 35 43 / 0.18);
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+  /* Faint graph-paper grid and grain: a lab notebook, not decoration for its own sake. */
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(rgb(22 35 43 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(22 35 43 / 0.035) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 32px 32px, 32px 32px, 160px 160px;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

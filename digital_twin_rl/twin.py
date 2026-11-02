@@ -81,21 +81,28 @@ def sample_event_time(hazards: np.ndarray, u: float) -> float | None:
         if survival_after < u:
             width = (TIME_BINS[j + 1] - TIME_BINS[j]) if j + 1 < len(TIME_BINS) else LAST_BIN_WIDTH
             fraction = (survival_before - u) / max(survival_before - survival_after, 1e-9)
-            return TIME_BINS[j] + width * fraction
+            return float(TIME_BINS[j] + width * fraction)
         survival_before = survival_after
     return None
 
 
 class PatientDigitalTwin:
     def __init__(self, patient: dict, ensemble: OutcomeEnsemble, toxicity: ToxicityModel,
-                 start_line: int = 0, members: list[int] | None = None, calibrate: bool = True):
+                 start_line: int = 0, members: list[int] | None = None, calibrate: bool = True,
+                 current_state: dict | None = None, offsets: dict[str, float] | None = None):
+        """Start at observed line `start_line`, or at `current_state` (a new decision after all
+        recorded lines, e.g. 'today' in an uploaded record). `offsets` replaces own-history calibration."""
         self.patient_id = patient["patient_id"]
         self.split = patient["split"]
         self.ensemble = ensemble
         self.toxicity = toxicity
         self.members = members if members is not None else list(range(len(ensemble)))
         lines = patient["lines"]
-        if lines:
+        if current_state is not None:
+            start_line = len(lines)
+            self.state = copy.deepcopy(current_state)
+            self.state_source = "uploaded record: decision today"
+        elif lines:
             if not 0 <= start_line < len(lines):
                 raise ValueError(f"start_line {start_line} is outside the patient's {len(lines)} observed lines")
             self.state = copy.deepcopy(lines[start_line]["state"])
@@ -106,7 +113,10 @@ class PatientDigitalTwin:
             self.state_source = "synthesized from diagnosis record (no dated treatment lines)"
         self.state["severe_toxicity_history"] = {}
         self.observed_before = lines[:start_line]
-        self.offsets = self._calibrate() if calibrate else {"response": 0.0, "pfs": 0.0}
+        if offsets is not None:
+            self.offsets = dict(offsets)
+        else:
+            self.offsets = self._calibrate() if calibrate else {"response": 0.0, "pfs": 0.0}
         self.months_elapsed = 0.0
         self.end_reason: str | None = None   # "death", "long_term_remission" or "horizon"
 
@@ -145,7 +155,7 @@ class PatientDigitalTwin:
             "response": _shift(pred["response"][:, 0], self.offsets["response"]),
             "pfs": _shift(pred["pfs"][:, 0, :], self.offsets["pfs"]),
             "death_cause": pred["death_cause"][:, 0, :],
-            "os": pred["os"][:, 0, :],
+            "os": _shift(pred["os"][:, 0, :], self.offsets.get("os", 0.0)),
         }
 
     @staticmethod
