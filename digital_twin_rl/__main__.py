@@ -30,7 +30,7 @@ from .registry import build_registry, what_if
 from .toxicity import ToxicityModel
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = ROOT / "clinical.project-tcga-ov.2026-10-09.json"
+DEFAULT_INPUT = ROOT / "data" / "raw" / "clinical.project-tcga-ov.2026-10-09.json"
 DEFAULT_OUT = ROOT / "data" / "processed" / "digital_twin_rl"
 AGENTS = {"dqn": 0.0, "dqn_bcq": None}   # None -> --bcq-threshold
 

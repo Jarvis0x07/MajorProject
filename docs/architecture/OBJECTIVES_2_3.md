@@ -62,11 +62,11 @@ These are adjacent decision-state forecasts, not the separate treatment-to-respo
 
 ## Install and run
 
-PyTorch is required. Install `requirements-transformer.txt` into the same Python environment you use to run the script. Prepare the paper-inspired CSV if it is absent, then train/evaluate the Stage 1 ensemble:
+PyTorch is required. Install `requirements.txt` into the same Python environment you use to run the script. Prepare the paper-inspired CSV if it is absent, then train/evaluate the Stage 1 ensemble:
 
 ```powershell
-python scripts/paper_method_pipeline.py --input .\clinical.project-tcga-ov.2026-10-09.json
-python -m pip install -r requirements-transformer.txt
+python scripts/paper_method_pipeline.py --input .\data\raw\clinical.project-tcga-ov.2026-10-09.json
+python -m pip install -r requirements.txt
 python scripts/transformer_digital_twin.py `
   --input .\data\processed\paper_method\state_action_outcome_candidates.csv `
   --output-dir .\data\processed\transformer_twin

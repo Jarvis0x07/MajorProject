@@ -6,6 +6,10 @@ __pycache__/
 .venv/
 venv/
 
+# Test and tool caches
+.pytest_cache/
+graphify-out/
+
 # Operating-system metadata
 Thumbs.db
 .DS_Store

@@ -169,7 +169,7 @@ Record important choices here so that the project explains not only **what** was
 - **Rationale and evidence:** Masked Double DQN suits a small discrete regimen set with short episodes. The uncertainty penalty, held-out evaluation members, and BCQ support filter are standard defences against an agent exploiting simulator error.
 - **Consequences and risks:** Policy gains are measured inside a learned simulator built on observational data. They are hypotheses about treatment strategies, not evidence of clinical benefit. Safety rules and side-effect penalties are illustrative.
 - **Results (held-out test patients, evaluation twin, final run after ADR-015):**
-  - **From first line:** dqn 43.6 and dqn_bcq 43.7 months of simulated 5-year survival, against 41.5 for the clinician model and 42.6 for the guideline. The paired gain over the clinician model is +2.0 (95% CI 0.5–3.4) for dqn and +2.2 (1.4–3.0) for dqn_bcq.
+  - **From first line:** dqn 43.5 and dqn_bcq 43.7 months of simulated 5-year survival, against 41.5 for the clinician model and 42.6 for the guideline. The paired gain over the clinician model is +2.0 (95% CI 0.5–3.4) for dqn and +2.2 (1.4–3.0) for dqn_bcq.
   - **From first relapse:** 36.8 and 36.9 months, against 32.9 and 33.9; both agents gain +4.0 over the clinician model.
   - **Exploitation:** inside the training twin, dqn gains more (+3.8 and +6.4), so it partly exploits its training members. dqn_bcq transfers better (+2.7 and +5.1).
   - **Platinum:** dqn gives platinum in 68% of platinum-resistant relapses (clinicians 16%, dqn_bcq 33%), extrapolating a confounded association.

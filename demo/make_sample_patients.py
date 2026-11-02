@@ -58,8 +58,8 @@ TEMPLATE = {
 
 
 def main() -> None:
-    cases = {str(c.get("case_id")): c for c in json.loads((ROOT / "clinical.project-tcga-ov.2026-10-09.json")
-                                                         .read_text(encoding="utf-8"))}
+    dataset = ROOT / "data" / "raw" / "clinical.project-tcga-ov.2026-10-09.json"
+    cases = {str(c.get("case_id")): c for c in json.loads(dataset.read_text(encoding="utf-8"))}
     histories = load_histories(ROOT / "data" / "processed" / "digital_twin_rl" / "patient_histories.jsonl")
     test = sorted((p for p in histories if p["split"] == "test" and p["lines"]), key=lambda p: p["patient_id"])
     OUT.mkdir(parents=True, exist_ok=True)

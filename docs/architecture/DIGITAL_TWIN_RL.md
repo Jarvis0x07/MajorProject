@@ -16,7 +16,7 @@ TCGA-OV JSON ─► treatment-line histories ─► outcome-model ensemble ─�
 
 ## How to run
 
-From the repository root, with `requirements-digital-twin-rl.txt` installed:
+From the repository root, with `requirements.txt` installed:
 
 ```powershell
 python -m digital_twin_rl all                                  # every stage (about 40 min on a laptop CPU)
@@ -142,7 +142,7 @@ A first version, with sampled rewards and one-step targets, did not learn. It di
 | random | 31.0 | 0.22 | 2.08 | 15% | 15% |
 | clinician | 41.5 | 0.51 | 2.87 | 31% | 97% |
 | guideline | 42.6 | 0.51 | 2.24 | 35% | 79% |
-| **dqn** | **43.6** | 0.49 | 2.53 | 35% | 50% |
+| **dqn** | **43.5** | 0.49 | 2.53 | 35% | 50% |
 | **dqn_bcq** | **43.7** | 0.51 | 2.78 | 34% | 98% |
 
 Paired differences against the clinician model:

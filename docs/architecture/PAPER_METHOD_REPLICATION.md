@@ -1,6 +1,6 @@
 # Base-Paper Method: Local Replication Plan and Dataset Fit
 
-**Base paper:** Xinyu Qin et al., *Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation*, arXiv:2606.17405v1 (2026). The paper PDF is in `Literature Survey/2606.17405v1.pdf`; the [arXiv record](https://arxiv.org/abs/2606.17405) provides the public version.
+**Base paper:** Xinyu Qin et al., *Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation*, arXiv:2606.17405v1 (2026). The paper PDF is in `docs/literature/2606.17405v1.pdf`; the [arXiv record](https://arxiv.org/abs/2606.17405) provides the public version.
 
 ## What the paper reports
 
@@ -91,7 +91,7 @@ The trained Stage 1 model has a finite report at `data/processed/transformer_twi
 ## Reproduce the local preprocessing
 
 ```powershell
-python scripts/paper_method_pipeline.py --input clinical.project-tcga-ov.2026-10-09.json
+python scripts/paper_method_pipeline.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json
 ```
 
 The pipeline uses only the Python standard library. It does not train models.

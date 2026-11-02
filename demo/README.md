@@ -14,7 +14,7 @@ It can also play the next five years forward and show what the RL agent would ch
 From the repository root, with Python 3.12 or newer (tested on 3.14). The website is pre-built in `web/dist`:
 
 ```powershell
-python -m pip install -r requirements-demo.txt
+python -m pip install -r requirements.txt
 python -m demo
 ```
 

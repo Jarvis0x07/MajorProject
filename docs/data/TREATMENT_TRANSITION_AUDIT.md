@@ -60,7 +60,7 @@ The newer `scripts/paper_method_pipeline.py` answers a related but different que
 ## Reproducibility
 
 ```powershell
-python scripts/audit_treatment_transitions.py --input clinical.project-tcga-ov.2026-10-09.json
+python scripts/audit_treatment_transitions.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json
 ```
 
 The JSON output includes counts by action category, lag summaries, anonymized sample links, and the explicit linkage rules and limitations.

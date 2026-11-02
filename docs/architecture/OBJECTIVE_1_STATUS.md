@@ -10,7 +10,7 @@
 
 | Objective 1 item | Status | Evidence / remaining work |
 |---|---|---|
-| Collect suitable healthcare datasets | Complete for the prototype dataset | `clinical.project-tcga-ov.2026-10-09.json` is now present in the project root. It contains 608 cases. MIMIC-IV is a distinct, credentialed dataset and is not present. |
+| Collect suitable healthcare datasets | Complete for the prototype dataset | `clinical.project-tcga-ov.2026-10-09.json` is in `data/raw/`. It contains 608 cases. MIMIC-IV is a distinct, credentialed dataset and is not present. |
 | Study datasets and choose primary | Complete for prototype | TCGA-OV is selected for an ovarian-cancer long-term trajectory prototype because that is the dataset actually analyzed. It is not sufficient by itself for dense physiology or causal drug optimization. |
 | Define patient state | Paper-aligned preprocessing schema specified; RL approval withheld | See `../data/patient_state_schema.md`. The paper-style pipeline constructs pre-action candidate features; the structural audit enumerates 108 field paths. It finds 364 mapped-action dated-event candidates, while the separate broad audit reports 366 under different filters; both have only 2 links in complete recorded-start histories. |
 | Preprocess records | Complete for supplied export | `../../scripts/preprocess_tcga_ov.py` emitted 8,465 traceable event rows at `../../data/processed/patient_events.csv`; counts match the earlier analysis report. |
@@ -65,11 +65,11 @@ The first implementation deliberately does not bind to a vendor or model. The co
 The scripts use only the Python standard library.
 
 ```powershell
-python scripts/preprocess_tcga_ov.py --input clinical.project-tcga-ov.2026-10-09.json --output-dir data/processed
-python scripts/patient_twin.py --input clinical.project-tcga-ov.2026-10-09.json --output data/processed/patient_states.jsonl
-python scripts/audit_followup_timeline.py --input clinical.project-tcga-ov.2026-10-09.json
-python scripts/evaluate_trajectory_baseline.py --input clinical.project-tcga-ov.2026-10-09.json --repeats 100
-python scripts/compare_llm_trajectory.py --input clinical.project-tcga-ov.2026-10-09.json --model medgemma1.5:4b
+python scripts/preprocess_tcga_ov.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json --output-dir data/processed
+python scripts/patient_twin.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json --output data/processed/patient_states.jsonl
+python scripts/audit_followup_timeline.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json
+python scripts/evaluate_trajectory_baseline.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json --repeats 100
+python scripts/compare_llm_trajectory.py --input data/raw/clinical.project-tcga-ov.2026-10-09.json --model medgemma1.5:4b
 python -m unittest discover -s tests -v
 ```
 

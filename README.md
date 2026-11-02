@@ -1,111 +1,207 @@
-# Patient Digital Twins and RL Treatment Optimization for Ovarian Cancer
+# Digital Twins and Reinforcement Learning for Ovarian Cancer Treatment
 
-## Mid-semester demo (Objectives 1–3)
+A two-semester Major Project. It builds a **digital twin** for each ovarian-cancer patient: a computer model of that patient that predicts what would happen under a given treatment. It then trains a **reinforcement-learning (RL) agent** that learns treatment strategies by "treating" the twins instead of real patients.
 
-```powershell
-python -m pip install -r requirements-demo.txt
-python -m demo        # then open http://localhost:8000
+```text
+patient records ──► digital twin per patient ──► twin used as a simulator ──► RL agent learns by treating twins
+   (TCGA-OV)          (Objective 1)                 (Objective 2)                 (Objective 3)
 ```
 
-Upload a patient record from `demo/sample_patients/`. A new twin is built for that patient on the spot from the 5 most similar of 1,070 stored twins. Choose a medication to see the twin's predicted response, progression, survival and side-effect risks, simulate the next five years, or ask the basic RL agent. See [`demo/README.md`](demo/README.md).
+> Research prototype on public, de-identified data. Not medical advice.
 
-## Current system: `digital_twin_rl/`
+---
 
-Every TCGA-OV patient gets a **digital twin**. Given the patient's current situation and a candidate regimen, the twin predicts tumor response, time to progression, survival and severe side-effect risk, with uncertainty. An **RL doctor** (masked Double DQN, plus a BCQ-constrained variant) learns a treatment strategy by treating the twins, which act as its environment.
+## Project status (end of semester 1)
 
-```powershell
-python -m pip install -r requirements-digital-twin-rl.txt
-python -m digital_twin_rl all                                 # data -> twin -> 587 patient twins -> agents -> evaluation
-python -m digital_twin_rl what-if --patient 098acb76 --line 2   # compare every regimen for one patient
-```
+| Objective | Status | What exists |
+|---|---|---|
+| 1. Patient digital twin | **Done** | A twin for every patient, plus on-the-spot twins for uploaded records, tested on unseen patients |
+| 2. Twin as a simulation environment | **Done** | Simulates treatment line after treatment line; simulated survival matches real survival |
+| 3. RL framework | **Done** | States, actions, reward, safety and guideline constraints, baselines; basic DQN agent trained and checked |
+| 4. Safe RL treatment optimisation | Next semester | Early version: an agent restricted to treatments doctors actually use (BCQ) |
+| 5. Full evaluation | Next semester | Early version: held-out comparison against baselines |
 
-The twin was evaluated on 59 held-out test patients:
-- Tumor response: AUROC 0.86.
-- Overall survival: C-index 0.70, with 12-month mortality predicted at 22.1% against 22.4% observed.
+A **demo website** shows Objectives 1–3 live: upload a patient record, get a twin, test medications on it.
 
-When the twins replay each patient's actual regimens, their simulated survival tracks the observed Kaplan–Meier curve closely through 4 years (training patients: 0.63 simulated vs 0.63 observed at 36 months).
+---
 
-Inside held-out patients' twins, the BCQ-constrained agent gains **+2.2 months** of simulated 5-year survival from first line (95% CI 1.4–3.0) and **+4.0 months** from first relapse (95% CI 2.2–5.9) over a clinician-imitation baseline. It stays within observed practice for 98% of its choices.
+## What has been done, step by step
 
-These are simulation results on observational data. Side-effect risks are assumed priors, because the export has no adverse-event fields. The unconstrained agent over-uses platinum in platinum-resistant relapse. Full method, results and limits: [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md).
+| When | Step |
+|---|---|
+| Sep 2026 | Project plan and objectives |
+| Oct 2 | Literature survey: 11 papers, including the base paper (Qin et al. 2026, arXiv:2606.17405) |
+| Oct 18 | Chose the dataset (TCGA-OV, 608 ovarian-cancer patients); first data cleaning and patient description |
+| Oct 24–27 | Data audits (fields, follow-up timing, treatment timing); simple forecasting baselines. An AI language model (MedGemma) was tried as the twin and dropped: it did no better than guessing |
+| Oct 27–29 | Followed the base paper: 11 drug classes and a Transformer twin. It trained, but could not give usable outcome signals |
+| Oct 30 | **Final twin** (`digital_twin_rl/`). Found and fixed a data bug: 931 "radiation **not** given" records had been counted as treatments. Built the outcome model, per-patient twins, a simulator checked against real survival, and the RL framework with agents and baselines. An independent code review led to fixes |
+| Nov 3 | **Mid-semester demo** (`demo/`): on-the-spot twins built from the 5 most similar stored twins, a guideline constraint layer, and demo patient files |
 
-## Earlier stages: base-paper Transformer twin
+Reasons for each design decision are recorded in [`docs/architecture/DECISION_LOG.md`](docs/architecture/DECISION_LOG.md) (ADR-001 to ADR-016).
 
-This track follows the base paper's core method: a causal Transformer ensemble models patient-state transitions from state/action histories; an outcome/reward model and BCQ policy are later stages. The LLM is reserved for explanation/reporting, not used as the disease-transition model.
+---
 
-### Status of the Transformer track
+## Key results
 
-The TCGA-OV export has 608 case records; 587 have `index_date = Diagnosis`. The paper-inspired preprocessing and 11-class treatment mapping are in `scripts/paper_method_pipeline.py`. The local export has 4,125 treatment records versus 2,552 reported in the paper, and 51 action combinations versus 47. Only two candidate response links remain among patients with complete recorded treatment-start histories.
+All results below are on **patients the models never trained on**.
 
-The Transformer dynamics ensemble has been trained and evaluated. It forecasts the next recorded treatment-decision state, not a treatment-isolated causal effect. Aggregate error is lower than persistence, but stable features favor persistence and tumor status has only 13 known targets, all `WT-With Tumor`. A rollout-environment smoke test succeeded; all 15 rewards were correctly unavailable because tumor status was missing. No outcome/reward model or BCQ/RL policy has been trained. RL and clinical use are not approved.
+**Objective 1: the digital twin is accurate.**
 
-The earlier LLM-based experiment remains as a comparison artifact, not the selected twin. Its full held-out report is `data/processed/objectives_2_3/full_holdout_comparison.json`: the LLM predicted only `WT-With Tumor`, with 73.3% accuracy on valid rows versus 74.2% for the majority baseline, and 0% recall for tumor-free cases.
+| Prediction | Result |
+|---|---|
+| Will the tumour disappear? (AUROC; 0.5 = coin flip, 1 = perfect) | **0.86** |
+| Who dies sooner? (survival C-index) | **0.70** |
+| Death within 1 year: predicted vs actual | **22.1% vs 22.4%** |
 
-## Read the docs
+**Objective 2: the simulator matches reality.** Each training patient's real treatments were replayed in their twin, and the share still alive was compared with what actually happened:
 
-0. [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md) — current system: per-patient twins, RL doctor, held-out results.
-1. [`docs/architecture/PAPER_METHOD_REPLICATION.md`](docs/architecture/PAPER_METHOD_REPLICATION.md) — what the paper did and where local results differ.
-2. [`docs/architecture/OBJECTIVES_2_3.md`](docs/architecture/OBJECTIVES_2_3.md) — Transformer twin, sequence target, MDP, and current status.
-3. [`docs/data/patient_state_schema.md`](docs/data/patient_state_schema.md) — state/action/target separation and field mapping.
-4. [`docs/data/TREATMENT_TRANSITION_AUDIT.md`](docs/data/TREATMENT_TRANSITION_AUDIT.md) — treatment timing and outcome-link limitations.
-5. [`docs/architecture/DECISION_LOG.md`](docs/architecture/DECISION_LOG.md) — decisions, including the switch from the LLM twin experiment to the paper's Transformer approach.
-6. [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) — script catalog, run order, and output locations.
+| Months after first treatment | 12 | 24 | 36 | 48 | 60 |
+|---|---|---|---|---|---|
+| Twins (simulated) | 92% | 78% | 63% | 50% | 28% |
+| Real patients | 92% | 80% | 63% | 48% | 35% |
 
-## Folder map
+**Objective 3: the RL framework works.** The agent's reward rises during training. On 47 unseen patients it beats the baselines, measured as simulated months alive within 5 years from first treatment:
 
-- `scripts/` — preprocessing, audits, Transformer training, environment smoke runner, and retained exploratory scripts.
-- `docs/` — current architecture, dataset schema/audits, and method adaptation.
-- `data/processed/` — generated tables, model checkpoints, and run reports; see its [`README.md`](data/processed/README.md).
-- `Literature Survey/` — source papers and project forms.
-- `Code Files/MajorProject/` — archived nested proposal repository; the project-root README and `docs/` are the current source of truth.
+| Doctor | Months |
+|---|---|
+| Random treatment | 31.0 |
+| Copying usual practice | 41.5 |
+| Simplified guideline | 42.6 |
+| **Basic RL agent (DQN)** | **43.5** |
 
-## Prepare the local paper-style data
+Full details are in [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md).
 
-From this project directory:
+---
 
-```powershell
-python scripts/paper_method_pipeline.py --input .\clinical.project-tcga-ov.2026-10-09.json
-```
+## How to run
 
-Outputs are written to `data/processed/paper_method/`, including `state_action_outcome_candidates.csv`. Patient identifiers in these derived files are join/split keys and must not be model inputs.
+> **Run every command from this folder**, the one that contains this `README.md`. In VS Code, the terminal may open one level up; if so, `cd MajorProject` first. Otherwise you get `No module named demo`.
 
-## Train and evaluate the Transformer dynamics ensemble
+### 1. Install (once)
 
-Install PyTorch into the same Python environment used to run the project:
-
-```powershell
-python -m pip install -r requirements-transformer.txt
-```
-
-Then run:
-
-```powershell
-python scripts/transformer_digital_twin.py `
-  --input .\data\processed\paper_method\state_action_outcome_candidates.csv `
-  --output-dir .\data\processed\transformer_twin
-```
-
-By default, it trains five independent Transformer models and writes a sequence audit, model checkpoint, and held-out report. Do not interpret forecasts as effects of changing treatment: target states are the next recorded treatment-decision states, treatment histories are incomplete, and the paper's preprocessing is not fully specified.
-
-## Smoke-test the Transformer as an environment
-
-After training, run a few random rollouts using training-supported action combinations:
+Python 3.12 or newer:
 
 ```powershell
-py scripts/transformer_twin_rl_environment.py `
-  --input .\data\processed\paper_method\state_action_outcome_candidates.csv `
-  --checkpoint .\data\processed\transformer_twin\transformer_ensemble.pt `
-  --output .\data\processed\transformer_twin\rl_environment_smoke_v2.json `
-  --episodes 5 `
-  --max-steps 3
+python -m pip install -r requirements.txt
 ```
 
-This checks integration only. The recorded v2 smoke run allowed 25 training action combinations (minimum support 5), completed 15 steps, and had 15 unavailable rewards because tumor status remained missing. When tumor status is present, the placeholder reward is the model-predicted tumor-free state component, not a validated outcome or treatment utility. It does not train an RL policy; policy learning remains gated by outcome-data quality and independent evaluation.
+### 2. Run the demo website
 
-## LLM comparison (historical experiment)
+```powershell
+python -m demo
+```
 
-`scripts/llm_twin_rl.py` is the earlier local LLM hypothesis generator and baseline comparison. It is retained to document why it was not selected as the digital twin. It is not the current project direction and does not train an RL policy.
+Open **http://localhost:8000**, then:
 
-## Research limits
+1. Upload a patient file from [`demo/sample_patients/`](demo/sample_patients/), for example `patient_C_late_relapse.json`.
+2. Watch the new twin being built from the 5 most similar stored twins.
+3. Pick a medication to see the twin's predictions: response, time to progression, survival, and side-effect risks.
+4. Try **Simulate next 5 years**, **Compare all medications** and **Ask the AI doctor**.
+5. The **How it works** tab shows the evidence for Objectives 1–3.
 
-The project is retrospective and observational. A predicted reward is not a measured clinical treatment effect. Toxicity, cost, and quality-of-life outcomes are not adequately represented in this export. The Transformer, outcome model, and RL policy require separate evaluation, and this project is not a clinical decision tool.
+Press `Ctrl+C` in the terminal to stop. If it says the address is already in use, another copy is running: close it, or use `python -m demo --port 8001`.
+
+**Demo files:**
+- Five real test patients (newly diagnosed, older patient with advanced disease, late relapse, early relapse, heavily pre-treated).
+- [`TEMPLATE.json`](demo/sample_patients/TEMPLATE.json) and [`FORMAT.md`](demo/sample_patients/FORMAT.md), to write your own.
+- [`ANSWER_KEY.md`](demo/sample_patients/ANSWER_KEY.md), which says what really happened to each patient. It is for the presenter only.
+
+A suggested 5-minute walkthrough is in [`demo/README.md`](demo/README.md).
+
+### 3. Ask a twin from the command line
+
+```powershell
+python -m digital_twin_rl what-if --patient 098acb76 --line 2
+```
+
+This prints the twin's predictions for all 14 medications for that patient at that treatment line.
+
+### 4. Rebuild everything from the raw data (optional, about 40 minutes)
+
+Trained models are already included, so this is only needed after changing the code.
+
+```powershell
+python -m digital_twin_rl all
+```
+
+| Step (run on its own as `python -m digital_twin_rl <step>`) | What it does |
+|---|---|
+| `data` | Turns the raw JSON into treatment-line histories |
+| `train-twin` | Trains the outcome model and tests it on unseen patients |
+| `twins` | Creates a twin card for each of the 587 patients |
+| `twin-db` | Builds the stored-twin database used by the demo |
+| `train-agent` | Trains the RL agents inside the twins |
+| `evaluate` | Compares agents with baselines, checks simulator fidelity, draws figures |
+
+To regenerate the demo patient files: `python -m demo.make_sample_patients`.
+
+### 5. Run the tests
+
+```powershell
+python -m pytest tests -q
+```
+
+There are 29 tests: data processing, survival maths, twin and environment, RL agent, patient-file format, and the demo API.
+
+### 6. Change the website (optional)
+
+The website is already built into `demo/web/dist`, so Node is only needed to edit it. Run these in `demo/web` (Node 22 or newer, and pnpm): `pnpm install`, `pnpm dev` (live preview on http://localhost:5173, with `python -m demo` running), and `pnpm build`.
+
+---
+
+## Folder structure
+
+```text
+├── data/
+│   ├── raw/                  TCGA-OV clinical export (608 patients), the only input
+│   └── processed/            Generated outputs: twin model, twins, agents, evaluation (see its README)
+├── digital_twin_rl/          Main code: data → outcome model → twins → simulator → RL agents → evaluation
+├── demo/                     Mid-semester demo: Python backend, website (web/), sample patient files
+├── scripts/                  Earlier stages of the project (kept as history, see below)
+├── tests/                    Automated tests
+└── docs/
+    ├── architecture/         Design documents and the decision log
+    ├── data/                 Dataset audits, patient-state schema, dataset notes
+    ├── literature/           The 11 papers from the literature survey
+    └── university_forms/     Major-project guidelines and forms
+```
+
+### Earlier stages (`scripts/`)
+
+These document how the project got here. They are not needed to run the demo.
+
+| Script | What it was for |
+|---|---|
+| `preprocess_tcga_ov.py`, `patient_twin.py` | First data extraction and patient summaries |
+| `audit_tcga_ov_fields.py`, `audit_followup_timeline.py`, `audit_treatment_transitions.py` | Data-quality audits |
+| `evaluate_trajectory_baseline.py`, `compare_llm_trajectory.py`, `llm_twin_rl.py` | Simple baselines and the LLM-twin experiment (not selected) |
+| `paper_method_pipeline.py` | Base-paper preprocessing; its drug-class mapping is reused by the final twin |
+| `transformer_digital_twin.py`, `transformer_twin_rl_environment.py` | The base paper's Transformer twin and its environment test |
+
+The data scripts read `data/raw/clinical.project-tcga-ov.2026-10-09.json`; the Transformer scripts read the table made by `paper_method_pipeline.py`. Exact commands are in [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md).
+
+---
+
+## The data
+
+TCGA-OV clinical records for 608 women with ovarian cancer, diagnosed 1992–2013. The dataset is public and de-identified.
+
+- **Used:** age, stage, grade, tumour left after surgery, 3,170 treatments given (69 drugs), 2,036 check-ups (tumour status, recurrence), and survival.
+- **Not in the data:** side effects, doses in comparable units, blood tests such as CA-125, scans, cost and quality of life.
+
+## Limitations
+
+- **Associations, not proof.** The twin learns from historical records, so a link between a drug and good outcomes may reflect who received that drug. For example, platinum was mostly given to patients with a better outlook. The guideline constraint layer flags known cases.
+- **Side-effect risks are assumptions** from drug-class profiles, because the dataset records no side effects.
+- **All RL results come from simulation.** They suggest strategies to study; they are not evidence that a treatment works better.
+
+## Further reading
+
+| Document | Contents |
+|---|---|
+| [`docs/architecture/DIGITAL_TWIN_RL.md`](docs/architecture/DIGITAL_TWIN_RL.md) | Final twin and RL system: method, results, limits |
+| [`demo/README.md`](demo/README.md) | Demo website: how it works, walkthrough, API |
+| [`docs/architecture/DECISION_LOG.md`](docs/architecture/DECISION_LOG.md) | Every major decision and why it was made |
+| [`docs/PROJECT_MAP.md`](docs/PROJECT_MAP.md) | Every script and output, with commands |
+| [`docs/architecture/PAPER_METHOD_REPLICATION.md`](docs/architecture/PAPER_METHOD_REPLICATION.md) | How the base paper's method was adapted |
+| [`docs/data/patient_state_schema.md`](docs/data/patient_state_schema.md) | How a patient's situation is encoded |
