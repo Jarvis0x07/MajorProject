@@ -7,6 +7,7 @@ from .server import create_app
 
 
 def main() -> None:
+    # Optional --port (default 8000), then start the web server on this computer only.
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()

@@ -1,3 +1,8 @@
+"""Automated checks. Run with:  python -m pytest tests -q
+
+DataTests and RecordTests need nothing but the code. TrainedTests also need the trained files in
+data/processed/ (they are skipped if those are missing).
+"""
 import copy
 import json
 import random
@@ -12,6 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "demo" / "sample_patients"
 TRAINED = (ROOT / "data" / "processed" / "agent.pt").exists()
 
+# A small valid patient record used by several tests: one line of carboplatin + paclitaxel,
+# a recurrence at month 20, and a new decision today at month 21.
 RECORD = {
     "age_at_diagnosis": 60, "figo_stage": "IIIC", "tumor_grade": "G3", "residual_tumor_after_surgery": "1-10 mm",
     "treatments": [{"drugs": ["Carboplatin", "paclitaxel"], "start_month": 1.0, "end_month": 5.0}],
@@ -22,6 +29,8 @@ RECORD = {
 
 class DataTests(unittest.TestCase):
     def test_treatment_lines_and_outcomes(self):
+        # A made-up dataset patient: two drugs 10 days apart (one line), a radiation record marked
+        # "not given", a second line at day 400, and death at day 900.
         case = {"case_id": "p1", "demographic": {"age_at_index": 55, "vital_status": "Dead", "days_to_death": 900},
                 "diagnoses": [{"diagnosis_is_primary_disease": "true", "figo_stage": "Stage IIIC", "treatments": [
                     {"therapeutic_agents": "Carboplatin", "days_to_treatment_start": 30},
@@ -31,9 +40,11 @@ class DataTests(unittest.TestCase):
                     {"therapeutic_agents": "Topotecan", "days_to_treatment_start": 400,
                      "initial_disease_status": "Recurrent Disease"}]}]}
         lines = build_patient(case, "train")["lines"]
+        # Two lines with the right drug classes; the second knows what was given before it.
         self.assertEqual([l["regimen"] for l in lines], [["platinum", "taxanes"], ["topoisomerase_inhibitors"]])
         self.assertEqual(lines[1]["state"]["setting"], "recurrent")
         self.assertEqual(lines[1]["state"]["prior_exposure"], {"platinum": 1, "taxanes": 1})
+        # Line 1 ends when line 2 starts; the patient died, and death ended line 2.
         first = lines[0]["outcome"]
         self.assertAlmostEqual(first["pfs_months"], (400 - 30) / 30.44)        # next line started
         self.assertEqual((first["os_event"], lines[1]["outcome"]["pfs_event_is_death"]), (1, 1))
@@ -41,6 +52,7 @@ class DataTests(unittest.TestCase):
 
 class RecordTests(unittest.TestCase):
     def test_record_becomes_a_state(self):
+        # The uploaded record is turned into the same kind of state as the training data.
         parsed = parse_record(RECORD)
         state = parsed["state"]
         self.assertEqual((state["line_number"], state["setting"]), (2, "recurrent"))
@@ -49,10 +61,12 @@ class RecordTests(unittest.TestCase):
         self.assertEqual(len(parsed["past_lines"]), 1)
 
     def test_newly_diagnosed(self):
+        # No treatments yet: first line, newly diagnosed.
         state = parse_record({k: v for k, v in RECORD.items() if k not in ("treatments", "follow_ups")})["state"]
         self.assertEqual((state["line_number"], state["setting"]), (1, "primary"))
 
     def test_invalid_records_explain_the_problem(self):
+        # Each mistake is rejected with a message naming the field to fix.
         for change, message in [({"figo_stage": "V"}, "figo_stage"), ({"age_at_diagnosis": "sixty"}, "age_at_diagnosis"),
                                 ({"today_month": 2.0}, "end_month")]:
             with self.assertRaisesRegex(RecordError, message):
@@ -63,6 +77,7 @@ class RecordTests(unittest.TestCase):
             parse_record(bad)
 
     def test_sample_files_parse(self):
+        # Every sample patient file (and the template) is a valid record.
         for path in SAMPLES.glob("*.json"):
             state = parse_record(json.loads(path.read_text(encoding="utf-8")))["state"]
             self.assertEqual(len(encode_state(state)), len(FEATURES), path.name)
@@ -72,16 +87,20 @@ class RecordTests(unittest.TestCase):
 class TrainedTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # Load the trained files once, and a test client that calls the website's API directly.
         from fastapi.testclient import TestClient
         from demo.server import Lab, create_app
         cls.lab = Lab()
         cls.client = TestClient(create_app(cls.lab))
 
     def upload(self, name: str, content: bytes | None = None):
+        # Upload a sample file (or the given bytes) the way the website does.
         content = content if content is not None else (SAMPLES / name).read_bytes()
         return self.client.post("/api/analyse", files={"file": (name, content, "application/json")})
 
     def test_twin_is_built_from_five_other_patients_and_can_be_simulated(self):
+        # The twin has 5 different neighbours, gives sensible predictions, and a simulation
+        # always finishes within 5 years.
         from digital_twin_rl.twin import build_twin
         state = parse_record(RECORD)["state"]
         twin = build_twin(state, self.lab.model, self.lab.index, exclude="someone")
@@ -94,6 +113,7 @@ class TrainedTests(unittest.TestCase):
         self.assertLessEqual(twin.months_elapsed, 60.0 + 1e-6)
 
     def test_environment_masks_platinum_when_resistant(self):
+        # Patient D relapsed within 6 months of platinum: every platinum regimen is blocked.
         from digital_twin_rl.rl import allowed
         state = parse_record(json.loads((SAMPLES / "patient_D_early_relapse.json").read_text()))["state"]
         mask = allowed(state, self.lab.regimens)
@@ -101,6 +121,8 @@ class TrainedTests(unittest.TestCase):
         self.assertTrue(mask.any())
 
     def test_website_ranks_every_medication(self):
+        # The website returns every medication, most effective first, plus the agent's choice
+        # and 5 similar patients (without their ids or outcomes).
         response = self.upload("patient_C_late_relapse.json")
         self.assertEqual(response.status_code, 200, response.text)
         result = response.json()
@@ -113,6 +135,7 @@ class TrainedTests(unittest.TestCase):
             self.assertNotIn(forbidden, json.dumps(result["neighbours"]))
 
     def test_website_flags_platinum_for_resistant_patient(self):
+        # For patient D, exactly the platinum options are flagged and the agent avoids them.
         result = self.upload("patient_D_early_relapse.json").json()
         self.assertTrue(result["patient"]["platinum_resistant"])
         flagged = {m["key"] for m in result["medications"] if m["guideline_caution"]}
@@ -120,6 +143,7 @@ class TrainedTests(unittest.TestCase):
         self.assertNotIn("platinum", result["agent_choice"])
 
     def test_website_rejects_bad_files(self):
+        # Broken JSON and invalid records are refused with HTTP 422 and a helpful message.
         self.assertEqual(self.upload("x.json", b"{not json").status_code, 422)
         response = self.upload("x.json", json.dumps(dict(RECORD, figo_stage="V")).encode())
         self.assertEqual(response.status_code, 422)

@@ -21,9 +21,12 @@ from digital_twin_rl.record import RecordError, parse_record
 from digital_twin_rl.rl import allowed, best_action, load_agent, observe, platinum_resistant
 from digital_twin_rl.twin import NeighbourIndex, build_twin
 
-WEB_DIST = Path(__file__).resolve().parent / "web" / "dist"
+WEB_DIST = Path(__file__).resolve().parent / "web" / "dist"   # the built website
 MAX_UPLOAD_BYTES = 200_000
 
+# ---------------------------------------------------------------------------------------------
+# Display names shown on the website.
+# ---------------------------------------------------------------------------------------------
 # The twin works on drug classes; the drug names are typical examples of each class.
 MEDICATIONS = {
     "platinum+taxanes": ("Carboplatin + Paclitaxel", "Platinum + taxane"),
@@ -47,6 +50,7 @@ RESIDUAL = {0: "None", 1: "1-10 mm", 2: "11-20 mm", 3: "> 20 mm"}
 
 
 def class_names(classes) -> list[str]:
+    # "anti_angiogenics" -> "Anti angiogenics"
     return [c.replace("_", " ").capitalize() for c in classes]
 
 
@@ -54,6 +58,9 @@ def age_years(state: dict) -> int | None:
     return None if state["age_years"] is None else round(state["age_years"])
 
 
+# ---------------------------------------------------------------------------------------------
+# Everything the website needs, loaded once when the server starts.
+# ---------------------------------------------------------------------------------------------
 class Lab:
     """The trained outcome model, the searchable training patients and the RL agent, loaded once."""
 
@@ -64,9 +71,12 @@ class Lab:
         self.agent = load_agent(AGENT)
 
     def analyse(self, record: dict) -> dict:
+        # 1. Read the uploaded record and build the patient's twin from the 5 most similar patients.
         parsed = parse_record(record)
         state = parsed["state"]
         twin = build_twin(state, self.model, self.index)
+
+        # 2. Ask the twin about every medication; mark the ones guidelines advise against.
         mask = allowed(state, self.regimens)
         medications = []
         for regimen, ok in zip(self.regimens, mask):
@@ -74,7 +84,11 @@ class Lab:
             name, group = MEDICATIONS.get(key, (key, ""))
             medications.append({"key": key, "name": name, "group": group, "guideline_caution": not ok,
                                 **twin.predict(regimen)})
+        # Most effective first (expected months alive within 5 years).
         medications.sort(key=lambda m: -m["survival_months"])
+
+        # 3. Send back the patient summary, the 5 similar patients (their profile only, no ids or
+        #    outcomes), the risk multipliers, the ranked medications and the RL agent's choice.
         platinum = state["months_since_last_platinum"]
         return {
             "label": parsed["label"], "today_month": parsed["today_month"],
@@ -98,12 +112,17 @@ class Lab:
         }
 
 
+# ---------------------------------------------------------------------------------------------
+# The web server: one API endpoint, plus the built website.
+# ---------------------------------------------------------------------------------------------
 def create_app(lab: Lab | None = None) -> FastAPI:
     app = FastAPI(title="Ovarian cancer digital twin demo")
     lab = lab or Lab()
 
     @app.post("/api/analyse")
     async def analyse(file: UploadFile = File(...)):
+        # Read the uploaded file (with a size limit), parse it as JSON and analyse it.
+        # Problems come back as HTTP 413/422 with a message the website shows to the user.
         content = await file.read(MAX_UPLOAD_BYTES + 1)
         if len(content) > MAX_UPLOAD_BYTES:
             raise HTTPException(413, "File too large for a patient record")
@@ -114,6 +133,7 @@ def create_app(lab: Lab | None = None) -> FastAPI:
         except RecordError as error:
             raise HTTPException(422, str(error)) from error
 
+    # Serve the built website at "/"; if it has not been built, say how to build it.
     if WEB_DIST.exists():
         app.mount("/", StaticFiles(directory=WEB_DIST, html=True), name="web")
     else:

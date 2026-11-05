@@ -15,14 +15,21 @@ import random
 from collections import Counter, defaultdict
 from pathlib import Path
 
+# ---------------------------------------------------------------------------------------------
+# Settings: how records are grouped into treatment lines and how outcomes are measured.
+# The dataset counts time in days since diagnosis; we report months.
+# ---------------------------------------------------------------------------------------------
 DAYS_PER_MONTH = 30.44
 LINE_WINDOW_DAYS = 42             # records starting within 6 weeks form one treatment line
 RESPONSE_WINDOW_DAYS = (30, 548)  # a check-up 1 to 18 months after the line start is its response
 PROGRESSION_MIN_DAYS = 30         # progression dated at the line start itself is ignored
 
+# The 11 drug classes used as treatment actions, and the 4 possible disease situations.
 DRUG_CLASSES = ["platinum", "taxanes", "anthracyclines", "antimetabolites", "topoisomerase_inhibitors",
                 "alkylating_agents", "anti_angiogenics", "hormonal_agents", "vinca_alkaloids", "radiation", "other"]
 SETTINGS = ["primary", "recurrent", "progressive", "unknown"]
+
+# Every drug name found in the dataset, mapped to its drug class. Unlisted drugs become "other".
 AGENT_CLASS = {
     "carboplatin": "platinum", "cisplatin": "platinum", "oxaliplatin": "platinum",
     "paclitaxel": "taxanes", "docetaxel": "taxanes", "nab-paclitaxel": "taxanes",
@@ -46,7 +53,11 @@ AGENT_CLASS = {
     "leuprolide acetate": "hormonal_agents", "medroxyprogesterone acetate": "hormonal_agents",
     "vinorelbine tartrate": "vinca_alkaloids", "vinorelbine": "vinca_alkaloids", "vincristine": "vinca_alkaloids",
 }
+
+# Text values that the dataset uses to mean "missing".
 UNKNOWN = {"", "unknown", "not reported", "not available", "not applicable"}
+
+# Lookup tables that turn the dataset's text into numbers or our own labels.
 STAGE_LEVELS = {"I": 1, "II": 2, "III": 3, "IV": 4}
 GRADE_LEVELS = {"G1": 1, "G2": 2, "G3": 3, "G4": 3}
 RESIDUAL_LEVELS = {"No macroscopic disease": 0, "1-10 mm": 1, "11-20 mm": 2, ">20 mm": 3}
@@ -54,11 +65,16 @@ STATUS_TO_SETTING = {"recurrent disease": "recurrent", "progressive disease": "p
                      "persistent disease": "progressive"}
 
 
+# ---------------------------------------------------------------------------------------------
+# Small helpers for reading messy values from the raw records.
+# ---------------------------------------------------------------------------------------------
 def clean(value) -> str:
+    # Any value as trimmed text; None becomes "".
     return str(value).strip() if value is not None else ""
 
 
 def known(value) -> bool:
+    # False for empty values and for "unknown", "not reported", etc.
     return clean(value).lower() not in UNKNOWN
 
 
@@ -77,20 +93,28 @@ def months(days: float) -> float:
     return days / DAYS_PER_MONTH
 
 
+# ---------------------------------------------------------------------------------------------
+# Treatments: find each record's drug classes, then group records into treatment lines.
+# ---------------------------------------------------------------------------------------------
 def drug_classes(treatment: dict) -> list[str]:
     """Drug classes of one treatment record; [] for surgery, a therapy marked as not given, or no agent."""
+    # Some records describe a therapy that was NOT given (e.g. "Radiation Therapy, NOS" with "no").
     if clean(treatment.get("treatment_or_therapy")).lower() == "no":
         return []
+    # Radiation is recognised by the treatment type, as it has no drug name.
     kind = clean(treatment.get("treatment_type")).lower()
     if "radiation" in kind or "radioisotope" in kind:
         return ["radiation"]
+    # Surgery is not a drug action, and a record without a drug name cannot be classified.
     if "surgery" in kind or not known(treatment.get("therapeutic_agents")):
         return []
+    # A record can name several drugs ("Carboplatin, Paclitaxel"): map each one to its class.
     names = [n.strip().lower() for n in clean(treatment["therapeutic_agents"]).replace(";", ",").split(",") if n.strip()]
     return sorted({AGENT_CLASS.get(name, "other") for name in names})
 
 
 def dated_treatments(case: dict) -> list[dict]:
+    # Collect every treatment record that was given and has a known start day, in time order.
     records = []
     for diagnosis in case.get("diagnoses") or []:
         for treatment in diagnosis.get("treatments") or []:
@@ -98,6 +122,7 @@ def dated_treatments(case: dict) -> list[dict]:
             start = as_day(treatment.get("days_to_treatment_start"))
             if not classes or start is None or start < 0:
                 continue
+            # Keep the end day only when it makes sense (not before the start).
             end = as_day(treatment.get("days_to_treatment_end"))
             records.append({"start": start, "end": end if end is not None and end >= start else None,
                             "classes": classes,
@@ -106,12 +131,17 @@ def dated_treatments(case: dict) -> list[dict]:
 
 
 def group_lines(records: list[dict]) -> list[dict]:
+    # Walk through the records in time order: a record starting within 6 weeks of the current line's
+    # start joins that line (e.g. carboplatin and paclitaxel); otherwise it starts a new line.
     lines: list[dict] = []
     for record in records:
         if lines and record["start"] <= lines[-1]["start"] + LINE_WINDOW_DAYS:
             lines[-1]["records"].append(record)
         else:
             lines.append({"start": record["start"], "records": [record]})
+    # Summarise each line: all drug classes given, the latest end day, and the disease setting.
+    # The setting comes from the records' "initial disease status"; if none is recorded, the first
+    # line is "primary" (newly diagnosed) and later lines are "unknown".
     for index, line in enumerate(lines):
         line["classes"] = sorted({c for r in line["records"] for c in r["classes"]})
         ends = [r["end"] for r in line["records"] if r["end"] is not None]
@@ -122,23 +152,31 @@ def group_lines(records: list[dict]) -> list[dict]:
     return lines
 
 
+# ---------------------------------------------------------------------------------------------
+# Follow-up information: tumour status at check-ups, progression dates, and last contact.
+# ---------------------------------------------------------------------------------------------
 def response_timeline(case: dict) -> list[tuple[int, str]]:
     """(day, recorded tumour status) for check-ups with exactly one status that day."""
+    # Gather every recorded tumour status per day ("TF-Tumor Free", "WT-With Tumor", ...).
     by_day = defaultdict(set)
     for follow_up in case.get("follow_ups") or []:
         day = as_day(follow_up.get("days_to_follow_up"))
         if day is not None and day >= 0 and known(follow_up.get("disease_response")):
             by_day[day].add(clean(follow_up["disease_response"]))
+    # Days with conflicting statuses are dropped rather than guessing which one is right.
     return [(day, next(iter(labels))) for day, labels in sorted(by_day.items()) if len(labels) == 1]
 
 
 def progression_days(case: dict) -> list[int]:
+    # Every day on which a progression or recurrence was recorded.
     days = {as_day(f.get(field)) for f in case.get("follow_ups") or []
             for field in ("days_to_progression", "days_to_recurrence")}
     return sorted(d for d in days if d is not None and d >= 0)
 
 
 def last_contact_day(case: dict, records: list[dict]) -> int:
+    # The last day we know anything about the patient: latest treatment, follow-up or death.
+    # Patients still alive are "censored" at this day (we know they lived at least this long).
     days = [0] + [r["end"] or r["start"] for r in records]
     days += [as_day(d.get("days_to_last_follow_up")) for d in case.get("diagnoses") or []]
     days += [as_day(f.get("days_to_follow_up")) for f in case.get("follow_ups") or []]
@@ -146,14 +184,21 @@ def last_contact_day(case: dict, records: list[dict]) -> int:
     return max(d for d in days if d is not None)
 
 
+# ---------------------------------------------------------------------------------------------
+# Patient state: what is known about the patient just before a treatment decision.
+# ---------------------------------------------------------------------------------------------
 def patient_static(case: dict) -> dict:
+    # Facts fixed at diagnosis, taken from the primary diagnosis record.
     primary = next((d for d in case.get("diagnoses") or []
                     if clean(d.get("diagnosis_is_primary_disease")).lower() == "true"
                     or clean(d.get("classification_of_tumor")).lower() == "primary"), {})
+    # FIGO stage: keep only the Roman numeral ("Stage IIIC" -> "III" -> 3).
     stage = "".join(ch for ch in clean(primary.get("figo_stage")).upper().replace("STAGE", "").strip() if ch in "IV")
+    # Tumour left after surgery: the first recorded measurement, as a level 0-3.
     residual = next((RESIDUAL_LEVELS[clean(p.get("residual_tumor_measurement"))]
                      for p in primary.get("pathology_details") or []
                      if clean(p.get("residual_tumor_measurement")) in RESIDUAL_LEVELS), None)
+    # Age at diagnosis, if it is a number.
     try:
         age = float((case.get("demographic") or {}).get("age_at_index"))
     except (TypeError, ValueError):
@@ -164,7 +209,10 @@ def patient_static(case: dict) -> dict:
 
 def pre_line_state(static: dict, previous: list[dict], day: int, setting: str) -> dict:
     """What is known just before a treatment line that starts on `day` (days since diagnosis)."""
+    # How many earlier lines used each drug class.
     exposure = Counter(c for line in previous for c in line["classes"])
+    # When the last platinum ended (platinum sensitivity is key in ovarian cancer), and when the
+    # previous line ended; a line without an end date counts from its start.
     platinum = [line for line in previous if "platinum" in line["classes"]]
     last_platinum = (platinum[-1]["end"] or platinum[-1]["start"]) if platinum else None
     last_line = (previous[-1]["end"] or previous[-1]["start"]) if previous else None
@@ -187,7 +235,11 @@ def state_at(case: dict, day: int, setting: str) -> dict:
     return pre_line_state(patient_static(case), previous, day, setting)
 
 
+# ---------------------------------------------------------------------------------------------
+# One patient's full history: every treatment line with its state, regimen and outcome.
+# ---------------------------------------------------------------------------------------------
 def build_patient(case: dict, split: str) -> dict:
+    # Gather everything needed about this patient once.
     demographic = case.get("demographic") or {}
     records = dated_treatments(case)
     lines = group_lines(records)
@@ -203,9 +255,14 @@ def build_patient(case: dict, split: str) -> dict:
     for index, line in enumerate(lines):
         start = line["start"]
         next_start = lines[index + 1]["start"] if index + 1 < len(lines) else None
+
+        # Response: the first tumour status recorded 1-18 months after the line started and
+        # before the next line started.
         window_end = min(start + RESPONSE_WINDOW_DAYS[1], next_start or start + RESPONSE_WINDOW_DAYS[1])
         response = next((label for day, label in timeline if start + RESPONSE_WINDOW_DAYS[0] <= day <= window_end), None)
-        # First event after the line: recorded progression/recurrence, the next line starting, or death.
+
+        # Progression-free survival ends at the first event after the line: recorded progression/recurrence,
+        # the next line starting (treatment was changed, so the disease came back), or death.
         events = [(d, "progression") for d in progressions if d > start + PROGRESSION_MIN_DAYS]
         if next_start is not None:
             events.append((next_start, "next_line"))
@@ -213,6 +270,9 @@ def build_patient(case: dict, split: str) -> dict:
         if died:
             events.append((death_day, "death"))
         first = min(events, key=lambda e: (e[0], e[1] == "death")) if events else None
+
+        # Store the line. Without an event, follow-up is censored at last contact
+        # (pfs_event / os_event = 0 means "still event-free when last seen").
         built.append({
             "line_index": index, "start_day": start, "end_day": line["end"], "regimen": line["classes"],
             "state": pre_line_state(static, lines[:index], start, line["setting"]),
@@ -229,8 +289,12 @@ def build_patient(case: dict, split: str) -> dict:
             "static": static, "lines": built}
 
 
+# ---------------------------------------------------------------------------------------------
+# Whole dataset: split patients into train / validation / test and build every history.
+# ---------------------------------------------------------------------------------------------
 def assign_splits(patient_ids: list[str], seed: int = 42) -> dict[str, str]:
     """80% train, 10% validation, 10% test, by patient."""
+    # Shuffle with a fixed seed so the split is the same on every run.
     ids = sorted(patient_ids)
     random.Random(seed).shuffle(ids)
     n_train, n_val = int(len(ids) * 0.8), round(len(ids) * 0.1)
@@ -245,6 +309,9 @@ def build_histories(cases: list[dict]) -> list[dict]:
     return [build_patient(c, splits[str(c.get("case_id") or c.get("submitter_id"))]) for c in eligible]
 
 
+# ---------------------------------------------------------------------------------------------
+# Saving and loading: one JSON object per line ("JSON lines" files).
+# ---------------------------------------------------------------------------------------------
 def save_jsonl(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")

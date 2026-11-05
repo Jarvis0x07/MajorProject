@@ -1,3 +1,4 @@
+// The whole page: header, upload + patient cards on the left, results on the right, footer.
 import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { analyse, type Analysis } from "./api";
@@ -6,6 +7,7 @@ import { PatientCard } from "./components/PatientCard";
 import { Card, Heading, Label } from "./components/primitives";
 import { UploadCard } from "./components/UploadCard";
 
+// The three steps shown in the "How it works" card before any patient is uploaded.
 const STEPS = [
   ["Upload", "A patient record: diagnosis, past treatments and check-ups up to today."],
   ["Twin", "The outcome model at this patient's state, adjusted by how the 5 most similar training patients really did."],
@@ -13,11 +15,13 @@ const STEPS = [
 ];
 
 export default function App() {
+  // Page state: the latest analysis, whether an upload is in progress, and the last error.
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const results = useRef<HTMLDivElement>(null);
 
+  // Upload a file and show the result. On phones and small screens, scroll down to the results.
   const upload = async (file: File) => {
     setBusy(true);
     setError(null);
@@ -35,6 +39,7 @@ export default function App() {
 
   return (
     <div className="min-h-dvh">
+      {/* Header: title and one-line description */}
       <header className="border-b border-line bg-paper/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-8">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-teal-deep">Digital twins · Reinforcement learning</p>
@@ -48,7 +53,9 @@ export default function App() {
         </div>
       </header>
 
+      {/* Main area: one column on phones, two columns on large screens */}
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,8fr)]">
+        {/* Left column: upload card, then the patient card once a patient is analysed */}
         <div className="space-y-6">
           <UploadCard onFile={upload} busy={busy} error={error} />
           <AnimatePresence mode="wait">
@@ -60,6 +67,7 @@ export default function App() {
           </AnimatePresence>
         </div>
 
+        {/* Right column: the effectiveness table, or the "How it works" card before any upload */}
         <div ref={results} className="scroll-mt-6">
           <AnimatePresence mode="wait">
             {analysis ? (
@@ -97,6 +105,7 @@ export default function App() {
         </div>
       </main>
 
+      {/* Footer: research disclaimer */}
       <footer className="border-t border-line">
         <p className="mx-auto max-w-7xl px-4 py-6 text-xs leading-relaxed text-muted sm:px-8">
           Research prototype on the public, de-identified TCGA-OV clinical dataset. Predictions are associations learned from

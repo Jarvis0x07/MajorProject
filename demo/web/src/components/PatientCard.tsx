@@ -1,8 +1,10 @@
+// Step 2 card: the uploaded patient, and the 5 similar training patients their twin was built from.
 import { motion } from "framer-motion";
 import type { Analysis } from "../api";
 import { gradeName, stageName } from "../format";
 import { Card, Heading, Label } from "./primitives";
 
+// One labelled fact in the patient summary grid.
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-paper/70 px-3 py-2">
@@ -12,6 +14,7 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
+// A risk multiplier as a percentage change: 1.15 -> "+15%", 0.94 -> "-6%", 1.0 -> "unchanged".
 const change = (multiplier: number) => {
   const percent = Math.round((multiplier - 1) * 100);
   return percent === 0 ? "unchanged" : `${percent > 0 ? "+" : ""}${percent}%`;
@@ -21,6 +24,7 @@ export function PatientCard({ analysis }: { analysis: Analysis }) {
   const p = analysis.patient;
   return (
     <Card>
+      {/* Title: patient label, months since diagnosis, and which treatment line is being decided */}
       <Label>Step 2 · The patient's digital twin</Label>
       <div className="mt-2">
         <Heading>{analysis.label}</Heading>
@@ -30,6 +34,7 @@ export function PatientCard({ analysis }: { analysis: Analysis }) {
         <span className="num text-ink">{p.treatment_line}</span>
       </p>
 
+      {/* Patient summary: the state the twin starts from */}
       <dl className="mt-4 grid grid-cols-2 gap-2">
         <Fact label="Age now" value={p.age === null ? "Not recorded" : `${p.age} years`} />
         <Fact label="Situation" value={p.situation} />
@@ -42,6 +47,7 @@ export function PatientCard({ analysis }: { analysis: Analysis }) {
         <Fact label="Platinum status" value={p.months_since_platinum === null ? "—" : p.platinum_resistant ? "Resistant (< 6 months)" : "Sensitive"} />
       </dl>
 
+      {/* Past treatment lines, if any */}
       {p.past_treatments.length > 0 && (
         <div className="mt-5">
           <p className="text-sm font-medium text-ink">Past treatment lines</p>
@@ -56,6 +62,7 @@ export function PatientCard({ analysis }: { analysis: Analysis }) {
         </div>
       )}
 
+      {/* The 5 similar patients and how they changed this twin's risks */}
       <div className="mt-6 border-t border-line-soft pt-5">
         <p className="text-sm font-medium text-ink">Built from the 5 most similar training patients</p>
         <p className="mt-1 text-xs leading-relaxed text-muted">
@@ -64,6 +71,7 @@ export function PatientCard({ analysis }: { analysis: Analysis }) {
           <span className="num text-ink">{change(analysis.risk_multipliers.progression)}</span>, death{" "}
           <span className="num text-ink">{change(analysis.risk_multipliers.death)}</span>.
         </p>
+        {/* One row per similar patient (fading in one after another), with its similarity score */}
         <ul className="mt-3 space-y-2">
           {analysis.neighbours.map((n, i) => (
             <motion.li

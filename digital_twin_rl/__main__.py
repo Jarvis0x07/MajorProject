@@ -17,6 +17,9 @@ from .model import OutcomeModel, evaluate_model, train_model
 from .rl import TwinEnv, compare_policies, save_agent, simulator_check, supported_regimens, train_agent
 from .twin import NeighbourIndex, build_all_twins, check_twins
 
+# ---------------------------------------------------------------------------------------------
+# Where the input is read from and where every output is written.
+# ---------------------------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw" / "clinical.project-tcga-ov.2026-10-09.json"
 OUT = ROOT / "data" / "processed"
@@ -25,13 +28,18 @@ TWINS, AGENT, RESULTS = OUT / "twins.jsonl", OUT / "agent.pt", OUT / "results.js
 
 
 def save_result(key: str, value) -> None:
+    # Add one result to results.json (keeping the others) and print it.
     results = json.loads(RESULTS.read_text(encoding="utf-8")) if RESULTS.exists() else {}
     results[key] = value
     RESULTS.write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value}, indent=2))
 
 
+# ---------------------------------------------------------------------------------------------
+# The four steps.
+# ---------------------------------------------------------------------------------------------
 def prepare(args) -> None:
+    # Step 1: raw export -> treatment histories, plus the list of regimens the agent can choose from.
     histories = build_histories(json.loads(RAW.read_text(encoding="utf-8")))
     save_jsonl(HISTORIES, histories)
     regimens = supported_regimens(histories)
@@ -41,6 +49,7 @@ def prepare(args) -> None:
 
 
 def train(args) -> None:
+    # Step 2: train the outcome model, save it, and measure its accuracy on test patients.
     histories = load_jsonl(HISTORIES)
     model = train_model(histories)
     model.save(MODEL)
@@ -48,6 +57,7 @@ def train(args) -> None:
 
 
 def twins(args) -> None:
+    # Step 3: one twin per patient from its 5 most similar patients; then check the twins' accuracy.
     histories, model = load_jsonl(HISTORIES), OutcomeModel.load(MODEL)
     index = NeighbourIndex(histories, model)
     records = build_all_twins(histories, model, index)
@@ -57,6 +67,8 @@ def twins(args) -> None:
 
 
 def agent(args) -> None:
+    # Step 4: check the twins are a realistic environment, train the agent in the training
+    # patients' twins, then compare it with other doctors in the test patients' twins.
     histories, model = load_jsonl(HISTORIES), OutcomeModel.load(MODEL)
     regimens = json.loads(REGIMENS.read_text(encoding="utf-8"))
     all_twins = load_jsonl(TWINS)
@@ -74,6 +86,7 @@ STEPS = {"prepare": prepare, "train-model": train, "build-twins": twins, "train-
 
 
 def main() -> None:
+    # Read the command line, then run the chosen step (or all four in order).
     parser = argparse.ArgumentParser(prog="python -m digital_twin_rl", description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("step", choices=[*STEPS, "all"])

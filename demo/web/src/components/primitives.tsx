@@ -1,5 +1,7 @@
+// Small building blocks shared by every card on the page.
 import type { ReactNode } from "react";
 
+// A white rounded panel that holds one step of the page.
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <section className={`rounded-2xl border border-line bg-surface/90 p-6 shadow-card backdrop-blur-sm ${className}`}>
@@ -8,14 +10,17 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   );
 }
 
+// The small upper-case line above a card's title, e.g. "STEP 1 · PATIENT RECORD".
 export function Label({ children }: { children: ReactNode }) {
   return <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">{children}</p>;
 }
 
+// A card's title.
 export function Heading({ children }: { children: ReactNode }) {
   return <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight text-ink">{children}</h2>;
 }
 
+// A red-tinted warning box with a triangle icon.
 export function Caution({ children }: { children: ReactNode }) {
   return (
     <div role="note" className="flex gap-3 rounded-xl border border-coral/30 bg-coral-soft px-4 py-3 text-sm text-ink">

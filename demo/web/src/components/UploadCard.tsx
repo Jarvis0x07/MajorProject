@@ -1,18 +1,21 @@
+// Step 1 card: pick or drop a patient record (.json) to upload.
 import { useRef, useState, type DragEvent } from "react";
 import { Upload } from "lucide-react";
 import { Card, Heading, Label } from "./primitives";
 
 interface Props {
-  onFile: (file: File) => void;
-  busy: boolean;
-  error: string | null;
+  onFile: (file: File) => void; // called with the chosen file
+  busy: boolean; // true while the backend is building the twin
+  error: string | null; // message to show if the last upload failed
 }
 
 export function UploadCard({ onFile, busy, error }: Props) {
+  // The hidden file input (opened when the drop zone is clicked) and whether a file is dragged over it.
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const open = () => !busy && input.current?.click();
 
+  // A file dropped on the drop zone is uploaded straight away.
   const drop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragging(false);
@@ -22,6 +25,7 @@ export function UploadCard({ onFile, busy, error }: Props) {
 
   return (
     <Card>
+      {/* Title and short explanation */}
       <Label>Step 1 · Patient record</Label>
       <div className="mt-2">
         <Heading>Upload a patient</Heading>
@@ -31,6 +35,7 @@ export function UploadCard({ onFile, busy, error }: Props) {
         <span className="num text-ink">demo/sample_patients</span>.
       </p>
 
+      {/* Drop zone: click, press Enter/Space, or drag a file onto it. Shows a spinner while busy. */}
       <div
         role="button"
         tabIndex={0}
@@ -57,6 +62,7 @@ export function UploadCard({ onFile, busy, error }: Props) {
         </span>
         <span className="text-sm font-medium text-ink">{busy ? "Building the twin…" : "Drop a .json file here, or click to choose"}</span>
         <span className="text-xs text-muted">Sent only to the twin server running on this computer</span>
+        {/* The real (invisible) file picker; reset after each pick so the same file can be chosen again. */}
         <input
           ref={input}
           type="file"
@@ -70,6 +76,7 @@ export function UploadCard({ onFile, busy, error }: Props) {
         />
       </div>
 
+      {/* Error message from the backend, e.g. which field of the record is wrong */}
       {error && (
         <p role="alert" className="mt-4 rounded-xl border border-coral/30 bg-coral-soft px-4 py-3 text-sm text-ink">
           <span className="font-medium text-coral">Could not build a twin.</span> {error}

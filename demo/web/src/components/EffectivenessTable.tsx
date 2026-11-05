@@ -1,11 +1,14 @@
+// Step 3 card: every medication ranked by how effective the twin predicts it would be.
 import { motion } from "framer-motion";
 import { Bot, TriangleAlert, Trophy } from "lucide-react";
 import type { Analysis, Medication } from "../api";
 import { pct } from "../format";
 import { Card, Caution, Heading, Label } from "./primitives";
 
+// The survival bars are drawn out of 60 months (5 years), the most a medication can score.
 const HORIZON_MONTHS = 60;
 
+// A highlighted box at the top of the card: an icon + title, the medication, and a short note.
 function Highlight({ icon: Icon, title, medication, note }: { icon: typeof Bot; title: string; medication: Medication; note: string }) {
   return (
     <div className="rounded-2xl border border-teal/30 bg-gradient-to-br from-teal-soft/80 to-surface p-5">
@@ -22,12 +25,15 @@ function Highlight({ icon: Icon, title, medication, note }: { icon: typeof Bot; 
 }
 
 export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
+  // The list arrives sorted, most effective first. "Best" is the top option guidelines allow;
+  // "agent" is the medication the RL agent chose.
   const meds = analysis.medications;
   const best = meds.find((m) => !m.guideline_caution) ?? meds[0];
   const agent = meds.find((m) => m.key === analysis.agent_choice) ?? best;
 
   return (
     <Card>
+      {/* Title and explanation */}
       <Label>Step 3 · Effectiveness of each medication</Label>
       <div className="mt-2">
         <Heading>What each medication would do for this twin</Heading>
@@ -37,6 +43,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
         5 years. The twin works on drug classes, so drug names are typical examples.
       </p>
 
+      {/* The twin's best option next to the RL agent's choice */}
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <Highlight icon={Trophy} title="Twin's best option" medication={best} note="Longest expected survival for this line, among the options guidelines allow." />
         <Highlight
@@ -47,6 +54,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
         />
       </div>
 
+      {/* Warning shown only for platinum-resistant patients */}
       {analysis.patient.platinum_resistant && (
         <div className="mt-4">
           <Caution>
@@ -57,6 +65,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
         </div>
       )}
 
+      {/* The ranking table (scrolls sideways inside the card on small screens) */}
       <div className="mt-5 -mx-2 overflow-x-auto px-2">
         <table className="w-full min-w-[42rem] text-sm">
           <thead>
@@ -69,6 +78,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
             </tr>
           </thead>
           <tbody>
+            {/* One row per medication; rows slide in one after another */}
             {meds.map((m, i) => (
               <motion.tr
                 key={m.key}
@@ -77,6 +87,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
                 transition={{ delay: 0.05 + i * 0.03, duration: 0.25 }}
                 className={`border-b border-line-soft transition-colors hover:bg-teal-soft/30 ${m.guideline_caution ? "text-ink-soft" : ""}`}
               >
+                {/* Rank, name, drug class, and the "RL agent" / "guideline caution" badges */}
                 <td className="py-3 pr-3">
                   <div className="flex items-baseline gap-2">
                     <span className="num w-5 shrink-0 text-xs text-muted">{i + 1}</span>
@@ -98,9 +109,11 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
                     </div>
                   </div>
                 </td>
+                {/* Predicted effectiveness numbers */}
                 <td className="num py-3 pr-3 text-right">{pct(m.response)}</td>
                 <td className="num py-3 pr-3 text-right">{m.progression_free_months.toFixed(1)}</td>
                 <td className="num py-3 pr-3 text-right">{pct(m.survival_12m)}</td>
+                {/* Months alive: a bar out of 60 months that grows in, the value, and its ± uncertainty */}
                 <td className="py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-2 w-28 overflow-hidden rounded-full bg-line-soft" role="presentation">
@@ -121,6 +134,7 @@ export function EffectivenessTable({ analysis }: { analysis: Analysis }) {
           </tbody>
         </table>
       </div>
+      {/* What the ± means */}
       <p className="mt-3 text-xs leading-relaxed text-muted">
         ± is the spread between the twin's 10 networks: larger means the model is less sure, usually because few past patients
         received that option in a situation like this one.
