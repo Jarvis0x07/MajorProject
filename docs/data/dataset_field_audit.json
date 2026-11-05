@@ -1,0 +1,5148 @@
+{
+  "input_file": "clinical.project-tcga-ov.2026-10-09.json",
+  "case_count": 608,
+  "field_path_count_including_nested": 108,
+  "notes": [
+    "Coverage is the number of records at the immediate parent level containing the key; for paths under arrays, this is record-level coverage, not patient-level coverage.",
+    "Scalar examples are descriptive and may be truncated; source values are unchanged.",
+    "This mechanical audit does not establish clinical meaning, timing origin, availability at a decision time, or causal validity."
+  ],
+  "fields": {
+    "case_id": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 608,
+      "common_scalar_examples": [
+        {
+          "value": "005a6517-2e5a-4ea3-ab36-531522723607",
+          "count": 1
+        },
+        {
+          "value": "00630714-7ab3-44e1-afff-186300edae44",
+          "count": 1
+        },
+        {
+          "value": "01abf2cf-541c-4610-8ce8-318016db6e59",
+          "count": 1
+        },
+        {
+          "value": "01ea6354-137b-47f3-9021-a01a382b1147",
+          "count": 1
+        },
+        {
+          "value": "02594e5e-8751-47c1-9245-90c66984b665",
+          "count": 1
+        },
+        {
+          "value": "02d9aa2e-b16a-48ea-a420-5daed9fd51a6",
+          "count": 1
+        },
+        {
+          "value": "034825d0-e8b7-4ac0-be31-25f6038cb04a",
+          "count": 1
+        },
+        {
+          "value": "0484a929-7a7f-4926-8d25-470ddab082ec",
+          "count": 1
+        },
+        {
+          "value": "04abcf51-c52a-4e74-a5f4-4bc4fb444902",
+          "count": 1
+        },
+        {
+          "value": "04ecaf38-0232-4dcd-9242-308a22cc1331",
+          "count": 1
+        },
+        {
+          "value": "05019013-7ea5-4905-ac79-901146ba2ee2",
+          "count": 1
+        },
+        {
+          "value": "05263959-c4f5-4540-b6d2-d8c8a128861f",
+          "count": 1
+        },
+        {
+          "value": "05ba5839-e00a-4a9e-8ba3-ecb490781e62",
+          "count": 1
+        },
+        {
+          "value": "05eb8bd5-d31b-4595-921a-366e53ea5a8b",
+          "count": 1
+        },
+        {
+          "value": "062982f8-9f49-425a-99e9-008af5ed9040",
+          "count": 1
+        },
+        {
+          "value": "067c5c61-d147-4b08-ab8a-32c30969d564",
+          "count": 1
+        },
+        {
+          "value": "0724f800-e873-45d0-bc56-809d0ec4f6e9",
+          "count": 1
+        },
+        {
+          "value": "0740321b-f8a5-4e1d-b390-ca6187598fac",
+          "count": 1
+        },
+        {
+          "value": "0750ebcc-348a-4ea9-9dd2-6274d5e6eeaa",
+          "count": 1
+        },
+        {
+          "value": "077079c3-6877-467b-b9cc-5c650aae4f07",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "consent_type": {
+      "records_with_field": 498,
+      "case_coverage_percent": 81.91,
+      "types": {
+        "string": 498
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "Informed Consent",
+          "count": 312
+        },
+        {
+          "value": "Consent by Death",
+          "count": 186
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "days_to_consent": {
+      "records_with_field": 313,
+      "case_coverage_percent": 51.48,
+      "types": {
+        "integer": 313
+      },
+      "distinct_scalar_values_observed": 118,
+      "common_scalar_examples": [
+        {
+          "value": "0",
+          "count": 64
+        },
+        {
+          "value": "-1",
+          "count": 13
+        },
+        {
+          "value": "-6",
+          "count": 12
+        },
+        {
+          "value": "-3",
+          "count": 10
+        },
+        {
+          "value": "-4",
+          "count": 10
+        },
+        {
+          "value": "-5",
+          "count": 9
+        },
+        {
+          "value": "-8",
+          "count": 9
+        },
+        {
+          "value": "-7",
+          "count": 8
+        },
+        {
+          "value": "-14",
+          "count": 7
+        },
+        {
+          "value": "-2",
+          "count": 7
+        },
+        {
+          "value": "-11",
+          "count": 6
+        },
+        {
+          "value": "-12",
+          "count": 5
+        },
+        {
+          "value": "12",
+          "count": 5
+        },
+        {
+          "value": "-13",
+          "count": 4
+        },
+        {
+          "value": "-22",
+          "count": 4
+        },
+        {
+          "value": "13",
+          "count": 4
+        },
+        {
+          "value": "2",
+          "count": 4
+        },
+        {
+          "value": "21",
+          "count": 4
+        },
+        {
+          "value": "7",
+          "count": 4
+        },
+        {
+          "value": "-10",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "object": 587
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.age_at_index": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "integer": 587
+      },
+      "distinct_scalar_values_observed": 55,
+      "common_scalar_examples": [
+        {
+          "value": "58",
+          "count": 23
+        },
+        {
+          "value": "57",
+          "count": 22
+        },
+        {
+          "value": "55",
+          "count": 21
+        },
+        {
+          "value": "60",
+          "count": 20
+        },
+        {
+          "value": "50",
+          "count": 19
+        },
+        {
+          "value": "51",
+          "count": 19
+        },
+        {
+          "value": "59",
+          "count": 19
+        },
+        {
+          "value": "71",
+          "count": 19
+        },
+        {
+          "value": "53",
+          "count": 18
+        },
+        {
+          "value": "56",
+          "count": 18
+        },
+        {
+          "value": "61",
+          "count": 18
+        },
+        {
+          "value": "63",
+          "count": 18
+        },
+        {
+          "value": "49",
+          "count": 17
+        },
+        {
+          "value": "65",
+          "count": 17
+        },
+        {
+          "value": "45",
+          "count": 16
+        },
+        {
+          "value": "48",
+          "count": 15
+        },
+        {
+          "value": "52",
+          "count": 15
+        },
+        {
+          "value": "54",
+          "count": 15
+        },
+        {
+          "value": "62",
+          "count": 15
+        },
+        {
+          "value": "73",
+          "count": 15
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.age_is_obfuscated": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "false",
+          "count": 584
+        },
+        {
+          "value": "true",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.country_of_residence_at_enrollment": {
+      "records_with_field": 10,
+      "case_coverage_percent": 1.64,
+      "types": {
+        "string": 10
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "United States",
+          "count": 9
+        },
+        {
+          "value": "Nigeria",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.days_to_birth": {
+      "records_with_field": 576,
+      "case_coverage_percent": 94.74,
+      "types": {
+        "integer": 576
+      },
+      "distinct_scalar_values_observed": 569,
+      "common_scalar_examples": [
+        {
+          "value": "-14782",
+          "count": 2
+        },
+        {
+          "value": "-20498",
+          "count": 2
+        },
+        {
+          "value": "-21635",
+          "count": 2
+        },
+        {
+          "value": "-23987",
+          "count": 2
+        },
+        {
+          "value": "-23993",
+          "count": 2
+        },
+        {
+          "value": "-26267",
+          "count": 2
+        },
+        {
+          "value": "-28093",
+          "count": 2
+        },
+        {
+          "value": "-11146",
+          "count": 1
+        },
+        {
+          "value": "-12772",
+          "count": 1
+        },
+        {
+          "value": "-13187",
+          "count": 1
+        },
+        {
+          "value": "-13346",
+          "count": 1
+        },
+        {
+          "value": "-13606",
+          "count": 1
+        },
+        {
+          "value": "-13681",
+          "count": 1
+        },
+        {
+          "value": "-13739",
+          "count": 1
+        },
+        {
+          "value": "-13885",
+          "count": 1
+        },
+        {
+          "value": "-13894",
+          "count": 1
+        },
+        {
+          "value": "-13911",
+          "count": 1
+        },
+        {
+          "value": "-14184",
+          "count": 1
+        },
+        {
+          "value": "-14538",
+          "count": 1
+        },
+        {
+          "value": "-14574",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.days_to_death": {
+      "records_with_field": 348,
+      "case_coverage_percent": 57.24,
+      "types": {
+        "integer": 348
+      },
+      "distinct_scalar_values_observed": 314,
+      "common_scalar_examples": [
+        {
+          "value": "1024",
+          "count": 3
+        },
+        {
+          "value": "1484",
+          "count": 3
+        },
+        {
+          "value": "1579",
+          "count": 3
+        },
+        {
+          "value": "608",
+          "count": 3
+        },
+        {
+          "value": "949",
+          "count": 3
+        },
+        {
+          "value": "1059",
+          "count": 2
+        },
+        {
+          "value": "1102",
+          "count": 2
+        },
+        {
+          "value": "1249",
+          "count": 2
+        },
+        {
+          "value": "1354",
+          "count": 2
+        },
+        {
+          "value": "1355",
+          "count": 2
+        },
+        {
+          "value": "1446",
+          "count": 2
+        },
+        {
+          "value": "1451",
+          "count": 2
+        },
+        {
+          "value": "1470",
+          "count": 2
+        },
+        {
+          "value": "1483",
+          "count": 2
+        },
+        {
+          "value": "1583",
+          "count": 2
+        },
+        {
+          "value": "2012",
+          "count": 2
+        },
+        {
+          "value": "24",
+          "count": 2
+        },
+        {
+          "value": "304",
+          "count": 2
+        },
+        {
+          "value": "31",
+          "count": 2
+        },
+        {
+          "value": "346",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.demographic_id": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 587,
+      "common_scalar_examples": [
+        {
+          "value": "000181a9-73a5-5da4-9bf0-5e025cfce047",
+          "count": 1
+        },
+        {
+          "value": "00711dd2-494b-5aaa-8162-d97fe7e37cbe",
+          "count": 1
+        },
+        {
+          "value": "014b5a3f-ce4b-5e1b-bb9f-caa0d307e19f",
+          "count": 1
+        },
+        {
+          "value": "01d17883-60c6-579e-86b0-77e354d822a5",
+          "count": 1
+        },
+        {
+          "value": "0239e132-69ad-584f-a099-4a1b626fdc4d",
+          "count": 1
+        },
+        {
+          "value": "0253e49c-f551-53f9-b272-38af11baa24b",
+          "count": 1
+        },
+        {
+          "value": "02c834f7-3d97-5d5a-85ba-df4939f9e4d5",
+          "count": 1
+        },
+        {
+          "value": "0344269b-0441-5bd3-9846-3c0415320ab6",
+          "count": 1
+        },
+        {
+          "value": "039bb7cc-4731-57bd-bbe7-dfce13b11b2e",
+          "count": 1
+        },
+        {
+          "value": "03f8aba2-0edd-5d65-87da-f21572282384",
+          "count": 1
+        },
+        {
+          "value": "04824ef8-fadb-546a-bfc0-957cf62e574e",
+          "count": 1
+        },
+        {
+          "value": "04990ab9-c2a6-52e5-be59-8e9024d7e18c",
+          "count": 1
+        },
+        {
+          "value": "053eda72-806d-5ada-932d-fc4e667f34f0",
+          "count": 1
+        },
+        {
+          "value": "056db782-ad0b-5cfe-9fe5-55f48edf37d0",
+          "count": 1
+        },
+        {
+          "value": "058fb30f-2085-5770-b4f2-6a6cf64072f7",
+          "count": 1
+        },
+        {
+          "value": "05ddf2a8-4ba3-5158-ad54-369b93b80bf4",
+          "count": 1
+        },
+        {
+          "value": "06877d4c-0fbc-5556-8685-4c48593f955d",
+          "count": 1
+        },
+        {
+          "value": "07018a25-f50f-5622-ac08-b364ea38ff12",
+          "count": 1
+        },
+        {
+          "value": "0710e66b-9d53-5515-b2cb-efd06694efa5",
+          "count": 1
+        },
+        {
+          "value": "0711b8a8-17a2-592b-ab16-ee158a843e19",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.ethnicity": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "not hispanic or latino",
+          "count": 339
+        },
+        {
+          "value": "not reported",
+          "count": 237
+        },
+        {
+          "value": "hispanic or latino",
+          "count": 11
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.population_group": {
+      "records_with_field": 25,
+      "case_coverage_percent": 4.11,
+      "types": {
+        "string": 25
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "Ashkenazi Jew",
+          "count": 24
+        },
+        {
+          "value": "Unknown",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.race": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "white",
+          "count": 498
+        },
+        {
+          "value": "black or african american",
+          "count": 34
+        },
+        {
+          "value": "not reported",
+          "count": 31
+        },
+        {
+          "value": "asian",
+          "count": 20
+        },
+        {
+          "value": "american indian or alaska native",
+          "count": 3
+        },
+        {
+          "value": "native hawaiian or other pacific islander",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.sex_at_birth": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "female",
+          "count": 587
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.state": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 587
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.submitter_id": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 587,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-04-1331_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1341_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1342_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1343_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1346_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1347_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1349_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1350_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1351_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1353_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1356_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1357_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1360_demographic",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1361_demographic",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.updated_datetime": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 344,
+      "common_scalar_examples": [
+        {
+          "value": "2025-10-16T15:30:28.218821-05:00",
+          "count": 244
+        },
+        {
+          "value": "2025-12-07T16:43:00.203909-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:03.211865-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:27.301290-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:37.702753-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:54.323892-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:03.251376-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:20.514204-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:31.564629-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:47.029305-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:05.707484-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:09.019800-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:40.647506-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:42.228110-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:01.153831-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:07.039862-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:25.168607-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:28.149361-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:53.512492-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:59.048365-06:00",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "demographic.vital_status": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Dead",
+          "count": 349
+        },
+        {
+          "value": "Alive",
+          "count": 236
+        },
+        {
+          "value": "Not Reported",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "array": 587
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 1109,
+      "array_item_types": {
+        "object": 1109
+      }
+    },
+    "diagnoses[].age_at_diagnosis": {
+      "records_with_field": 985,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 985
+      },
+      "distinct_scalar_values_observed": 917,
+      "common_scalar_examples": [
+        {
+          "value": "26663",
+          "count": 3
+        },
+        {
+          "value": "14782",
+          "count": 2
+        },
+        {
+          "value": "15059",
+          "count": 2
+        },
+        {
+          "value": "15545",
+          "count": 2
+        },
+        {
+          "value": "16199",
+          "count": 2
+        },
+        {
+          "value": "16686",
+          "count": 2
+        },
+        {
+          "value": "17784",
+          "count": 2
+        },
+        {
+          "value": "18341",
+          "count": 2
+        },
+        {
+          "value": "18374",
+          "count": 2
+        },
+        {
+          "value": "18577",
+          "count": 2
+        },
+        {
+          "value": "18785",
+          "count": 2
+        },
+        {
+          "value": "18943",
+          "count": 2
+        },
+        {
+          "value": "19034",
+          "count": 2
+        },
+        {
+          "value": "19121",
+          "count": 2
+        },
+        {
+          "value": "19140",
+          "count": 2
+        },
+        {
+          "value": "19242",
+          "count": 2
+        },
+        {
+          "value": "19365",
+          "count": 2
+        },
+        {
+          "value": "20263",
+          "count": 2
+        },
+        {
+          "value": "20408",
+          "count": 2
+        },
+        {
+          "value": "20444",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].ajcc_pathologic_m": {
+      "records_with_field": 3,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 3
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "MX",
+          "count": 2
+        },
+        {
+          "value": "M0",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].ajcc_pathologic_n": {
+      "records_with_field": 3,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 3
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "N0",
+          "count": 2
+        },
+        {
+          "value": "NX",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].ajcc_pathologic_t": {
+      "records_with_field": 3,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 3
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "T1b",
+          "count": 1
+        },
+        {
+          "value": "T1c",
+          "count": 1
+        },
+        {
+          "value": "T2b",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].ajcc_staging_system_edition": {
+      "records_with_field": 1,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "7th",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].classification_of_tumor": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "primary",
+          "count": 587
+        },
+        {
+          "value": "recurrence",
+          "count": 296
+        },
+        {
+          "value": "Unknown",
+          "count": 136
+        },
+        {
+          "value": "metastasis",
+          "count": 46
+        },
+        {
+          "value": "Progression",
+          "count": 41
+        },
+        {
+          "value": "Synchronous primary",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].created_datetime": {
+      "records_with_field": 522,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 522
+      },
+      "distinct_scalar_values_observed": 371,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-06T20:49:45.864679-06:00",
+          "count": 8
+        },
+        {
+          "value": "2025-01-06T20:37:40.227494-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:17:45.395936-06:00",
+          "count": 4
+        },
+        {
+          "value": "2025-01-06T20:04:23.081352-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:06:02.619309-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:09:15.545560-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:23:18.570663-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:36:37.698945-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:38:35.483301-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:52:07.534791-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:55:47.516133-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:58:19.467294-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T21:03:33.117434-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T21:07:41.943809-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T21:23:29.268605-06:00",
+          "count": 3
+        },
+        {
+          "value": "2025-01-06T20:04:14.989125-06:00",
+          "count": 2
+        },
+        {
+          "value": "2025-01-06T20:05:40.664596-06:00",
+          "count": 2
+        },
+        {
+          "value": "2025-01-06T20:06:52.550014-06:00",
+          "count": 2
+        },
+        {
+          "value": "2025-01-06T20:07:14.588824-06:00",
+          "count": 2
+        },
+        {
+          "value": "2025-01-06T20:07:20.020292-06:00",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].days_to_diagnosis": {
+      "records_with_field": 999,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 999
+      },
+      "distinct_scalar_values_observed": 303,
+      "common_scalar_examples": [
+        {
+          "value": "0",
+          "count": 588
+        },
+        {
+          "value": "145",
+          "count": 4
+        },
+        {
+          "value": "351",
+          "count": 4
+        },
+        {
+          "value": "396",
+          "count": 4
+        },
+        {
+          "value": "547",
+          "count": 4
+        },
+        {
+          "value": "1028",
+          "count": 3
+        },
+        {
+          "value": "245",
+          "count": 3
+        },
+        {
+          "value": "253",
+          "count": 3
+        },
+        {
+          "value": "281",
+          "count": 3
+        },
+        {
+          "value": "286",
+          "count": 3
+        },
+        {
+          "value": "287",
+          "count": 3
+        },
+        {
+          "value": "297",
+          "count": 3
+        },
+        {
+          "value": "324",
+          "count": 3
+        },
+        {
+          "value": "325",
+          "count": 3
+        },
+        {
+          "value": "392",
+          "count": 3
+        },
+        {
+          "value": "424",
+          "count": 3
+        },
+        {
+          "value": "428",
+          "count": 3
+        },
+        {
+          "value": "469",
+          "count": 3
+        },
+        {
+          "value": "544",
+          "count": 3
+        },
+        {
+          "value": "552",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].days_to_last_follow_up": {
+      "records_with_field": 241,
+      "case_coverage_percent": null,
+      "types": {
+        "number": 241
+      },
+      "distinct_scalar_values_observed": 223,
+      "common_scalar_examples": [
+        {
+          "value": "1993.0",
+          "count": 3
+        },
+        {
+          "value": "116.0",
+          "count": 2
+        },
+        {
+          "value": "1293.0",
+          "count": 2
+        },
+        {
+          "value": "16.0",
+          "count": 2
+        },
+        {
+          "value": "163.0",
+          "count": 2
+        },
+        {
+          "value": "168.0",
+          "count": 2
+        },
+        {
+          "value": "176.0",
+          "count": 2
+        },
+        {
+          "value": "1919.0",
+          "count": 2
+        },
+        {
+          "value": "194.0",
+          "count": 2
+        },
+        {
+          "value": "2143.0",
+          "count": 2
+        },
+        {
+          "value": "260.0",
+          "count": 2
+        },
+        {
+          "value": "2661.0",
+          "count": 2
+        },
+        {
+          "value": "349.0",
+          "count": 2
+        },
+        {
+          "value": "547.0",
+          "count": 2
+        },
+        {
+          "value": "686.0",
+          "count": 2
+        },
+        {
+          "value": "763.0",
+          "count": 2
+        },
+        {
+          "value": "932.0",
+          "count": 2
+        },
+        {
+          "value": "0.0",
+          "count": 1
+        },
+        {
+          "value": "1004.0",
+          "count": 1
+        },
+        {
+          "value": "105.0",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].diagnosis_id": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 1109,
+      "common_scalar_examples": [
+        {
+          "value": "0026adcd-4eb4-405b-b012-a9bcad1ca889",
+          "count": 1
+        },
+        {
+          "value": "00b59e6c-0bc0-4497-aa2a-435360802409",
+          "count": 1
+        },
+        {
+          "value": "00f8ee1c-618f-530e-8d64-954aff8478aa",
+          "count": 1
+        },
+        {
+          "value": "012f225f-1cb8-5962-a806-b05cca31ffd9",
+          "count": 1
+        },
+        {
+          "value": "013ba4e2-f2d0-5a07-a02e-5293a1da0678",
+          "count": 1
+        },
+        {
+          "value": "017a1126-1b80-5060-b971-d27b20147a99",
+          "count": 1
+        },
+        {
+          "value": "01932ba3-2753-5aa5-b4bc-15b1972bc184",
+          "count": 1
+        },
+        {
+          "value": "01bd9268-16e8-4be5-93aa-675a6ae5734a",
+          "count": 1
+        },
+        {
+          "value": "01d0842c-eaa0-4aaf-a557-6a482c619c8e",
+          "count": 1
+        },
+        {
+          "value": "020510a4-78b5-5290-a377-54a07c066478",
+          "count": 1
+        },
+        {
+          "value": "024e2727-bba3-549b-8c73-f5ac656459ca",
+          "count": 1
+        },
+        {
+          "value": "02b58c15-bd61-4725-9415-296878026063",
+          "count": 1
+        },
+        {
+          "value": "02bf07f2-6b96-57dc-8c19-1e23c80e8a40",
+          "count": 1
+        },
+        {
+          "value": "02ff8b29-727c-4cb9-b974-9af95c0775ba",
+          "count": 1
+        },
+        {
+          "value": "0359e54b-74dc-4817-a4ff-28f28482678b",
+          "count": 1
+        },
+        {
+          "value": "036f498f-caec-57c3-8ca1-8d83d027149d",
+          "count": 1
+        },
+        {
+          "value": "0376f311-efe5-41f3-b975-4104015c228e",
+          "count": 1
+        },
+        {
+          "value": "03854145-98b4-4997-999d-7303bf40d770",
+          "count": 1
+        },
+        {
+          "value": "03a569c0-4d70-554f-9b61-b414ecfffa8e",
+          "count": 1
+        },
+        {
+          "value": "04708a30-ed12-5fd6-af46-0f86a67a82c0",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].diagnosis_is_primary_disease": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "true",
+          "count": 587
+        },
+        {
+          "value": "false",
+          "count": 522
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].figo_stage": {
+      "records_with_field": 584,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 584
+      },
+      "distinct_scalar_values_observed": 10,
+      "common_scalar_examples": [
+        {
+          "value": "Stage IIIC",
+          "count": 413
+        },
+        {
+          "value": "Stage IV",
+          "count": 89
+        },
+        {
+          "value": "Stage IIIB",
+          "count": 25
+        },
+        {
+          "value": "Stage IIC",
+          "count": 21
+        },
+        {
+          "value": "Stage IC",
+          "count": 11
+        },
+        {
+          "value": "Stage IIIA",
+          "count": 8
+        },
+        {
+          "value": "Stage IIB",
+          "count": 6
+        },
+        {
+          "value": "Stage IB",
+          "count": 4
+        },
+        {
+          "value": "Stage IIA",
+          "count": 4
+        },
+        {
+          "value": "Stage IA",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].figo_staging_edition_year": {
+      "records_with_field": 2,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "2009",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].icd_10_code": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 4,
+      "common_scalar_examples": [
+        {
+          "value": "C56.9",
+          "count": 580
+        },
+        {
+          "value": "C48.1",
+          "count": 4
+        },
+        {
+          "value": "C48.2",
+          "count": 2
+        },
+        {
+          "value": "C48.0",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].laterality": {
+      "records_with_field": 555,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 555
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Bilateral",
+          "count": 400
+        },
+        {
+          "value": "Left",
+          "count": 84
+        },
+        {
+          "value": "Right",
+          "count": 71
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].method_of_diagnosis": {
+      "records_with_field": 578,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 578
+      },
+      "distinct_scalar_values_observed": 7,
+      "common_scalar_examples": [
+        {
+          "value": "Surgical Resection",
+          "count": 466
+        },
+        {
+          "value": "Cytology",
+          "count": 78
+        },
+        {
+          "value": "Incisional Biopsy",
+          "count": 13
+        },
+        {
+          "value": "Fine Needle Aspiration",
+          "count": 12
+        },
+        {
+          "value": "Excisional Biopsy",
+          "count": 7
+        },
+        {
+          "value": "Biopsy",
+          "count": 1
+        },
+        {
+          "value": "Dilation and Curettage Procedure",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].morphology": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "8441/3",
+          "count": 1019
+        },
+        {
+          "value": "Unknown",
+          "count": 72
+        },
+        {
+          "value": "8460/3",
+          "count": 10
+        },
+        {
+          "value": "8461/3",
+          "count": 6
+        },
+        {
+          "value": "8050/3",
+          "count": 1
+        },
+        {
+          "value": "8440/3",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "array": 587
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 587,
+      "array_item_types": {
+        "object": 587
+      }
+    },
+    "diagnoses[].pathology_details[].consistent_pathology_review": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "Not Reported",
+          "count": 576
+        },
+        {
+          "value": "Yes",
+          "count": 11
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].created_datetime": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 587,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-06T20:04:05.978999-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:14.989125-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:23.081352-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:48.592457-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:49.626816-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:05:20.939344-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:05:22.978374-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:05:39.537243-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:05:40.664596-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:00.037169-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:02.619309-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:18.362440-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:28.909306-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:33.748987-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:44.997508-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:52.550014-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:01.889570-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:14.588824-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:20.020292-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:36.202203-06:00",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].lymphatic_invasion_present": {
+      "records_with_field": 226,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 226
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Yes",
+          "count": 138
+        },
+        {
+          "value": "No",
+          "count": 84
+        },
+        {
+          "value": "Unknown",
+          "count": 4
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].pathology_detail_id": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 587,
+      "common_scalar_examples": [
+        {
+          "value": "005a6e91-23fe-4002-8fb3-354c1d3a0ae3",
+          "count": 1
+        },
+        {
+          "value": "00757bca-9788-4bed-a92b-c1a051f97b59",
+          "count": 1
+        },
+        {
+          "value": "0082473d-58f2-415b-a90b-8a301d270866",
+          "count": 1
+        },
+        {
+          "value": "00c2b30b-1b3c-46d1-97fa-867443d889e5",
+          "count": 1
+        },
+        {
+          "value": "00ea886a-be8b-4857-a071-502830b90828",
+          "count": 1
+        },
+        {
+          "value": "01db93f1-d6a9-48da-912f-bbc35d21c7a2",
+          "count": 1
+        },
+        {
+          "value": "024466f8-4612-4d2b-b265-344ccb7f7ff1",
+          "count": 1
+        },
+        {
+          "value": "036be8ec-4797-4380-a0f7-ba1ffb643e23",
+          "count": 1
+        },
+        {
+          "value": "039660eb-d2b9-4d8e-ad76-3127eeecee56",
+          "count": 1
+        },
+        {
+          "value": "03985f17-5551-4ccc-8cff-29b595cd0b34",
+          "count": 1
+        },
+        {
+          "value": "03cd81a6-b356-4b38-9ddf-47a3637719fb",
+          "count": 1
+        },
+        {
+          "value": "041e792c-4a4e-4261-9d67-5c324c86da2d",
+          "count": 1
+        },
+        {
+          "value": "04457e87-b252-4b58-abac-bc213e58d943",
+          "count": 1
+        },
+        {
+          "value": "0468b92f-de52-4b55-9bbd-dd7390949cb1",
+          "count": 1
+        },
+        {
+          "value": "04c6d76e-ca3c-4ffe-8e6f-ceb4086b18ea",
+          "count": 1
+        },
+        {
+          "value": "051115a2-ee1f-4cfd-b95c-9c4d96498ea9",
+          "count": 1
+        },
+        {
+          "value": "069e8e52-2ffd-4ccb-a035-81eadf0c674d",
+          "count": 1
+        },
+        {
+          "value": "06b8fa58-0529-45f4-9f45-54abe6164a6e",
+          "count": 1
+        },
+        {
+          "value": "06da0790-0649-4d6e-817b-dcae810d1c4b",
+          "count": 1
+        },
+        {
+          "value": "07124a37-6ddb-498b-b132-f8b9504c69ee",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].residual_tumor_measurement": {
+      "records_with_field": 520,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 520
+      },
+      "distinct_scalar_values_observed": 4,
+      "common_scalar_examples": [
+        {
+          "value": "1-10 mm",
+          "count": 256
+        },
+        {
+          "value": "No macroscopic disease",
+          "count": 120
+        },
+        {
+          "value": ">20 mm",
+          "count": 106
+        },
+        {
+          "value": "11-20 mm",
+          "count": 38
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].state": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 587
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].submitter_id": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 587,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-04-1331_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1341_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1342_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1343_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1346_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1347_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1349_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1350_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1351_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1353_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1356_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1357_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1360_pathology_detail",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1361_pathology_detail",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].updated_datetime": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-08T13:15:37.188206-06:00",
+          "count": 587
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].pathology_details[].vascular_invasion_present": {
+      "records_with_field": 168,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 168
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Yes",
+          "count": 91
+        },
+        {
+          "value": "No",
+          "count": 73
+        },
+        {
+          "value": "Unknown",
+          "count": 4
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].primary_diagnosis": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "Serous cystadenocarcinoma, NOS",
+          "count": 1019
+        },
+        {
+          "value": "Unknown",
+          "count": 72
+        },
+        {
+          "value": "Papillary serous cystadenocarcinoma",
+          "count": 10
+        },
+        {
+          "value": "Serous surface papillary carcinoma",
+          "count": 6
+        },
+        {
+          "value": "Cystadenocarcinoma, NOS",
+          "count": 1
+        },
+        {
+          "value": "Papillary carcinoma, NOS",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].prior_malignancy": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "not reported",
+          "count": 575
+        },
+        {
+          "value": "no",
+          "count": 12
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].prior_treatment": {
+      "records_with_field": 1106,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1106
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "No",
+          "count": 586
+        },
+        {
+          "value": "Yes",
+          "count": 520
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].residual_disease": {
+      "records_with_field": 58,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 58
+      },
+      "distinct_scalar_values_observed": 4,
+      "common_scalar_examples": [
+        {
+          "value": "R1",
+          "count": 34
+        },
+        {
+          "value": "R0",
+          "count": 16
+        },
+        {
+          "value": "R2",
+          "count": 5
+        },
+        {
+          "value": "RX",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].site_of_resection_or_biopsy": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Ovary",
+          "count": 584
+        },
+        {
+          "value": "Not Reported",
+          "count": 522
+        },
+        {
+          "value": "Specified parts of peritoneum",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].state": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 1109
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].submitter_id": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 1109,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-04-1331_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_diagnosis2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_diagnosis2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_diagnosis2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1341_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1342_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1343_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1346_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1347_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348_diagnosis2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348_diagnosis3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1349_diagnosis",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1349_diagnosis2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1350_diagnosis",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].synchronous_malignancy": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Not Reported",
+          "count": 575
+        },
+        {
+          "value": "No",
+          "count": 9
+        },
+        {
+          "value": "Yes",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].tissue_or_organ_of_origin": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "Ovary",
+          "count": 582
+        },
+        {
+          "value": "Not Reported",
+          "count": 519
+        },
+        {
+          "value": "Specified parts of peritoneum",
+          "count": 4
+        },
+        {
+          "value": "Peritoneum, NOS",
+          "count": 2
+        },
+        {
+          "value": "Retroperitoneum",
+          "count": 1
+        },
+        {
+          "value": "Uterus, NOS",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments": {
+      "records_with_field": 1032,
+      "case_coverage_percent": null,
+      "types": {
+        "array": 1032
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 4125,
+      "array_item_types": {
+        "object": 4125
+      }
+    },
+    "diagnoses[].treatments[].clinical_trial_indicator": {
+      "records_with_field": 24,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 24
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "No",
+          "count": 21
+        },
+        {
+          "value": "Yes",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].created_datetime": {
+      "records_with_field": 3548,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 3548
+      },
+      "distinct_scalar_values_observed": 569,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-06T21:23:00.849111-06:00",
+          "count": 28
+        },
+        {
+          "value": "2025-01-06T20:57:10.963298-06:00",
+          "count": 24
+        },
+        {
+          "value": "2025-01-06T20:58:19.467294-06:00",
+          "count": 24
+        },
+        {
+          "value": "2025-01-06T20:49:45.864679-06:00",
+          "count": 22
+        },
+        {
+          "value": "2025-01-06T20:15:18.168955-06:00",
+          "count": 20
+        },
+        {
+          "value": "2025-01-06T20:16:09.544676-06:00",
+          "count": 20
+        },
+        {
+          "value": "2025-01-06T20:37:40.227494-06:00",
+          "count": 20
+        },
+        {
+          "value": "2025-01-06T20:52:07.534791-06:00",
+          "count": 20
+        },
+        {
+          "value": "2025-01-06T20:07:20.020292-06:00",
+          "count": 19
+        },
+        {
+          "value": "2025-01-06T21:12:25.530396-06:00",
+          "count": 19
+        },
+        {
+          "value": "2025-01-06T21:22:24.547421-06:00",
+          "count": 19
+        },
+        {
+          "value": "2025-01-06T20:32:39.112540-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T20:33:32.520700-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T20:45:04.527308-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T20:45:30.884266-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T20:54:40.189449-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T21:09:50.414762-06:00",
+          "count": 18
+        },
+        {
+          "value": "2025-01-06T20:44:56.788102-06:00",
+          "count": 17
+        },
+        {
+          "value": "2025-01-06T20:47:17.615700-06:00",
+          "count": 17
+        },
+        {
+          "value": "2025-01-06T21:08:31.907990-06:00",
+          "count": 17
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].days_to_treatment_end": {
+      "records_with_field": 2188,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 2188
+      },
+      "distinct_scalar_values_observed": 820,
+      "common_scalar_examples": [
+        {
+          "value": "161",
+          "count": 24
+        },
+        {
+          "value": "153",
+          "count": 22
+        },
+        {
+          "value": "147",
+          "count": 21
+        },
+        {
+          "value": "151",
+          "count": 21
+        },
+        {
+          "value": "182",
+          "count": 21
+        },
+        {
+          "value": "123",
+          "count": 20
+        },
+        {
+          "value": "143",
+          "count": 19
+        },
+        {
+          "value": "144",
+          "count": 19
+        },
+        {
+          "value": "135",
+          "count": 18
+        },
+        {
+          "value": "141",
+          "count": 18
+        },
+        {
+          "value": "120",
+          "count": 16
+        },
+        {
+          "value": "132",
+          "count": 16
+        },
+        {
+          "value": "145",
+          "count": 16
+        },
+        {
+          "value": "146",
+          "count": 16
+        },
+        {
+          "value": "125",
+          "count": 15
+        },
+        {
+          "value": "126",
+          "count": 15
+        },
+        {
+          "value": "127",
+          "count": 14
+        },
+        {
+          "value": "160",
+          "count": 14
+        },
+        {
+          "value": "199",
+          "count": 14
+        },
+        {
+          "value": "140",
+          "count": 13
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].days_to_treatment_start": {
+      "records_with_field": 2501,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 2501
+      },
+      "distinct_scalar_values_observed": 843,
+      "common_scalar_examples": [
+        {
+          "value": "31",
+          "count": 44
+        },
+        {
+          "value": "17",
+          "count": 43
+        },
+        {
+          "value": "35",
+          "count": 38
+        },
+        {
+          "value": "24",
+          "count": 35
+        },
+        {
+          "value": "22",
+          "count": 33
+        },
+        {
+          "value": "19",
+          "count": 32
+        },
+        {
+          "value": "21",
+          "count": 32
+        },
+        {
+          "value": "27",
+          "count": 31
+        },
+        {
+          "value": "28",
+          "count": 31
+        },
+        {
+          "value": "30",
+          "count": 31
+        },
+        {
+          "value": "8",
+          "count": 31
+        },
+        {
+          "value": "15",
+          "count": 30
+        },
+        {
+          "value": "7",
+          "count": 30
+        },
+        {
+          "value": "42",
+          "count": 29
+        },
+        {
+          "value": "29",
+          "count": 27
+        },
+        {
+          "value": "34",
+          "count": 27
+        },
+        {
+          "value": "14",
+          "count": 25
+        },
+        {
+          "value": "6",
+          "count": 22
+        },
+        {
+          "value": "26",
+          "count": 21
+        },
+        {
+          "value": "37",
+          "count": 21
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].initial_disease_status": {
+      "records_with_field": 2188,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2188
+      },
+      "distinct_scalar_values_observed": 5,
+      "common_scalar_examples": [
+        {
+          "value": "Recurrent Disease",
+          "count": 1146
+        },
+        {
+          "value": "Progressive Disease",
+          "count": 797
+        },
+        {
+          "value": "Unknown",
+          "count": 212
+        },
+        {
+          "value": "Persistent Disease",
+          "count": 21
+        },
+        {
+          "value": "Not Reported",
+          "count": 12
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].number_of_cycles": {
+      "records_with_field": 2093,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 2093
+      },
+      "distinct_scalar_values_observed": 22,
+      "common_scalar_examples": [
+        {
+          "value": "6",
+          "count": 802
+        },
+        {
+          "value": "3",
+          "count": 206
+        },
+        {
+          "value": "8",
+          "count": 203
+        },
+        {
+          "value": "4",
+          "count": 172
+        },
+        {
+          "value": "2",
+          "count": 161
+        },
+        {
+          "value": "5",
+          "count": 161
+        },
+        {
+          "value": "1",
+          "count": 120
+        },
+        {
+          "value": "7",
+          "count": 101
+        },
+        {
+          "value": "9",
+          "count": 57
+        },
+        {
+          "value": "12",
+          "count": 29
+        },
+        {
+          "value": "10",
+          "count": 25
+        },
+        {
+          "value": "11",
+          "count": 19
+        },
+        {
+          "value": "13",
+          "count": 9
+        },
+        {
+          "value": "14",
+          "count": 6
+        },
+        {
+          "value": "17",
+          "count": 5
+        },
+        {
+          "value": "20",
+          "count": 5
+        },
+        {
+          "value": "15",
+          "count": 4
+        },
+        {
+          "value": "18",
+          "count": 3
+        },
+        {
+          "value": "19",
+          "count": 2
+        },
+        {
+          "value": "16",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].number_of_fractions": {
+      "records_with_field": 19,
+      "case_coverage_percent": null,
+      "types": {
+        "number": 19
+      },
+      "distinct_scalar_values_observed": 13,
+      "common_scalar_examples": [
+        {
+          "value": "10.0",
+          "count": 3
+        },
+        {
+          "value": "14.0",
+          "count": 2
+        },
+        {
+          "value": "2.0",
+          "count": 2
+        },
+        {
+          "value": "30.0",
+          "count": 2
+        },
+        {
+          "value": "7.0",
+          "count": 2
+        },
+        {
+          "value": "11.0",
+          "count": 1
+        },
+        {
+          "value": "20.0",
+          "count": 1
+        },
+        {
+          "value": "22.0",
+          "count": 1
+        },
+        {
+          "value": "25.0",
+          "count": 1
+        },
+        {
+          "value": "28.0",
+          "count": 1
+        },
+        {
+          "value": "29.0",
+          "count": 1
+        },
+        {
+          "value": "5.0",
+          "count": 1
+        },
+        {
+          "value": "5000.0",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].prescribed_dose": {
+      "records_with_field": 142,
+      "case_coverage_percent": null,
+      "types": {
+        "number": 142
+      },
+      "distinct_scalar_values_observed": 103,
+      "common_scalar_examples": [
+        {
+          "value": "135.0",
+          "count": 7
+        },
+        {
+          "value": "60.0",
+          "count": 5
+        },
+        {
+          "value": "175.0",
+          "count": 4
+        },
+        {
+          "value": "300.0",
+          "count": 4
+        },
+        {
+          "value": "800.0",
+          "count": 4
+        },
+        {
+          "value": "100.0",
+          "count": 3
+        },
+        {
+          "value": "540.0",
+          "count": 3
+        },
+        {
+          "value": "75.0",
+          "count": 3
+        },
+        {
+          "value": "110.0",
+          "count": 2
+        },
+        {
+          "value": "140.0",
+          "count": 2
+        },
+        {
+          "value": "160.0",
+          "count": 2
+        },
+        {
+          "value": "176.0",
+          "count": 2
+        },
+        {
+          "value": "180.0",
+          "count": 2
+        },
+        {
+          "value": "265.0",
+          "count": 2
+        },
+        {
+          "value": "270.0",
+          "count": 2
+        },
+        {
+          "value": "275.0",
+          "count": 2
+        },
+        {
+          "value": "325.0",
+          "count": 2
+        },
+        {
+          "value": "400.0",
+          "count": 2
+        },
+        {
+          "value": "454.0",
+          "count": 2
+        },
+        {
+          "value": "55.0",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].prescribed_dose_units": {
+      "records_with_field": 142,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 142
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "mg",
+          "count": 116
+        },
+        {
+          "value": "mg/m2",
+          "count": 26
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].route_of_administration": {
+      "records_with_field": 2244,
+      "case_coverage_percent": null,
+      "types": {
+        "array": 2244
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 2379,
+      "array_item_types": {
+        "string": 2379
+      }
+    },
+    "diagnoses[].treatments[].state": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 4125
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].submitter_id": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 4125,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-04-1331_treatment",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_treatment2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_treatment3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_treatment4",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_treatment5",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_treatment6",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment10",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment11",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment12",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment13",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment14",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment15",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment4",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment5",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment6",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment7",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_treatment8",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].therapeutic_agents": {
+      "records_with_field": 2496,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2496
+      },
+      "distinct_scalar_values_observed": 71,
+      "common_scalar_examples": [
+        {
+          "value": "Carboplatin",
+          "count": 718
+        },
+        {
+          "value": "Paclitaxel",
+          "count": 697
+        },
+        {
+          "value": "Cisplatin",
+          "count": 180
+        },
+        {
+          "value": "Pegylated Liposomal Doxorubicin Hydrochloride",
+          "count": 149
+        },
+        {
+          "value": "Topotecan",
+          "count": 135
+        },
+        {
+          "value": "Docetaxel",
+          "count": 130
+        },
+        {
+          "value": "Gemcitabine",
+          "count": 99
+        },
+        {
+          "value": "Gemcitabine Hydrochloride",
+          "count": 67
+        },
+        {
+          "value": "Bevacizumab",
+          "count": 57
+        },
+        {
+          "value": "Tamoxifen",
+          "count": 35
+        },
+        {
+          "value": "Cyclophosphamide",
+          "count": 34
+        },
+        {
+          "value": "Vinorelbine Tartrate",
+          "count": 23
+        },
+        {
+          "value": "Clinical Trial",
+          "count": 18
+        },
+        {
+          "value": "Etoposide",
+          "count": 17
+        },
+        {
+          "value": "Doxorubicin",
+          "count": 14
+        },
+        {
+          "value": "Altretamine",
+          "count": 11
+        },
+        {
+          "value": "Letrozole",
+          "count": 8
+        },
+        {
+          "value": "Oxaliplatin",
+          "count": 8
+        },
+        {
+          "value": "Cetuximab",
+          "count": 6
+        },
+        {
+          "value": "Doxorubicin Hydrochloride",
+          "count": 6
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_anatomic_sites": {
+      "records_with_field": 35,
+      "case_coverage_percent": null,
+      "types": {
+        "array": 35
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 35,
+      "array_item_types": {
+        "string": 35
+      }
+    },
+    "diagnoses[].treatments[].treatment_dose": {
+      "records_with_field": 1706,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 1706
+      },
+      "distinct_scalar_values_observed": 853,
+      "common_scalar_examples": [
+        {
+          "value": "175",
+          "count": 99
+        },
+        {
+          "value": "5",
+          "count": 52
+        },
+        {
+          "value": "75",
+          "count": 38
+        },
+        {
+          "value": "6",
+          "count": 36
+        },
+        {
+          "value": "135",
+          "count": 31
+        },
+        {
+          "value": "60",
+          "count": 30
+        },
+        {
+          "value": "40",
+          "count": 19
+        },
+        {
+          "value": "20",
+          "count": 18
+        },
+        {
+          "value": "50",
+          "count": 17
+        },
+        {
+          "value": "600",
+          "count": 16
+        },
+        {
+          "value": "70",
+          "count": 15
+        },
+        {
+          "value": "4",
+          "count": 14
+        },
+        {
+          "value": "300",
+          "count": 13
+        },
+        {
+          "value": "80",
+          "count": 12
+        },
+        {
+          "value": "10",
+          "count": 11
+        },
+        {
+          "value": "15",
+          "count": 11
+        },
+        {
+          "value": "100",
+          "count": 10
+        },
+        {
+          "value": "250",
+          "count": 10
+        },
+        {
+          "value": "3",
+          "count": 10
+        },
+        {
+          "value": "1000",
+          "count": 9
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_dose_units": {
+      "records_with_field": 1706,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1706
+      },
+      "distinct_scalar_values_observed": 7,
+      "common_scalar_examples": [
+        {
+          "value": "mg",
+          "count": 1221
+        },
+        {
+          "value": "mg/m2",
+          "count": 356
+        },
+        {
+          "value": "AUC",
+          "count": 88
+        },
+        {
+          "value": "cGy",
+          "count": 22
+        },
+        {
+          "value": "mg/kg",
+          "count": 13
+        },
+        {
+          "value": "mg/day",
+          "count": 5
+        },
+        {
+          "value": "ug",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_id": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 4125,
+      "common_scalar_examples": [
+        {
+          "value": "000cd122-8b79-5ffc-a2b3-824e92eb0e1f",
+          "count": 1
+        },
+        {
+          "value": "0023c0f9-b6fb-5ead-b992-e0e4f116abb0",
+          "count": 1
+        },
+        {
+          "value": "0028c47a-da96-461c-90c6-82c15660023d",
+          "count": 1
+        },
+        {
+          "value": "002ef306-8f73-4f54-b81c-a2351479d8c6",
+          "count": 1
+        },
+        {
+          "value": "00316b57-2356-4a6f-b0f5-aea5c3f8b861",
+          "count": 1
+        },
+        {
+          "value": "00384dae-a28f-47e3-a395-36bdecd58af0",
+          "count": 1
+        },
+        {
+          "value": "004a56c0-1f71-4287-8316-b57480523b6a",
+          "count": 1
+        },
+        {
+          "value": "0050cb2b-28bb-4645-a16e-2ee1752e53bc",
+          "count": 1
+        },
+        {
+          "value": "005224eb-a7ef-4611-b6c2-c198667993c9",
+          "count": 1
+        },
+        {
+          "value": "00731b95-f543-4841-9b0e-963c14d2dba3",
+          "count": 1
+        },
+        {
+          "value": "008f743b-1fcf-4a1b-84c7-0a49b29ae784",
+          "count": 1
+        },
+        {
+          "value": "0093c11b-312f-4836-b4c3-9c3e300dad45",
+          "count": 1
+        },
+        {
+          "value": "00993f0c-e31e-4e16-a6c8-dc730268d924",
+          "count": 1
+        },
+        {
+          "value": "009c92d3-e61c-4306-aad5-66335a71784f",
+          "count": 1
+        },
+        {
+          "value": "00a2cf45-7811-4d00-9acf-7c896bc7c2af",
+          "count": 1
+        },
+        {
+          "value": "00af1382-1232-4501-8d64-b346a7756ce4",
+          "count": 1
+        },
+        {
+          "value": "00c29751-5832-4ae3-9037-ea030ac0855f",
+          "count": 1
+        },
+        {
+          "value": "00c39d43-1228-4647-a69b-c4e28fbd2ac5",
+          "count": 1
+        },
+        {
+          "value": "00c4332e-5d04-4e70-8fd7-414326e43981",
+          "count": 1
+        },
+        {
+          "value": "00d62d79-da90-40c4-9577-40f45197d1c7",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_intent_type": {
+      "records_with_field": 1945,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1945
+      },
+      "distinct_scalar_values_observed": 7,
+      "common_scalar_examples": [
+        {
+          "value": "Adjuvant",
+          "count": 1893
+        },
+        {
+          "value": "Not Reported",
+          "count": 31
+        },
+        {
+          "value": "Palliative",
+          "count": 9
+        },
+        {
+          "value": "Consolidation Therapy",
+          "count": 6
+        },
+        {
+          "value": "Maintenance Therapy",
+          "count": 2
+        },
+        {
+          "value": "Neoadjuvant",
+          "count": 2
+        },
+        {
+          "value": "Unknown",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_or_therapy": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "yes",
+          "count": 3167
+        },
+        {
+          "value": "no",
+          "count": 955
+        },
+        {
+          "value": "unknown",
+          "count": 3
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_outcome": {
+      "records_with_field": 101,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 101
+      },
+      "distinct_scalar_values_observed": 7,
+      "common_scalar_examples": [
+        {
+          "value": "Treatment Ongoing",
+          "count": 60
+        },
+        {
+          "value": "Complete Response",
+          "count": 16
+        },
+        {
+          "value": "Not Reported",
+          "count": 12
+        },
+        {
+          "value": "Partial Response",
+          "count": 6
+        },
+        {
+          "value": "Progressive Disease",
+          "count": 4
+        },
+        {
+          "value": "Unknown",
+          "count": 2
+        },
+        {
+          "value": "Stable Disease",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].treatment_type": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 9,
+      "common_scalar_examples": [
+        {
+          "value": "Chemotherapy",
+          "count": 2373
+        },
+        {
+          "value": "Radiation Therapy, NOS",
+          "count": 992
+        },
+        {
+          "value": "Pharmaceutical Therapy, NOS",
+          "count": 491
+        },
+        {
+          "value": "Surgery, NOS",
+          "count": 112
+        },
+        {
+          "value": "Targeted Molecular Therapy",
+          "count": 59
+        },
+        {
+          "value": "Hormone Therapy",
+          "count": 51
+        },
+        {
+          "value": "Radiation, External Beam",
+          "count": 29
+        },
+        {
+          "value": "Immunotherapy (Including Vaccines)",
+          "count": 17
+        },
+        {
+          "value": "Radiation, Radioisotope",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].treatments[].updated_datetime": {
+      "records_with_field": 4125,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 4125
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-08T13:15:37.188206-06:00",
+          "count": 4125
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].tumor_grade": {
+      "records_with_field": 583,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 583
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "G3",
+          "count": 495
+        },
+        {
+          "value": "G2",
+          "count": 69
+        },
+        {
+          "value": "GX",
+          "count": 10
+        },
+        {
+          "value": "G1",
+          "count": 6
+        },
+        {
+          "value": "GB",
+          "count": 2
+        },
+        {
+          "value": "G4",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].tumor_of_origin": {
+      "records_with_field": 519,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 519
+      },
+      "distinct_scalar_values_observed": 369,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-29-A5NZ_diagnosis",
+          "count": 8
+        },
+        {
+          "value": "TCGA-42-2582_diagnosis",
+          "count": 6
+        },
+        {
+          "value": "TCGA-42-2589_diagnosis",
+          "count": 4
+        },
+        {
+          "value": "TCGA-13-0897_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-0913_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1489_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1494_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1495_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1497_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1499_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-13-1819_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-24-1930_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-42-2588_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-WR-A838_diagnosis",
+          "count": 3
+        },
+        {
+          "value": "TCGA-04-1348_diagnosis",
+          "count": 2
+        },
+        {
+          "value": "TCGA-04-1514_diagnosis",
+          "count": 2
+        },
+        {
+          "value": "TCGA-04-1530_diagnosis",
+          "count": 2
+        },
+        {
+          "value": "TCGA-09-0366_diagnosis",
+          "count": 2
+        },
+        {
+          "value": "TCGA-09-0369_diagnosis",
+          "count": 2
+        },
+        {
+          "value": "TCGA-09-1662_diagnosis",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].updated_datetime": {
+      "records_with_field": 1109,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1109
+      },
+      "distinct_scalar_values_observed": 345,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-08T13:15:37.188206-06:00",
+          "count": 525
+        },
+        {
+          "value": "2025-10-24T10:06:35.432986-05:00",
+          "count": 241
+        },
+        {
+          "value": "2025-12-07T16:42:57.923730-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:00.685686-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:25.978719-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:36.342867-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:43:52.909632-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:01.827147-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:19.106629-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:29.681041-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:44:45.598250-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:04.536360-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:07.757434-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:39.699743-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:41.297891-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:45:59.662478-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:05.634670-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:23.548316-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:26.917964-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-12-07T16:46:51.917543-06:00",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "diagnoses[].year_of_diagnosis": {
+      "records_with_field": 587,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 587
+      },
+      "distinct_scalar_values_observed": 22,
+      "common_scalar_examples": [
+        {
+          "value": "2008",
+          "count": 78
+        },
+        {
+          "value": "2004",
+          "count": 53
+        },
+        {
+          "value": "2005",
+          "count": 53
+        },
+        {
+          "value": "2003",
+          "count": 50
+        },
+        {
+          "value": "2009",
+          "count": 49
+        },
+        {
+          "value": "2006",
+          "count": 47
+        },
+        {
+          "value": "2002",
+          "count": 44
+        },
+        {
+          "value": "2007",
+          "count": 44
+        },
+        {
+          "value": "2001",
+          "count": 35
+        },
+        {
+          "value": "2000",
+          "count": 33
+        },
+        {
+          "value": "1999",
+          "count": 28
+        },
+        {
+          "value": "1997",
+          "count": 17
+        },
+        {
+          "value": "1998",
+          "count": 16
+        },
+        {
+          "value": "1995",
+          "count": 10
+        },
+        {
+          "value": "1994",
+          "count": 7
+        },
+        {
+          "value": "1993",
+          "count": 6
+        },
+        {
+          "value": "1996",
+          "count": 5
+        },
+        {
+          "value": "1992",
+          "count": 4
+        },
+        {
+          "value": "2013",
+          "count": 4
+        },
+        {
+          "value": "2011",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "disease_type": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "Cystic, Mucinous and Serous Neoplasms",
+          "count": 600
+        },
+        {
+          "value": "Not Reported",
+          "count": 8
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups": {
+      "records_with_field": 584,
+      "case_coverage_percent": 96.05,
+      "types": {
+        "array": 584
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 2036,
+      "array_item_types": {
+        "object": 2036
+      }
+    },
+    "follow_ups[].created_datetime": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 584,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-06T20:37:40.227494-06:00",
+          "count": 12
+        },
+        {
+          "value": "2025-01-06T20:49:45.864679-06:00",
+          "count": 11
+        },
+        {
+          "value": "2025-01-06T20:17:45.395936-06:00",
+          "count": 8
+        },
+        {
+          "value": "2025-01-06T20:04:23.081352-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:06:02.619309-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:09:15.545560-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:23:18.570663-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:42:58.098610-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:52:07.534791-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:55:47.516133-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T21:03:33.117434-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T21:23:29.268605-06:00",
+          "count": 7
+        },
+        {
+          "value": "2025-01-06T20:11:17.141492-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:22:57.518405-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:24:18.737644-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:36:37.698945-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:54:18.721499-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:54:30.215688-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:55:11.123846-06:00",
+          "count": 6
+        },
+        {
+          "value": "2025-01-06T20:58:19.467294-06:00",
+          "count": 6
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].days_to_follow_up": {
+      "records_with_field": 1720,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 1720
+      },
+      "distinct_scalar_values_observed": 828,
+      "common_scalar_examples": [
+        {
+          "value": "547",
+          "count": 10
+        },
+        {
+          "value": "1993",
+          "count": 8
+        },
+        {
+          "value": "396",
+          "count": 8
+        },
+        {
+          "value": "145",
+          "count": 7
+        },
+        {
+          "value": "24",
+          "count": 7
+        },
+        {
+          "value": "1024",
+          "count": 6
+        },
+        {
+          "value": "1484",
+          "count": 6
+        },
+        {
+          "value": "1579",
+          "count": 6
+        },
+        {
+          "value": "16",
+          "count": 6
+        },
+        {
+          "value": "1919",
+          "count": 6
+        },
+        {
+          "value": "260",
+          "count": 6
+        },
+        {
+          "value": "349",
+          "count": 6
+        },
+        {
+          "value": "351",
+          "count": 6
+        },
+        {
+          "value": "608",
+          "count": 6
+        },
+        {
+          "value": "61",
+          "count": 6
+        },
+        {
+          "value": "679",
+          "count": 6
+        },
+        {
+          "value": "949",
+          "count": 6
+        },
+        {
+          "value": "1073",
+          "count": 5
+        },
+        {
+          "value": "1364",
+          "count": 5
+        },
+        {
+          "value": "1470",
+          "count": 5
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].days_to_progression": {
+      "records_with_field": 42,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 42
+      },
+      "distinct_scalar_values_observed": 40,
+      "common_scalar_examples": [
+        {
+          "value": "226",
+          "count": 2
+        },
+        {
+          "value": "245",
+          "count": 2
+        },
+        {
+          "value": "1028",
+          "count": 1
+        },
+        {
+          "value": "1073",
+          "count": 1
+        },
+        {
+          "value": "110",
+          "count": 1
+        },
+        {
+          "value": "112",
+          "count": 1
+        },
+        {
+          "value": "1179",
+          "count": 1
+        },
+        {
+          "value": "153",
+          "count": 1
+        },
+        {
+          "value": "1577",
+          "count": 1
+        },
+        {
+          "value": "170",
+          "count": 1
+        },
+        {
+          "value": "177",
+          "count": 1
+        },
+        {
+          "value": "210",
+          "count": 1
+        },
+        {
+          "value": "211",
+          "count": 1
+        },
+        {
+          "value": "212",
+          "count": 1
+        },
+        {
+          "value": "2139",
+          "count": 1
+        },
+        {
+          "value": "235",
+          "count": 1
+        },
+        {
+          "value": "267",
+          "count": 1
+        },
+        {
+          "value": "27",
+          "count": 1
+        },
+        {
+          "value": "274",
+          "count": 1
+        },
+        {
+          "value": "276",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].days_to_recurrence": {
+      "records_with_field": 296,
+      "case_coverage_percent": null,
+      "types": {
+        "integer": 296
+      },
+      "distinct_scalar_values_observed": 243,
+      "common_scalar_examples": [
+        {
+          "value": "145",
+          "count": 3
+        },
+        {
+          "value": "253",
+          "count": 3
+        },
+        {
+          "value": "287",
+          "count": 3
+        },
+        {
+          "value": "351",
+          "count": 3
+        },
+        {
+          "value": "396",
+          "count": 3
+        },
+        {
+          "value": "428",
+          "count": 3
+        },
+        {
+          "value": "544",
+          "count": 3
+        },
+        {
+          "value": "547",
+          "count": 3
+        },
+        {
+          "value": "111",
+          "count": 2
+        },
+        {
+          "value": "181",
+          "count": 2
+        },
+        {
+          "value": "190",
+          "count": 2
+        },
+        {
+          "value": "213",
+          "count": 2
+        },
+        {
+          "value": "243",
+          "count": 2
+        },
+        {
+          "value": "281",
+          "count": 2
+        },
+        {
+          "value": "283",
+          "count": 2
+        },
+        {
+          "value": "286",
+          "count": 2
+        },
+        {
+          "value": "297",
+          "count": 2
+        },
+        {
+          "value": "298",
+          "count": 2
+        },
+        {
+          "value": "324",
+          "count": 2
+        },
+        {
+          "value": "326",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].disease_response": {
+      "records_with_field": 1170,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 1170
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "WT-With Tumor",
+          "count": 868
+        },
+        {
+          "value": "TF-Tumor Free",
+          "count": 284
+        },
+        {
+          "value": "Unknown",
+          "count": 18
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].ecog_performance_status": {
+      "records_with_field": 129,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 129
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "0",
+          "count": 77
+        },
+        {
+          "value": "1",
+          "count": 39
+        },
+        {
+          "value": "2",
+          "count": 7
+        },
+        {
+          "value": "3",
+          "count": 3
+        },
+        {
+          "value": "4",
+          "count": 2
+        },
+        {
+          "value": "Unknown",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].evidence_of_progression_type": {
+      "records_with_field": 71,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 71
+      },
+      "distinct_scalar_values_observed": 4,
+      "common_scalar_examples": [
+        {
+          "value": "Convincing Image Source",
+          "count": 55
+        },
+        {
+          "value": "Physical Examination",
+          "count": 9
+        },
+        {
+          "value": "Positive Biomarker(s)",
+          "count": 5
+        },
+        {
+          "value": "Biopsy with Histologic Confirmation",
+          "count": 2
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].evidence_of_recurrence_type": {
+      "records_with_field": 335,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 335
+      },
+      "distinct_scalar_values_observed": 4,
+      "common_scalar_examples": [
+        {
+          "value": "Convincing Image Source",
+          "count": 259
+        },
+        {
+          "value": "Physical Examination",
+          "count": 45
+        },
+        {
+          "value": "Positive Biomarker(s)",
+          "count": 21
+        },
+        {
+          "value": "Biopsy with Histologic Confirmation",
+          "count": 10
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].follow_up_id": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 2036,
+      "common_scalar_examples": [
+        {
+          "value": "00190aae-e484-46ce-91f8-de353cc4dbf7",
+          "count": 1
+        },
+        {
+          "value": "00578400-18df-4c65-9581-dd5ffba853b6",
+          "count": 1
+        },
+        {
+          "value": "0071bc59-f17d-46e1-8255-fb1dc76939ad",
+          "count": 1
+        },
+        {
+          "value": "008d4484-7bea-4281-9474-65240685139e",
+          "count": 1
+        },
+        {
+          "value": "008e2ed8-9338-401f-b6aa-1529d2032498",
+          "count": 1
+        },
+        {
+          "value": "00b86a26-aad7-4a44-bfc9-0cb92ad616dc",
+          "count": 1
+        },
+        {
+          "value": "00e395cd-be99-434d-9495-95bebb775884",
+          "count": 1
+        },
+        {
+          "value": "00fbcf1e-4e0f-4962-96df-63aefb6d8a42",
+          "count": 1
+        },
+        {
+          "value": "010ae42a-2c2c-41c7-ad87-5de08a5dd83e",
+          "count": 1
+        },
+        {
+          "value": "014fa68d-a565-4cbe-a7fc-d4ef4675219c",
+          "count": 1
+        },
+        {
+          "value": "018869a5-d090-493c-8ca6-e2f4fa802145",
+          "count": 1
+        },
+        {
+          "value": "01bd28c7-1ec5-430f-9e7a-427c36b722a0",
+          "count": 1
+        },
+        {
+          "value": "01d3bc72-d3be-42aa-87f0-564b8c778dfe",
+          "count": 1
+        },
+        {
+          "value": "02033a49-04af-40ce-a8e8-dbaf9d65b172",
+          "count": 1
+        },
+        {
+          "value": "022e37aa-2b5c-4b36-bb27-e6ec2bd166e1",
+          "count": 1
+        },
+        {
+          "value": "02366f30-cc2c-4cf3-ad3e-d34dd162e4c6",
+          "count": 1
+        },
+        {
+          "value": "023ad3e3-4006-4ac3-9e47-cd38b64f7f2b",
+          "count": 1
+        },
+        {
+          "value": "023bcae1-36b9-4308-bbfa-0806be16ab99",
+          "count": 1
+        },
+        {
+          "value": "0244278e-f9df-4be6-a308-e6f1b1e796f9",
+          "count": 1
+        },
+        {
+          "value": "024da392-8829-4028-93bb-3a5b86239619",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].karnofsky_performance_status": {
+      "records_with_field": 84,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 84
+      },
+      "distinct_scalar_values_observed": 6,
+      "common_scalar_examples": [
+        {
+          "value": "80",
+          "count": 49
+        },
+        {
+          "value": "60",
+          "count": 20
+        },
+        {
+          "value": "100",
+          "count": 10
+        },
+        {
+          "value": "40",
+          "count": 2
+        },
+        {
+          "value": "50",
+          "count": 2
+        },
+        {
+          "value": "70",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].progression_or_recurrence": {
+      "records_with_field": 520,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 520
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "Yes",
+          "count": 520
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].progression_or_recurrence_type": {
+      "records_with_field": 520,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 520
+      },
+      "distinct_scalar_values_observed": 3,
+      "common_scalar_examples": [
+        {
+          "value": "Unknown",
+          "count": 410
+        },
+        {
+          "value": "Locoregional",
+          "count": 64
+        },
+        {
+          "value": "Distant",
+          "count": 46
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].state": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 2036
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].submitter_id": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 2036,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-04-1331_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_follow_up3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331_follow_up4",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_follow_up3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332_follow_up4",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337_follow_up3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_follow_up",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_follow_up2",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_follow_up3",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338_follow_up4",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1341_follow_up",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].timepoint_category": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 8,
+      "common_scalar_examples": [
+        {
+          "value": "Follow-up",
+          "count": 727
+        },
+        {
+          "value": "Last Contact",
+          "count": 584
+        },
+        {
+          "value": "Post Initial Treatment",
+          "count": 520
+        },
+        {
+          "value": "Prior to Adjuvant Therapy",
+          "count": 92
+        },
+        {
+          "value": "Post Adjuvant Therapy",
+          "count": 51
+        },
+        {
+          "value": "Preoperative",
+          "count": 31
+        },
+        {
+          "value": "Other",
+          "count": 22
+        },
+        {
+          "value": "Not Reported",
+          "count": 9
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "follow_ups[].updated_datetime": {
+      "records_with_field": 2036,
+      "case_coverage_percent": null,
+      "types": {
+        "string": 2036
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "2025-01-08T13:15:37.188206-06:00",
+          "count": 2036
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "index_date": {
+      "records_with_field": 587,
+      "case_coverage_percent": 96.55,
+      "types": {
+        "string": 587
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "Diagnosis",
+          "count": 587
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "lost_to_followup": {
+      "records_with_field": 359,
+      "case_coverage_percent": 59.05,
+      "types": {
+        "string": 359
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "No",
+          "count": 358
+        },
+        {
+          "value": "Yes",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "primary_site": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 2,
+      "common_scalar_examples": [
+        {
+          "value": "Ovary",
+          "count": 601
+        },
+        {
+          "value": "Retroperitoneum and peritoneum",
+          "count": 7
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "project": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "object": 608
+      },
+      "distinct_scalar_values_observed": 0,
+      "common_scalar_examples": [],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "project.project_id": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-OV",
+          "count": 608
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "state": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 1,
+      "common_scalar_examples": [
+        {
+          "value": "released",
+          "count": 608
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "submitter_id": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 608,
+      "common_scalar_examples": [
+        {
+          "value": "TCGA-01-0628",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0630",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0631",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0633",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0636",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0637",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0639",
+          "count": 1
+        },
+        {
+          "value": "TCGA-01-0642",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1331",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1332",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1335",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1336",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1337",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1338",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1341",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1342",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1343",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1346",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1347",
+          "count": 1
+        },
+        {
+          "value": "TCGA-04-1348",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    },
+    "updated_datetime": {
+      "records_with_field": 608,
+      "case_coverage_percent": 100.0,
+      "types": {
+        "string": 608
+      },
+      "distinct_scalar_values_observed": 592,
+      "common_scalar_examples": [
+        {
+          "value": "2019-05-01T12:12:57.541779-05:00",
+          "count": 8
+        },
+        {
+          "value": "2019-05-01T12:16:07.112417-05:00",
+          "count": 6
+        },
+        {
+          "value": "2019-05-01T12:16:23.847144-05:00",
+          "count": 4
+        },
+        {
+          "value": "2019-05-01T12:13:48.007074-05:00",
+          "count": 2
+        },
+        {
+          "value": "2019-05-01T12:15:27.625010-05:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:05.978999-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:23.081352-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:04:49.626816-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:18.362440-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:33.748987-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:44.997508-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:06:52.550014-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:01.889570-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:14.588824-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:36.202203-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:07:52.241674-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:08:32.379560-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:08:39.334984-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:09:15.545560-06:00",
+          "count": 1
+        },
+        {
+          "value": "2025-01-06T20:09:50.573319-06:00",
+          "count": 1
+        }
+      ],
+      "array_item_count": 0,
+      "array_item_types": {}
+    }
+  }
+}
