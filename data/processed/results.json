@@ -1,0 +1,182 @@
+{
+  "outcome_model_on_test_patients": {
+    "split": "test",
+    "treatment_lines": 132,
+    "response_auroc": 0.8869565217391305,
+    "survival_c_index": 0.6907065911995618,
+    "death_within_12m_predicted": 0.2157771736383438,
+    "death_within_12m_observed": 0.22413793103448276
+  },
+  "twins_on_test_patients": {
+    "progression_within_12m": {
+      "decisions": 120,
+      "brier_shared_model": 0.2131,
+      "brier_5_neighbour_twin": 0.2131
+    },
+    "death_within_12m": {
+      "decisions": 116,
+      "brier_shared_model": 0.1353,
+      "brier_5_neighbour_twin": 0.1345
+    }
+  },
+  "simulator_check": {
+    "patients": 100,
+    "months": [
+      12.0,
+      24.0,
+      36.0,
+      48.0,
+      60.0
+    ],
+    "real_alive": [
+      0.9349468085106385,
+      0.8061454696703353,
+      0.6769476199938975,
+      0.44644214097804075,
+      0.30056408540788315
+    ],
+    "twin_alive": [
+      0.9245,
+      0.811,
+      0.693,
+      0.579,
+      0.3745
+    ]
+  },
+  "learning_curve": [
+    {
+      "episode": 1000,
+      "mean_return": 2.29829437226177
+    },
+    {
+      "episode": 2000,
+      "mean_return": 2.4278473803100886
+    },
+    {
+      "episode": 3000,
+      "mean_return": 2.4772625709894864
+    },
+    {
+      "episode": 4000,
+      "mean_return": 2.5479330575139216
+    },
+    {
+      "episode": 5000,
+      "mean_return": 2.5794933188448823
+    },
+    {
+      "episode": 6000,
+      "mean_return": 2.626890533353161
+    },
+    {
+      "episode": 7000,
+      "mean_return": 2.7056055039315896
+    },
+    {
+      "episode": 8000,
+      "mean_return": 2.8079523588500814
+    },
+    {
+      "episode": 9000,
+      "mean_return": 2.8260219074152575
+    },
+    {
+      "episode": 10000,
+      "mean_return": 2.957217965641824
+    },
+    {
+      "episode": 11000,
+      "mean_return": 3.0986276010792575
+    },
+    {
+      "episode": 12000,
+      "mean_return": 3.0180106030331135
+    },
+    {
+      "episode": 13000,
+      "mean_return": 3.1720308864374265
+    },
+    {
+      "episode": 14000,
+      "mean_return": 3.275554863788838
+    },
+    {
+      "episode": 15000,
+      "mean_return": 3.4461596428349037
+    },
+    {
+      "episode": 16000,
+      "mean_return": 3.4880703714946315
+    },
+    {
+      "episode": 17000,
+      "mean_return": 3.52571251980578
+    },
+    {
+      "episode": 18000,
+      "mean_return": 3.650684425650167
+    },
+    {
+      "episode": 19000,
+      "mean_return": 3.6886795029891735
+    },
+    {
+      "episode": 20000,
+      "mean_return": 3.7590974861193374
+    },
+    {
+      "episode": 21000,
+      "mean_return": 3.6986386292190843
+    },
+    {
+      "episode": 22000,
+      "mean_return": 3.849040950150278
+    },
+    {
+      "episode": 23000,
+      "mean_return": 3.628549637129402
+    },
+    {
+      "episode": 24000,
+      "mean_return": 3.7238805796357197
+    },
+    {
+      "episode": 25000,
+      "mean_return": 3.7522723208874478
+    },
+    {
+      "episode": 26000,
+      "mean_return": 3.805536007816169
+    },
+    {
+      "episode": 27000,
+      "mean_return": 3.7062505892705317
+    },
+    {
+      "episode": 28000,
+      "mean_return": 3.8019444767853976
+    },
+    {
+      "episode": 29000,
+      "mean_return": 3.7780165697239543
+    },
+    {
+      "episode": 30000,
+      "mean_return": 3.769408368654118
+    }
+  ],
+  "doctors_on_test_twins": {
+    "random": {
+      "survival_months_5y": 31.918403333568573,
+      "most_common_first_choice": "hormonal_agents"
+    },
+    "standard_care": {
+      "survival_months_5y": 45.13860736115504,
+      "most_common_first_choice": "platinum+taxanes"
+    },
+    "dqn_agent": {
+      "survival_months_5y": 49.464105892181394,
+      "most_common_first_choice": "platinum+taxanes"
+    }
+  }
+}

@@ -1,9 +1,10 @@
-"""Patient digital twins and an RL treatment agent for TCGA-OV ovarian cancer.
+"""Digital twins of ovarian-cancer patients (TCGA-OV) and an RL agent that learns to treat them.
 
-Pipeline: treatment-line histories (data) -> outcome-model ensemble
-(outcome_model) -> per-patient twins (twin) -> twin-backed environment
-(environment) -> DQN doctor agent (dqn) -> policy evaluation (evaluate).
-Run `python -m digital_twin_rl --help` from the repository root.
+    data.py    raw clinical export -> one treatment history per patient
+    model.py   outcome model: response, progression and survival after a treatment line
+    twin.py    one digital twin per patient, built from the 5 most similar training patients
+    rl.py      the twins as an RL environment, and a DQN agent trained inside them
+    record.py  the patient file uploaded on the demo website
 
-Research prototype on retrospective observational data. Not a clinical tool.
+Research prototype on public, de-identified data. Not medical advice.
 """

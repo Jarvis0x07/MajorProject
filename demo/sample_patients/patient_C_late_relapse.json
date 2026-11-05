@@ -19,10 +19,6 @@
     {
       "month": 28.61,
       "event": "recurrence"
-    },
-    {
-      "month": 29.96,
-      "tumor_status": "tumor present"
     }
   ],
   "today_month": 31.6,

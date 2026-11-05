@@ -1,6 +1,6 @@
 # Patient record format (`ovarian-twin-record/v1`)
 
-One JSON file describes one ovarian-cancer patient **up to today**. All times are **months since diagnosis**. "Today" is the moment a new treatment is about to be chosen. The website builds the patient's digital twin at that moment and predicts what each medication would do.
+One JSON file describes one ovarian-cancer patient **up to today**. All times are **months since diagnosis**. "Today" is the moment a new treatment is about to be chosen. The website builds the patient's digital twin at that moment, from the 5 most similar training patients, and predicts how effective each medication would be.
 
 Start from `TEMPLATE.json`. The `patient_*.json` files are real patients from the test split, which the twin never trained on, cut off at a real decision point. `ANSWER_KEY.md` says what really happened next. It is for the presenter only; the website never reads it.
 
@@ -30,13 +30,14 @@ Start from `TEMPLATE.json`. The `patient_*.json` files are real patients from th
 
 Courses starting within about 6 weeks of each other count as one treatment line, as in the dataset.
 
-**`follow_ups[]`**, one entry per check-up:
+**`follow_ups[]`**, one entry per check-up where the cancer came back or grew:
 
 | Field | Required | Meaning |
 |---|---|---|
 | `month` | **yes** | When the check-up happened |
-| `tumor_status` | no | `tumor-free` or `tumor present` |
 | `event` | no | `recurrence` or `progression` (the cancer came back or grew) |
+
+Follow-ups are used only to work out `current_situation` when it is missing.
 
 ## Drug names the twin knows
 
@@ -46,4 +47,4 @@ Names are matched without regard to upper or lower case. An unknown name is reje
 
 ## What the twin cannot use
 
-Doses, blood tests (e.g. CA-125), scans, genetics and side-effect history are not in the training data, so the format has no fields for them.
+Doses, blood tests (e.g. CA-125), scans, genetics, performance status and side-effect history are not usable in the training data, so the format has no fields for them.

@@ -16,6 +16,3 @@ Thumbs.db
 
 # Demo website dependencies (demo/web/dist is committed so `python -m demo` runs without Node)
 demo/web/node_modules/
-
-# Twins created through the demo website at run time
-data/processed/digital_twin_rl/twins/demo_created_twins.jsonl

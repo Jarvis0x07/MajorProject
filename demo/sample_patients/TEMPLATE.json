@@ -18,12 +18,7 @@
   ],
   "follow_ups": [
     {
-      "month": 7.0,
-      "tumor_status": "tumor-free"
-    },
-    {
       "month": 20.0,
-      "tumor_status": "tumor present",
       "event": "recurrence"
     }
   ],

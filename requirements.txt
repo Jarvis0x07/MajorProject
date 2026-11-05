@@ -1,15 +1,8 @@
-# Install everything with:  python -m pip install -r requirements.txt   (Python 3.12 or newer)
-
-# Digital twin, simulator and RL agent
+# Install with:  python -m pip install -r requirements.txt   (Python 3.12 or newer)
 torch
 numpy
 scikit-learn
-matplotlib
-
-# Demo website backend
 fastapi
 uvicorn[standard]
 python-multipart
-
-# Tests
 pytest

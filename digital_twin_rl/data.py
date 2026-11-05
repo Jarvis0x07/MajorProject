@@ -1,302 +1,254 @@
-"""Build per-patient treatment-line histories from the TCGA-OV clinical export.
+"""Step 1: turn the TCGA-OV clinical export into one treatment history per patient.
 
-Each eligible patient (index_date = Diagnosis) becomes an ordered list of
-treatment lines. A line groups dated drug/radiation records that start within
-LINE_WINDOW_DAYS of the line's first record. For every line we keep the
-pre-treatment state, the regimen (the paper's 11 classes), and the observed
-outcomes: tumor response, progression-free interval and overall survival.
+A patient's dated drug and radiation records that start within 6 weeks of each other form one
+treatment line. For every line we keep:
 
-Records with treatment_or_therapy = "no" document a therapy that was NOT given
-(931 "Radiation Therapy, NOS" rows in the 2026-10-09 export). They are excluded
-from actions and from the undated-history flag.
+    state    what was known just before the line: age, stage, grade, tumour left after surgery,
+             line number, disease setting, drug classes given before, time since platinum
+    regimen  the drug classes given, e.g. ["platinum", "taxanes"]
+    outcome  tumour response, progression-free survival and overall survival
 """
 from __future__ import annotations
 
-import csv
 import json
-from collections import Counter
+import random
+from collections import Counter, defaultdict
 from pathlib import Path
 
-from scripts.paper_method_pipeline import (
-    ACTION_CLASSES, as_day, as_number, assign_splits, choose_primary_diagnosis,
-    classify_treatment, clean, response_timeline,
-)
-
 DAYS_PER_MONTH = 30.44
-LINE_WINDOW_DAYS = 42          # records starting within 6 weeks form one regimen
-RESPONSE_MIN_DAYS = 30         # earliest follow-up counted as a response to the line
-RESPONSE_MAX_DAYS = 548        # latest (about 18 months) follow-up counted
-PROGRESSION_MIN_DAYS = 30      # ignore progression dated at the line start itself
+LINE_WINDOW_DAYS = 42             # records starting within 6 weeks form one treatment line
+RESPONSE_WINDOW_DAYS = (30, 548)  # a check-up 1 to 18 months after the line start is its response
+PROGRESSION_MIN_DAYS = 30         # progression dated at the line start itself is ignored
+
+DRUG_CLASSES = ["platinum", "taxanes", "anthracyclines", "antimetabolites", "topoisomerase_inhibitors",
+                "alkylating_agents", "anti_angiogenics", "hormonal_agents", "vinca_alkaloids", "radiation", "other"]
 SETTINGS = ["primary", "recurrent", "progressive", "unknown"]
-RESIDUAL_LEVELS = {"No macroscopic disease": 0, "1-10 mm": 1, "11-20 mm": 2, ">20 mm": 3}
-GRADE_LEVELS = {"G1": 1, "G2": 2, "G3": 3, "G4": 3}
-STATUS_TO_SETTING = {
-    "recurrent disease": "recurrent",
-    "progressive disease": "progressive",
-    "persistent disease": "progressive",
+AGENT_CLASS = {
+    "carboplatin": "platinum", "cisplatin": "platinum", "oxaliplatin": "platinum",
+    "paclitaxel": "taxanes", "docetaxel": "taxanes", "nab-paclitaxel": "taxanes",
+    "paclitaxel poliglumex": "taxanes", "taxane compound": "taxanes",
+    "pegylated liposomal doxorubicin hydrochloride": "anthracyclines",
+    "doxorubicin": "anthracyclines", "doxorubicin hydrochloride": "anthracyclines",
+    "gemcitabine": "antimetabolites", "gemcitabine hydrochloride": "antimetabolites",
+    "capecitabine": "antimetabolites", "pemetrexed disodium": "antimetabolites",
+    "pemetrexed": "antimetabolites", "fluorouracil": "antimetabolites",
+    "aminopterin": "antimetabolites", "plevitrexed": "antimetabolites", "leucovorin": "antimetabolites",
+    "topotecan": "topoisomerase_inhibitors", "topotecan hydrochloride": "topoisomerase_inhibitors",
+    "etoposide": "topoisomerase_inhibitors", "irinotecan hydrochloride": "topoisomerase_inhibitors",
+    "aminocamptothecin": "topoisomerase_inhibitors", "vosaroxin": "topoisomerase_inhibitors",
+    "cyclophosphamide": "alkylating_agents", "altretamine": "alkylating_agents",
+    "ifosfamide": "alkylating_agents", "melphalan": "alkylating_agents",
+    "chlorambucil": "alkylating_agents", "trabectedin": "alkylating_agents", "irofulven": "alkylating_agents",
+    "bevacizumab": "anti_angiogenics", "motesanib diphosphate": "anti_angiogenics",
+    "pan-vegfr/tie2 tyrosine kinase inhibitor cep-11981": "anti_angiogenics", "sorafenib": "anti_angiogenics",
+    "tamoxifen": "hormonal_agents", "letrozole": "hormonal_agents", "anastrozole": "hormonal_agents",
+    "megestrol acetate": "hormonal_agents", "fulvestrant": "hormonal_agents", "exemestane": "hormonal_agents",
+    "leuprolide acetate": "hormonal_agents", "medroxyprogesterone acetate": "hormonal_agents",
+    "vinorelbine tartrate": "vinca_alkaloids", "vinorelbine": "vinca_alkaloids", "vincristine": "vinca_alkaloids",
 }
+UNKNOWN = {"", "unknown", "not reported", "not available", "not applicable"}
+STAGE_LEVELS = {"I": 1, "II": 2, "III": 3, "IV": 4}
+GRADE_LEVELS = {"G1": 1, "G2": 2, "G3": 3, "G4": 3}
+RESIDUAL_LEVELS = {"No macroscopic disease": 0, "1-10 mm": 1, "11-20 mm": 2, ">20 mm": 3}
+STATUS_TO_SETTING = {"recurrent disease": "recurrent", "progressive disease": "progressive",
+                     "persistent disease": "progressive"}
+
+
+def clean(value) -> str:
+    return str(value).strip() if value is not None else ""
+
+
+def known(value) -> bool:
+    return clean(value).lower() not in UNKNOWN
+
+
+def as_day(value) -> int | None:
+    """Whole-number day offsets only; anything else counts as missing."""
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return int(number) if number.is_integer() else None
 
 
 def months(days: float) -> float:
     return days / DAYS_PER_MONTH
 
 
-def stage_number(figo: str | None) -> int | None:
-    """'Stage IIIC' -> 3, 'Stage IV' -> 4; None when absent or unparseable."""
-    text = clean(figo).upper().replace("STAGE", "").strip()
-    roman = "".join(ch for ch in text if ch in "IV")
-    return {"I": 1, "II": 2, "III": 3, "IV": 4}.get(roman)
+def drug_classes(treatment: dict) -> list[str]:
+    """Drug classes of one treatment record; [] for surgery, a therapy marked as not given, or no agent."""
+    if clean(treatment.get("treatment_or_therapy")).lower() == "no":
+        return []
+    kind = clean(treatment.get("treatment_type")).lower()
+    if "radiation" in kind or "radioisotope" in kind:
+        return ["radiation"]
+    if "surgery" in kind or not known(treatment.get("therapeutic_agents")):
+        return []
+    names = [n.strip().lower() for n in clean(treatment["therapeutic_agents"]).replace(";", ",").split(",") if n.strip()]
+    return sorted({AGENT_CLASS.get(name, "other") for name in names})
 
 
-def residual_level(diagnosis: dict) -> int | None:
-    for detail in diagnosis.get("pathology_details") or []:
-        level = RESIDUAL_LEVELS.get(clean(detail.get("residual_tumor_measurement")))
-        if level is not None:
-            return level
-    return None
-
-
-def given_treatments(case: dict) -> tuple[list[dict], int]:
-    """Return dated, classifiable given treatments and the count of undated given ones."""
-    dated, undated_given = [], 0
+def dated_treatments(case: dict) -> list[dict]:
+    records = []
     for diagnosis in case.get("diagnoses") or []:
         for treatment in diagnosis.get("treatments") or []:
-            if clean(treatment.get("treatment_or_therapy")).lower() == "no":
-                continue
-            classes, _ = classify_treatment(treatment)
-            if not classes:
-                continue
+            classes = drug_classes(treatment)
             start = as_day(treatment.get("days_to_treatment_start"))
-            if start is None or start < 0:
-                undated_given += 1
+            if not classes or start is None or start < 0:
                 continue
             end = as_day(treatment.get("days_to_treatment_end"))
-            dated.append({
-                "start": start,
-                "end": end if end is not None and end >= start else None,
-                "classes": classes,
-                "setting": STATUS_TO_SETTING.get(clean(treatment.get("initial_disease_status")).lower()),
-            })
-    dated.sort(key=lambda m: m["start"])
-    return dated, undated_given
+            records.append({"start": start, "end": end if end is not None and end >= start else None,
+                            "classes": classes,
+                            "setting": STATUS_TO_SETTING.get(clean(treatment.get("initial_disease_status")).lower())})
+    return sorted(records, key=lambda r: r["start"])
 
 
-def group_lines(members: list[dict]) -> list[dict]:
+def group_lines(records: list[dict]) -> list[dict]:
     lines: list[dict] = []
-    for member in members:
-        if lines and member["start"] <= lines[-1]["start"] + LINE_WINDOW_DAYS:
-            lines[-1]["members"].append(member)
+    for record in records:
+        if lines and record["start"] <= lines[-1]["start"] + LINE_WINDOW_DAYS:
+            lines[-1]["records"].append(record)
         else:
-            lines.append({"start": member["start"], "members": [member]})
+            lines.append({"start": record["start"], "records": [record]})
     for index, line in enumerate(lines):
-        line["classes"] = sorted({c for m in line["members"] for c in m["classes"]})
-        ends = [m["end"] for m in line["members"] if m["end"] is not None]
+        line["classes"] = sorted({c for r in line["records"] for c in r["classes"]})
+        ends = [r["end"] for r in line["records"] if r["end"] is not None]
         line["end"] = max(ends) if ends else None
-        settings = {m["setting"] for m in line["members"] if m["setting"]}
-        if "progressive" in settings:
-            line["setting"] = "progressive"
-        elif "recurrent" in settings:
-            line["setting"] = "recurrent"
-        else:
-            line["setting"] = "primary" if index == 0 else "unknown"
+        settings = {r["setting"] for r in line["records"]}
+        line["setting"] = ("progressive" if "progressive" in settings else "recurrent" if "recurrent" in settings
+                           else "primary" if index == 0 else "unknown")
     return lines
 
 
-def progression_days(case: dict) -> list[int]:
-    days = set()
-    for follow_up in case.get("follow_ups") or []:
-        for field in ("days_to_progression", "days_to_recurrence"):
-            day = as_day(follow_up.get(field))
-            if day is not None and day >= 0:
-                days.add(day)
-    return sorted(days)
-
-
-def last_contact_day(case: dict, members: list[dict]) -> int:
-    days = [0]
-    for diagnosis in case.get("diagnoses") or []:
-        day = as_day(diagnosis.get("days_to_last_follow_up"))
-        if day is not None:
-            days.append(day)
+def response_timeline(case: dict) -> list[tuple[int, str]]:
+    """(day, recorded tumour status) for check-ups with exactly one status that day."""
+    by_day = defaultdict(set)
     for follow_up in case.get("follow_ups") or []:
         day = as_day(follow_up.get("days_to_follow_up"))
-        if day is not None:
-            days.append(day)
-    days.extend(m["end"] or m["start"] for m in members)
-    death = as_day((case.get("demographic") or {}).get("days_to_death"))
-    if death is not None:
-        days.append(death)
-    return max(days)
+        if day is not None and day >= 0 and known(follow_up.get("disease_response")):
+            by_day[day].add(clean(follow_up["disease_response"]))
+    return [(day, next(iter(labels))) for day, labels in sorted(by_day.items()) if len(labels) == 1]
 
 
-def latest_known(timeline: list[dict], day: int, field: str):
-    for point in reversed(timeline):
-        if point["day"] < day and point.get(field) is not None:
-            return point[field]
-    return None
+def progression_days(case: dict) -> list[int]:
+    days = {as_day(f.get(field)) for f in case.get("follow_ups") or []
+            for field in ("days_to_progression", "days_to_recurrence")}
+    return sorted(d for d in days if d is not None and d >= 0)
 
 
-def patient_static(case: dict, undated_given: int) -> dict:
-    primary = choose_primary_diagnosis(case)
-    return {
-        "age_at_diagnosis": as_number((case.get("demographic") or {}).get("age_at_index")),
-        "stage": stage_number(primary.get("figo_stage")),
-        "grade": GRADE_LEVELS.get(clean(primary.get("tumor_grade"))),
-        "residual": residual_level(primary),
-        "undated_history": int(undated_given > 0),
-    }
+def last_contact_day(case: dict, records: list[dict]) -> int:
+    days = [0] + [r["end"] or r["start"] for r in records]
+    days += [as_day(d.get("days_to_last_follow_up")) for d in case.get("diagnoses") or []]
+    days += [as_day(f.get("days_to_follow_up")) for f in case.get("follow_ups") or []]
+    days.append(as_day((case.get("demographic") or {}).get("days_to_death")))
+    return max(d for d in days if d is not None)
 
 
-def pre_line_state(static: dict, previous: list[dict], timeline: list[dict], start: int, setting: str) -> dict:
-    """What is known just before a treatment line starting on day `start`."""
+def patient_static(case: dict) -> dict:
+    primary = next((d for d in case.get("diagnoses") or []
+                    if clean(d.get("diagnosis_is_primary_disease")).lower() == "true"
+                    or clean(d.get("classification_of_tumor")).lower() == "primary"), {})
+    stage = "".join(ch for ch in clean(primary.get("figo_stage")).upper().replace("STAGE", "").strip() if ch in "IV")
+    residual = next((RESIDUAL_LEVELS[clean(p.get("residual_tumor_measurement"))]
+                     for p in primary.get("pathology_details") or []
+                     if clean(p.get("residual_tumor_measurement")) in RESIDUAL_LEVELS), None)
+    try:
+        age = float((case.get("demographic") or {}).get("age_at_index"))
+    except (TypeError, ValueError):
+        age = None
+    return {"age_at_diagnosis": age, "stage": STAGE_LEVELS.get(stage),
+            "grade": GRADE_LEVELS.get(clean(primary.get("tumor_grade"))), "residual": residual}
+
+
+def pre_line_state(static: dict, previous: list[dict], day: int, setting: str) -> dict:
+    """What is known just before a treatment line that starts on `day` (days since diagnosis)."""
+    exposure = Counter(c for line in previous for c in line["classes"])
+    platinum = [line for line in previous if "platinum" in line["classes"]]
+    last_platinum = (platinum[-1]["end"] or platinum[-1]["start"]) if platinum else None
+    last_line = (previous[-1]["end"] or previous[-1]["start"]) if previous else None
     age = static["age_at_diagnosis"]
-    exposure = Counter(c for p in previous for c in p["classes"])
-    platinum_lines = [p for p in previous if "platinum" in p["classes"]]
-    last_platinum = (platinum_lines[-1]["end"] or platinum_lines[-1]["start"]) if platinum_lines else None
-    prev_end = (previous[-1]["end"] or previous[-1]["start"]) if previous else None
-    tumor = latest_known(timeline, start, "response")
     return {
-        "age_years": age + start / 365.25 if age is not None else None,
-        "stage": static["stage"],
-        "grade": static["grade"],
-        "residual": static["residual"],
+        "age_years": age + day / 365.25 if age is not None else None,
+        "stage": static["stage"], "grade": static["grade"], "residual": static["residual"],
         "line_number": len(previous) + 1,
-        "months_since_diagnosis": months(start),
+        "months_since_diagnosis": months(day),
         "setting": setting,
-        "last_tumor_status": "TF" if tumor == "TF-Tumor Free" else "WT" if tumor == "WT-With Tumor" else None,
-        "ecog": as_number(latest_known(timeline, start, "ecog")),
-        "karnofsky": as_number(latest_known(timeline, start, "karnofsky")),
-        "prior_exposure": {c: exposure[c] for c in ACTION_CLASSES if exposure[c]},
-        "months_since_last_platinum": months(max(0, start - last_platinum)) if last_platinum is not None else None,
-        "months_since_last_line": months(max(0, start - prev_end)) if prev_end is not None else None,
-        "undated_history": static["undated_history"],
+        "prior_exposure": {c: exposure[c] for c in DRUG_CLASSES if exposure[c]},
+        "months_since_last_platinum": months(max(0, day - last_platinum)) if last_platinum is not None else None,
+        "months_since_last_line": months(max(0, day - last_line)) if last_line is not None else None,
     }
 
 
-def state_at(case: dict, day: int, setting: str | None = None) -> dict:
-    """Pre-treatment state for a new line starting on `day` (for example 'today' in an uploaded record)."""
-    members, undated_given = given_treatments(case)
-    previous = [line for line in group_lines(members) if line["start"] < day]
-    if setting is None:
-        setting = "primary" if not previous else "unknown"
-    return pre_line_state(patient_static(case, undated_given), previous, response_timeline(case), day, setting)
+def state_at(case: dict, day: int, setting: str) -> dict:
+    """State for a new treatment decision on `day`, e.g. 'today' in an uploaded record."""
+    previous = [line for line in group_lines(dated_treatments(case)) if line["start"] < day]
+    return pre_line_state(patient_static(case), previous, day, setting)
 
 
 def build_patient(case: dict, split: str) -> dict:
-    patient_id = str(case.get("case_id") or case.get("submitter_id"))
     demographic = case.get("demographic") or {}
-    members, undated_given = given_treatments(case)
-    lines = group_lines(members)
+    records = dated_treatments(case)
+    lines = group_lines(records)
     timeline = response_timeline(case)
     progressions = progression_days(case)
+    last_day = last_contact_day(case, records)
     death_day = as_day(demographic.get("days_to_death"))
-    last_day = last_contact_day(case, members)
-    death_day_imputed = death_day is None and clean(demographic.get("vital_status")).lower() == "dead"
-    if death_day_imputed:
-        death_day = last_day    # recorded dead without a death day: event at last contact, not censoring
-    static = patient_static(case, undated_given)
+    if death_day is None and clean(demographic.get("vital_status")).lower() == "dead":
+        death_day = last_day        # recorded dead without a date: the death happened at last contact
+    static = patient_static(case)
 
     built = []
     for index, line in enumerate(lines):
         start = line["start"]
-        state = pre_line_state(static, lines[:index], timeline, start, line["setting"])
-
         next_start = lines[index + 1]["start"] if index + 1 < len(lines) else None
-        response_window_end = min(start + RESPONSE_MAX_DAYS, next_start) if next_start else start + RESPONSE_MAX_DAYS
-        response = next((p["response"] for p in timeline
-                         if start + RESPONSE_MIN_DAYS <= p["day"] <= response_window_end), None)
-        # Progression proxy: explicit progression/recurrence day, the start of
-        # the next line (time to next treatment), or death, whichever is first.
-        # The cause is kept so the twin can split the event into progression or death.
-        candidates = [(d, "progression") for d in progressions if d > start + PROGRESSION_MIN_DAYS]
+        window_end = min(start + RESPONSE_WINDOW_DAYS[1], next_start or start + RESPONSE_WINDOW_DAYS[1])
+        response = next((label for day, label in timeline if start + RESPONSE_WINDOW_DAYS[0] <= day <= window_end), None)
+        # First event after the line: recorded progression/recurrence, the next line starting, or death.
+        events = [(d, "progression") for d in progressions if d > start + PROGRESSION_MIN_DAYS]
         if next_start is not None:
-            candidates.append((next_start, "next_line"))
-        if death_day is not None and death_day >= start:
-            candidates.append((death_day, "death"))
-        first_event = min(candidates, key=lambda c: (c[0], c[1] == "death")) if candidates else None
-        pfs_day = first_event[0] if first_event else None
-        valid_death = death_day is not None and death_day >= start
+            events.append((next_start, "next_line"))
+        died = death_day is not None and death_day >= start
+        if died:
+            events.append((death_day, "death"))
+        first = min(events, key=lambda e: (e[0], e[1] == "death")) if events else None
         built.append({
-            "line_index": index,
-            "start_day": start,
-            "end_day": line["end"],
-            "regimen": line["classes"],
-            "state": state,
+            "line_index": index, "start_day": start, "end_day": line["end"], "regimen": line["classes"],
+            "state": pre_line_state(static, lines[:index], start, line["setting"]),
             "outcome": {
                 "response": 1 if response == "TF-Tumor Free" else 0 if response == "WT-With Tumor" else None,
-                "pfs_months": months(pfs_day - start) if pfs_day is not None else months(max(0, last_day - start)),
-                "pfs_event": int(pfs_day is not None),
-                "pfs_event_is_death": int(first_event[1] == "death") if first_event else None,
-                "os_months": months(death_day - start) if valid_death else months(max(0, last_day - start)),
-                "os_event": int(valid_death),
-                "next_setting": lines[index + 1]["setting"] if index + 1 < len(lines) else None,
+                "pfs_months": months((first[0] if first else last_day) - start),
+                "pfs_event": int(first is not None),
+                "pfs_event_is_death": int(first[1] == "death") if first else None,
+                "os_months": months((death_day if died else last_day) - start),
+                "os_event": int(died),
             },
         })
-    return {"patient_id": patient_id, "split": split, "static": static,
-            "vital_status": clean(demographic.get("vital_status")) or None,
-            "death_day_imputed": death_day_imputed,
-            "undated_given_treatments": undated_given, "lines": built}
+    return {"patient_id": str(case.get("case_id") or case.get("submitter_id")), "split": split,
+            "static": static, "lines": built}
 
 
-def build_histories(cases: list[dict], seed: int = 42) -> list[dict]:
+def assign_splits(patient_ids: list[str], seed: int = 42) -> dict[str, str]:
+    """80% train, 10% validation, 10% test, by patient."""
+    ids = sorted(patient_ids)
+    random.Random(seed).shuffle(ids)
+    n_train, n_val = int(len(ids) * 0.8), round(len(ids) * 0.1)
+    return {pid: "train" if i < n_train else "validation" if i < n_train + n_val else "test"
+            for i, pid in enumerate(ids)}
+
+
+def build_histories(cases: list[dict]) -> list[dict]:
+    """One history per patient whose time axis starts at diagnosis."""
     eligible = [c for c in cases if c.get("index_date") == "Diagnosis"]
-    splits = assign_splits([str(c.get("case_id") or c.get("submitter_id")) for c in eligible], seed)
+    splits = assign_splits([str(c.get("case_id") or c.get("submitter_id")) for c in eligible])
     return [build_patient(c, splits[str(c.get("case_id") or c.get("submitter_id"))]) for c in eligible]
 
 
-def summarize(histories: list[dict]) -> dict:
-    lines = [line for p in histories for line in p["lines"]]
-    regimen_counts = Counter("+".join(line["regimen"]) for p in histories if p["split"] == "train" for line in p["lines"])
-    return {
-        "patients": len(histories),
-        "patients_by_split": dict(Counter(p["split"] for p in histories)),
-        "patients_with_lines": sum(bool(p["lines"]) for p in histories),
-        "patients_with_undated_given_treatment": sum(p["undated_given_treatments"] > 0 for p in histories),
-        "lines": len(lines),
-        "lines_per_patient": dict(sorted(Counter(len(p["lines"]) for p in histories).items())),
-        "line_settings": dict(Counter(line["state"]["setting"] for line in lines)),
-        "response_labels": dict(Counter(str(line["outcome"]["response"]) for line in lines)),
-        "pfs_events": sum(line["outcome"]["pfs_event"] for line in lines),
-        "pfs_events_that_are_deaths": sum(line["outcome"]["pfs_event_is_death"] or 0 for line in lines),
-        "os_events": sum(line["outcome"]["os_event"] for line in lines),
-        "patients_dead_without_death_day": sum(p["death_day_imputed"] for p in histories),
-        "train_regimens": dict(regimen_counts.most_common()),
-        "definitions": {
-            "line_window_days": LINE_WINDOW_DAYS,
-            "response": f"first known follow-up response {RESPONSE_MIN_DAYS}-{RESPONSE_MAX_DAYS} days after line start and before the next line; 1 = TF-Tumor Free",
-            "pfs": "months to the first of explicit progression/recurrence, next line start (time to next treatment), or death; otherwise censored at last contact. pfs_event_is_death records whether that first event was death",
-            "os": "months from line start to death; otherwise censored at last contact. Patients recorded dead without a death day die at last contact",
-            "undated_history": "patient-level flag kept for information; not a model input because undated records cannot be placed before or after a line",
-            "excluded_records": "treatment_or_therapy = 'no', surgery, and records without a mappable class",
-        },
-    }
+def save_jsonl(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
 
 
-def write_histories(histories: list[dict], output_dir: Path) -> dict:
-    output_dir.mkdir(parents=True, exist_ok=True)
-    with (output_dir / "patient_histories.jsonl").open("w", encoding="utf-8") as stream:
-        for patient in histories:
-            stream.write(json.dumps(patient) + "\n")
-    rows = []
-    for patient in histories:
-        for line in patient["lines"]:
-            state = {k: v for k, v in line["state"].items() if k != "prior_exposure"}
-            rows.append({"patient_id": patient["patient_id"], "split": patient["split"],
-                         "line_index": line["line_index"], "start_day": line["start_day"],
-                         "end_day": line["end_day"], "regimen": "+".join(line["regimen"]),
-                         "prior_exposure": json.dumps(line["state"]["prior_exposure"]),
-                         **{f"state_{k}": v for k, v in state.items()},
-                         **{f"outcome_{k}": v for k, v in line["outcome"].items()}})
-    if rows:
-        with (output_dir / "treatment_lines.csv").open("w", newline="", encoding="utf-8-sig") as stream:
-            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
-            writer.writeheader()
-            writer.writerows(rows)
-    summary = summarize(histories)
-    (output_dir / "cohort_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    return summary
-
-
-def load_histories(path: Path) -> list[dict]:
-    with path.open(encoding="utf-8") as stream:
-        return [json.loads(line) for line in stream if line.strip()]
+def load_jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()]
